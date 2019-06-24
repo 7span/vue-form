@@ -1,14 +1,11 @@
 <template lang="pug">
-.field(:class="[stateClass]")
-  label {{getLabel}}
+.field__input
   select(
     v-bind="{name}"
-    v-model="val"
-    @change="$emit('input',val)")
+    :value="value"
+    @change="$emit('input',$event.target.value)")
     option(:value="null" disabled="disabled" selected) {{placeholder || "Select Option"}}
     option(v-for="choice in choices" :value="choice.value") {{choice.label}}
-
-  small(v-if="desc") {{desc}}
 </template>
 
 <script>

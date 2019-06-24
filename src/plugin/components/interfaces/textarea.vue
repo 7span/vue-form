@@ -1,15 +1,19 @@
 <template lang="pug">
-.field(:class="[stateClass]")
-  label {{getLabel}} 
+.field__input
   textarea(
     v-bind="{name,type,placeholder,rows}"
-    v-model="val"
-    @input="$emit('input',val)")
-  small(v-if="desc") {{desc}} 
+    :value="value"
+    @input="$emit('input',$event.target.value)")
 </template>
 
 <script>
 export default {
-  mixins: [require("@/plugin/mixins/interface").default]
+  mixins: [require("@/plugin/mixins/interface").default],
+  props: {
+    rows: {
+      default: 5,
+      type: Number
+    }
+  }
 };
 </script>

@@ -1,18 +1,17 @@
 <template lang="pug">
-.field(:class="[stateClass]")
-  label {{getLabel}}
-  .ss-grid(:class="`is-${design.grid}`") 
+.field__input
+  .grid(:class="`is-${design.grid}`") 
     .field(
       :class="[typeClass]" 
       v-for="choice in choices")
       input(
-        v-bind="{name,type}" 
+        :type="type" 
+        :name="repeater?`${name}_${repeater}`:name"
         :value="choice.value" 
         v-model="val"
         @change="updateValue($event)"
         :id="uId(choice)")
       label(:for="uId(choice)") {{choice.label}}
-      small(v-if="desc") {{desc}}
 </template>
 
 <script>
@@ -23,9 +22,14 @@ export default {
       return `is-${this.type}`;
     }
   },
+  data() {
+    return {
+      val: this.value
+    };
+  },
   methods: {
     uId(choice) {
-      return `${this.name}--${choice.value}`;
+      return `${this.name}--${choice.value}--${this.repeater || 0}`;
     },
     updateValue(event) {
       this.$emit("input", this.val);

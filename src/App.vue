@@ -26,21 +26,17 @@ export default {
       },
       values: null,
       fields: {
-        first_name: {
+        name: {
           interface: "input",
           type: "text",
-          label: "First Name",
-          placeholder: "e.g. Harsh",
+          label: "Name",
+          placeholder: "e.g. Harsh Kansagara",
           value: "Harsh",
           messages: {
             desc: "No numbers please",
             valid: "This is valid",
             invalid: "This is invalid"
           }
-        },
-        last_name: {
-          interface: "input",
-          placeholder: "e.g. Kansagara"
         },
         email: {
           interface: "input",
@@ -50,9 +46,11 @@ export default {
         gender: {
           interface: "choice",
           type: "radio",
+          value: ["male"],
+
           design: {
             grid: 2,
-            col: 4
+            col: 6
           },
           choices: [
             {
@@ -77,12 +75,20 @@ export default {
             return values.gender == "female";
           }
         },
+        education: {
+          interface: "input",
+          value: ["111", "222"],
+          repeater: {
+            max: 4,
+            min: 2
+          },
+          design: {
+            col: 12
+          }
+        },
         skills: {
           interface: "choice",
           type: "checkbox",
-          hide(values) {
-            return values.gender == "female";
-          },
           design: {
             grid: 4,
             col: 12

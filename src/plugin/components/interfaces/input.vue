@@ -1,11 +1,9 @@
 <template lang="pug">
-.field(:class="[stateClass]")
-  label {{getLabel}} 
+.field__input
   input(
     v-bind="{name,type,placeholder}"
-    v-model="val"
-    @input="$emit('input',val)")
-  small(v-if="desc") {{desc}}
+    :value="value"
+    @input="$emit('input',$event.target.value)")
 </template>
 
 <script>
