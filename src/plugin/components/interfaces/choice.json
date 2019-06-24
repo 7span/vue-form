@@ -1,0 +1,3 @@
+{
+  "attrs": ["type", "label", "messages", "choices", "design"]
+}
