@@ -1,6 +1,10 @@
 export default {
   inject: ["CONFIG"],
   props: {
+    config: {
+      default: () => ({}),
+      type: Object
+    },
     name: {
       default: null,
       type: String
@@ -19,7 +23,11 @@ export default {
     },
     value: {
       default: null,
-      type: [String, Number, Array, File, FileList]
+      type: [String, Number, Array, File, FileList, Object]
+    },
+    values: {
+      default: null,
+      type: Object
     },
     design: {
       default: () => {},

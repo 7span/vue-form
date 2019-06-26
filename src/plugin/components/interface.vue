@@ -1,5 +1,5 @@
 <template lang="pug">
-.interface
+.interface(:class="`interface--${config.interface}`")
   .field(:class="[stateClass]")
 
     //LABEL
@@ -11,7 +11,9 @@
       :is="`v-${config.interface}`"
       :name="name"
       :value="value"
-      v-bind="buildAttr()"
+      :values="values"
+      :config="config"
+      v-bind="buildProps()"
       @input="input($event)")
 
     //INPUT REPEATER
@@ -21,9 +23,11 @@
           component(
             :is="`v-${config.interface}`"
             :name="name"
+            :values="values"
             :value="repeaterValues[n - 1]"
+            :config="config"
             :repeater="n - 1"
-            v-bind="buildAttr()"
+            v-bind="buildProps()"
             @input="input($event,n - 1)")
         .repeater__remove(v-if="canRemoveRepeat")
           button.button.is-danger.is-muted(@click="removeRepeat(n - 1)") Remove
@@ -40,19 +44,24 @@
 
 <script>
 export default {
+  name: "interface",
   inject: ["CONFIG"],
   components: {
     VInput: require("@/plugin/components/interfaces/input.vue").default,
     VTextarea: require("@/plugin/components/interfaces/textarea.vue").default,
     VSelect: require("@/plugin/components/interfaces/select.vue").default,
     VChoice: require("@/plugin/components/interfaces/choice.vue").default,
-    VFile: require("@/plugin/components/interfaces/file.vue").default
+    VFile: require("@/plugin/components/interfaces/file.vue").default,
+    VGroup: require("@/plugin/components/interfaces/group.vue").default
   },
   props: {
     name: {
       default: null
     },
     value: {
+      default: null
+    },
+    values: {
       default: null
     },
     config: {
@@ -69,7 +78,8 @@ export default {
         choice: require("@/plugin/components/interfaces/choice.json"),
         textarea: require("@/plugin/components/interfaces/textarea.json"),
         select: require("@/plugin/components/interfaces/select.json"),
-        file: require("@/plugin/components/interfaces/file.json")
+        file: require("@/plugin/components/interfaces/file.json"),
+        group: require("@/plugin/components/interfaces/group.json")
       }
     };
   },
@@ -147,15 +157,20 @@ export default {
       }
     },
 
-    buildAttr() {
+    /**
+     * Defines which Props to pass on to interface.
+     * Some props may not be required in some interfaces.
+     * This function handles that.
+     */
+    buildProps() {
       //Get allowed interfaces from the Interface Config.
-      let attrs = this.interfaceConfig[this.config.interface].attrs;
+      let props = this.interfaceConfig[this.config.interface].props;
       //Loop through config and set values.
-      let attrsToBind = {};
-      attrs.forEach(attr => {
-        attrsToBind[attr] = this.config[attr] || this.CONFIG.defaults[attr];
+      let propsToBind = {};
+      props.forEach(prop => {
+        propsToBind[prop] = this.config[prop] || this.CONFIG.defaults[prop];
       });
-      return attrsToBind;
+      return propsToBind;
     },
 
     titleCase(str) {
@@ -177,18 +192,19 @@ export default {
 .repeater {
   display: flex;
   flex-direction: column;
-}
-.repeater__item {
-  display: flex;
-  + .repeater__item {
-    margin-top: 10px;
+  &__item {
+    display: flex;
+    + .repeater__item {
+      margin-top: 10px;
+    }
   }
-}
-.repeater__input {
-  flex: 1 1 auto;
-}
-.repeater__remove {
-  flex: 0 0 auto;
-  margin-left: 10px;
+  &__input {
+    flex: 1 1 auto;
+  }
+  &__remove {
+    flex: 0 0 auto;
+    margin-left: 10px;
+    align-self: flex-end;
+  }
 }
 </style>

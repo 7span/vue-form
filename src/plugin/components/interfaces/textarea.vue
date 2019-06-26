@@ -8,6 +8,7 @@
 
 <script>
 export default {
+  name: "interface-textarea",
   mixins: [require("@/plugin/mixins/interface").default],
   props: {
     rows: {

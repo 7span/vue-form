@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  name: "interface-select",
   mixins: [require("@/plugin/mixins/interface").default]
 };
 </script>

@@ -13,14 +13,14 @@ export default {
     values: {
       deep: true,
       handler(nv) {
-        console.log(nv);
+        //console.log(nv);
       }
     }
   },
   data() {
     return {
       sampleForm,
-      values: null,
+      values: null
     };
   }
 };

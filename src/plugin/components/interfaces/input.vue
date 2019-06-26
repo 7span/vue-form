@@ -8,6 +8,7 @@
 
 <script>
 export default {
+  name: "interface-input",
   mixins: [require("@/plugin/mixins/interface").default]
 };
 </script>

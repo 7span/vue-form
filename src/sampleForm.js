@@ -67,6 +67,24 @@ export default {
         col: 12
       }
     },
+    experience: {
+      interface: "group",
+      repeater: {
+        max: 4,
+        min: 2
+      },
+      design: {
+        col: 12
+      },
+      fields: {
+        company: {
+          interface: "input"
+        },
+        years: {
+          interface: "input"
+        }
+      }
+    },
     skills: {
       interface: "choice",
       type: "checkbox",

@@ -1,21 +1,13 @@
 <template lang="pug">
 .v-form
-  .blocks
-    .block(
-      v-for="fieldConfig,fieldName in fields"
-      v-show="fieldConfig.hide? fieldConfig.hide(values) : true"
-      :class="[colClass(fieldConfig)]")
-      interface(
-        :name="fieldName"
-        :config="fieldConfig"
-        :value="values[fieldName]" 
-        @input="updateValue(fieldName,$event)")
+  fields(:data="fields" :values="values" @input="updateValue($event)")
 </template>
 
 <script>
 export default {
+  name: "v-form",
   components: {
-    Interface: require("@/plugin/components/interface.vue").default
+    Fields: require("@/plugin/components/fields.vue").default
   },
 
   props: {
@@ -23,6 +15,9 @@ export default {
       type: Object
     },
     fields: {
+      type: Object
+    },
+    value: {
       type: Object
     }
   },
@@ -48,13 +43,9 @@ export default {
      * Updates the value based on key and
      * emits all the values
      */
-    updateValue(field, value) {
+    updateValue({ field, value }) {
       //Check if value is already set
-      if (this.values[field]) {
-        this.values[field] = value;
-      } else {
-        this.$set(this.values, field, value);
-      }
+      this.$set(this.values, field, value);
       this.$emit("input", this.values);
     },
 
@@ -72,18 +63,6 @@ export default {
         this.$set(this.values, field, fieldConfig.value || defaultValue);
       }
       this.$emit("input", this.values);
-    },
-
-    /**
-     * Sets the grid size of ss-cols
-     * If not defined, gets it from default configs
-     */
-    colClass(field) {
-      let col =
-        (field.design && field.design.col) ||
-        (this.config.defaults.design && this.config.defaults.design.col) ||
-        12;
-      return `is-${col}`;
     }
   }
 };
