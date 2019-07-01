@@ -5,10 +5,9 @@
       :class="[typeClass]" 
       v-for="choice in choices")
       input(
-        :type="type" 
-        :name="repeater?`${name}_${repeater}`:name"
         :value="choice.value" 
         v-model="val"
+        v-bind="{name,type,disabled,readonly}"
         @change="updateValue($event)"
         :id="uId(choice)")
       label(:for="uId(choice)") {{choice.label}}

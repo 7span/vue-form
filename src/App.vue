@@ -1,10 +1,9 @@
 <template lang="pug">
-  .demo
+  .demo.p--xl
     v-form(v-model="values" :config="sampleForm.config" :fields="sampleForm.fields")
 </template>
 
 <script>
-import axios from "axios";
 import sampleForm from "./sampleForm";
 
 export default {
@@ -28,12 +27,8 @@ export default {
 
 <style lang="scss">
 .demo {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   max-width: 700px;
   margin: 0 auto;
-  padding: 40px;
-  border: 1px solid #dadada;
-  margin-top: 50px;
 }
 </style>
+

@@ -6,9 +6,6 @@
 <script>
 export default {
   name: "v-form",
-  components: {
-    Fields: require("@/plugin/components/fields.vue").default
-  },
 
   props: {
     config: {

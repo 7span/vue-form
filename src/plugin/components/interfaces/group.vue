@@ -1,12 +1,18 @@
 <template lang="pug">
 .field__group
-  fields(:data="config.fields" :values="groupValue" @input="updateValue($event)")
+  fields(:data="fields" :values="groupValue" @input="updateValue($event)")
 </template>
 
 <script>
 export default {
   name: "interface-group",
   mixins: [require("@/plugin/mixins/interface").default],
+  props: {
+    fields: {
+      default: () => ({}),
+      type: Object
+    }
+  },
   computed: {
     groupValue() {
       if (this.repeater === null) {

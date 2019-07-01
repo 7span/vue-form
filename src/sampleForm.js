@@ -13,6 +13,7 @@ export default {
       label: "Name",
       placeholder: "e.g. Harsh Kansagara",
       value: "Harsh",
+      disabled: true,
       messages: {
         desc: "No numbers please",
         valid: "This is valid",
@@ -20,6 +21,7 @@ export default {
       }
     },
     email: {
+      readonly: true,
       interface: "input",
       placeholder: "e.g. mail@theharsh.in",
       type: "email"
@@ -27,8 +29,7 @@ export default {
     gender: {
       interface: "choice",
       type: "radio",
-      value: ["male"],
-
+      value: "male",
       design: {
         grid: 2,
         col: 6
@@ -70,7 +71,7 @@ export default {
     experience: {
       interface: "group",
       repeater: {
-        max: 4,
+        max: 10,
         min: 2
       },
       design: {
@@ -78,10 +79,22 @@ export default {
       },
       fields: {
         company: {
-          interface: "input"
+          interface: "input",
+          design: {
+            col: 4
+          }
         },
         years: {
-          interface: "input"
+          interface: "input",
+          design: {
+            col: 4
+          }
+        },
+        salary: {
+          interface: "input",
+          design: {
+            col: 4
+          }
         }
       }
     },
@@ -138,10 +151,15 @@ export default {
       ]
     },
     desc: {
-      interface: "textarea"
+      interface: "textarea",
+      rows: 10
     },
     photo: {
       interface: "file"
+    },
+    birth_date: {
+      interface: "input",
+      type: "date"
     }
   }
 };

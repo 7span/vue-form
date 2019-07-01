@@ -5,6 +5,10 @@ export default {
       default: () => ({}),
       type: Object
     },
+    attributes: {
+      default: () => ({}),
+      type: Object
+    },
     name: {
       default: null,
       type: String
@@ -36,6 +40,14 @@ export default {
     choices: {
       default: () => [],
       type: Array
+    },
+    disabled: {
+      default: false,
+      type: Boolean
+    },
+    readonly: {
+      default: false,
+      type: Boolean
     },
     repeater: {
       default: null,

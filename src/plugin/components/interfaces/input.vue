@@ -1,8 +1,8 @@
 <template lang="pug">
 .field__input
   input(
-    v-bind="{name,type,placeholder}"
     :value="value"
+    v-bind="{name,type,disabled,readonly,placeholder}"
     @input="$emit('input',$event.target.value)")
 </template>
 

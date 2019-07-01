@@ -1,7 +1,7 @@
 <template lang="pug">
 .field__input
   select(
-    v-bind="{name}"
+    v-bind="{name,disabled,readonly}"
     :value="value"
     @change="$emit('input',$event.target.value)")
     option(:value="null" disabled="disabled" selected) {{placeholder || "Select Option"}}

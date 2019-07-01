@@ -9,11 +9,7 @@
     component(
       v-if="!config.repeater"
       :is="`v-${config.interface}`"
-      :name="name"
-      :value="value"
-      :values="values"
-      :config="config"
-      v-bind="buildProps()"
+      v-bind="{name,value,values,...config}"
       @input="input($event)")
 
     //INPUT REPEATER
@@ -22,12 +18,9 @@
         .repeater__input
           component(
             :is="`v-${config.interface}`"
-            :name="name"
-            :values="values"
+            v-bind="{name,values,...config}"
             :value="repeaterValues[n - 1]"
-            :config="config"
             :repeater="n - 1"
-            v-bind="buildProps()"
             @input="input($event,n - 1)")
         .repeater__remove(v-if="canRemoveRepeat")
           button.button.is-danger.is-muted(@click="removeRepeat(n - 1)") Remove
@@ -72,15 +65,7 @@ export default {
     return {
       state: null,
       repeaterCount: null,
-      repeaterValues: this.value,
-      interfaceConfig: {
-        input: require("@/plugin/components/interfaces/input.json"),
-        choice: require("@/plugin/components/interfaces/choice.json"),
-        textarea: require("@/plugin/components/interfaces/textarea.json"),
-        select: require("@/plugin/components/interfaces/select.json"),
-        file: require("@/plugin/components/interfaces/file.json"),
-        group: require("@/plugin/components/interfaces/group.json")
-      }
+      repeaterValues: this.value
     };
   },
   computed: {
@@ -157,21 +142,7 @@ export default {
       }
     },
 
-    /**
-     * Defines which Props to pass on to interface.
-     * Some props may not be required in some interfaces.
-     * This function handles that.
-     */
-    buildProps() {
-      //Get allowed interfaces from the Interface Config.
-      let props = this.interfaceConfig[this.config.interface].props;
-      //Loop through config and set values.
-      let propsToBind = {};
-      props.forEach(prop => {
-        propsToBind[prop] = this.config[prop] || this.CONFIG.defaults[prop];
-      });
-      return propsToBind;
-    },
+    buildAttributes() {},
 
     titleCase(str) {
       return str

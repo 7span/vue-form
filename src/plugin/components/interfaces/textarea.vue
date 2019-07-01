@@ -1,7 +1,8 @@
 <template lang="pug">
 .field__input
   textarea(
-    v-bind="{name,type,placeholder,rows}"
+    :name="name"
+    v-bind="{name,rows,disabled,readonly}"
     :value="value"
     @input="$emit('input',$event.target.value)")
 </template>
