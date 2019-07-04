@@ -70,6 +70,12 @@ export default {
     },
     experience: {
       interface: "group",
+      value: [
+        {
+          company: "7Span",
+          years: "5"
+        }
+      ],
       repeater: {
         max: 10,
         min: 2
@@ -86,6 +92,7 @@ export default {
         },
         years: {
           interface: "input",
+          type: "number",
           design: {
             col: 4
           }

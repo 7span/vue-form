@@ -12,6 +12,8 @@ const install = (Vue, options) => {
   });
 
   Vue.component("VForm", appWithOptions);
+  //This is recursive component, hence defined globally.
+  Vue.component("Fields", require("@/plugin/components/fields.vue").default);
 };
 
 const plugin = {
