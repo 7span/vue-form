@@ -1,6 +1,20 @@
 <template lang="pug">
   .demo.p--xl
-    v-form(v-model="values" :config="sampleForm.config" :fields="sampleForm.fields")
+    button(@click="setVal") Call Raju
+    v-form(
+      ref="vForm"
+      v-model="values" 
+      @change="onChange" 
+      :config="config" 
+      :fields="fields" 
+      :adapters="adapters")
+
+      template(#repeater--add) 
+        b +
+
+      template(#repeater--remove) 
+        b -
+
 </template>
 
 <script>
@@ -18,9 +32,40 @@ export default {
   },
   data() {
     return {
-      sampleForm,
-      values: null
+      config: sampleForm.config,
+      fields: sampleForm.fields,
+      values: null,
+      adapters: {
+        po_title: {
+          choices(res) {
+            return res.data.data;
+          }
+        }
+      }
     };
+  },
+  methods: {
+    setVal() {
+      this.$refs.vForm.setValue("company", "RAJU@JAGU.com");
+    },
+    onChange({ field, value, valuesMeta, values, valueObj, valuesObj }) {
+      console.log(field, valueObj, valuesObj);
+      switch (field) {
+        case "po_item":
+          break;
+
+        case "gender":
+          if (value == "male") {
+            this.fields.husbund_name.hide = true;
+            this.fields.father_name.hide = false;
+          }
+          if (value == "female") {
+            this.fields.father_name.hide = true;
+            this.fields.husbund_name.hide = false;
+          }
+          break;
+      }
+    }
   }
 };
 </script>

@@ -1,26 +1,8 @@
 export default {
-  inject: ["CONFIG"],
+  inject: ["CONFIG", "SLOTS"],
   props: {
-    config: {
-      default: () => ({}),
-      type: Object
-    },
-    attributes: {
-      default: () => ({}),
-      type: Object
-    },
-    name: {
-      default: null,
-      type: String
-    },
-    type: {
-      default: "text",
-      type: String
-    },
-    placeholder: {
-      default: null,
-      type: [String, Number]
-    },
+    label: {},
+    interface: {},
     state: {
       default: null,
       type: String
@@ -29,9 +11,18 @@ export default {
       default: null,
       type: [String, Number, Array, File, FileList, Object]
     },
+    valueMeta: {
+      default: null,
+      type: [String, Number, Array, File, FileList, Object]
+    },
     values: {
       default: null,
-      type: Object
+      type: [Object, Array]
+    },
+
+    valuesMeta: {
+      default: null,
+      type: [Object, Array]
     },
     design: {
       default: () => {},
@@ -39,19 +30,23 @@ export default {
     },
     choices: {
       default: () => [],
-      type: Array
-    },
-    disabled: {
-      default: false,
-      type: Boolean
-    },
-    readonly: {
-      default: false,
-      type: Boolean
+      type: [Object, Array]
     },
     repeater: {
       default: null,
       type: Number
+    }
+  },
+
+  data() {
+    return {
+      loading: false
+    };
+  },
+
+  watch: {
+    loading(nv) {
+      this.$emit("loading", nv);
     }
   }
 };

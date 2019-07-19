@@ -2,20 +2,35 @@
 .blocks
   .block(
     v-for="fieldConfig,fieldName in data"
-    v-show="fieldConfig.hide? fieldConfig.hide(values) : true"
+    v-show="isShown(fieldConfig)"
     :class="[colClass(fieldConfig)]")
+
+    slot(:name="`field--before--${fieldName}`")
+
     interface(
       :name="fieldName"
       :config="fieldConfig"
       :value="values[fieldName]"
+      :valueMeta="valuesMeta ? valuesMeta[fieldName] : {}"
       :values="values" 
-      @input="$emit('input',{field:fieldName,value:$event})")
+      :valuesMeta="valuesMeta"
+      @input-meta="$emit('input-meta',{field:fieldName,value:$event})"
+      @input="input(fieldName,arguments)")
+
+      slot(
+        v-for="slot,slotName in SLOTS" 
+        :slot="slotName" 
+        slot-scope="scope" 
+        :name="slotName"
+        :scope="scope")
+
+    slot(:name="`field--after--${fieldName}`")
 </template>
 
 <script>
 export default {
   name: "fields",
-  inject: ["CONFIG"],
+  inject: ["CONFIG", "SLOTS"],
 
   components: {
     Interface: require("@/plugin/components/interface.vue").default
@@ -26,6 +41,9 @@ export default {
       type: Object
     },
     values: {
+      type: [Object, Array]
+    },
+    valuesMeta: {
       type: [Object, Array]
     }
   },
@@ -41,6 +59,21 @@ export default {
         (this.CONFIG.defaults.design && this.CONFIG.defaults.design.col) ||
         12;
       return `is-${col}`;
+    },
+
+    isShown(config) {
+      if (config.hide === undefined || config.hide === null) {
+        return true;
+      } else {
+        return !config.hide;
+      }
+    },
+    input(fieldName, args) {
+      this.$emit("input", {
+        field: fieldName,
+        value: args[0],
+        valueObj: args[1]
+      });
     }
   }
 };

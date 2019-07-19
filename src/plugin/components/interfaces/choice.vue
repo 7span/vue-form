@@ -3,23 +3,26 @@
   .grid(:class="`is-${design.grid}`") 
     .field(
       :class="[typeClass]" 
-      v-for="choice in choices")
+      v-for="choice in preparedChoices")
       input(
-        :value="choice.value" 
+        :type="$attrs.type"
+        :value="choice[choicesConfig.valueKey]" 
         v-model="val"
-        v-bind="{name,type,disabled,readonly}"
-        @change="updateValue($event)"
+        @change="$emit('input',val)"
         :id="uId(choice)")
-      label(:for="uId(choice)") {{choice.label}}
+      label(:for="uId(choice)") {{choice[choicesConfig.labelKey]}}
 </template>
 
 <script>
 export default {
   name: "interface-choice",
-  mixins: [require("@/plugin/mixins/interface").default],
+  mixins: [
+    require("@/plugin/mixins/interface").default,
+    require("@/plugin/mixins/choice").default
+  ],
   computed: {
     typeClass() {
-      return `is-${this.type}`;
+      return `is-${this.$attrs.type}`;
     }
   },
   data() {
@@ -29,10 +32,7 @@ export default {
   },
   methods: {
     uId(choice) {
-      return `${this.name}--${choice.value}--${this.repeater || 0}`;
-    },
-    updateValue(event) {
-      this.$emit("input", this.val);
+      return `${this.$attrs.name}--${choice.value}--${this.repeater || 0}`;
     }
   }
 };

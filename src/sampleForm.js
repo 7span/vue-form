@@ -1,5 +1,8 @@
+import axios from "axios";
+
 export default {
   config: {
+    axios: axios,
     defaults: {
       design: {
         col: 6
@@ -21,7 +24,6 @@ export default {
       }
     },
     email: {
-      readonly: true,
       interface: "input",
       placeholder: "e.g. mail@theharsh.in",
       type: "email"
@@ -46,16 +48,10 @@ export default {
       ]
     },
     husbund_name: {
-      interface: "input",
-      hide(values) {
-        return values.gender == "male";
-      }
+      interface: "input"
     },
     father_name: {
-      interface: "input",
-      hide(values) {
-        return values.gender == "female";
-      }
+      interface: "input"
     },
     education: {
       interface: "input",
@@ -68,14 +64,35 @@ export default {
         col: 12
       }
     },
+    training: {
+      interface: "group",
+      design: {
+        col: 12
+      },
+      fields: {
+        company: {
+          interface: "input",
+          design: {
+            col: 4
+          }
+        },
+        years: {
+          interface: "input",
+          type: "number",
+          design: {
+            col: 4
+          }
+        },
+        salary: {
+          interface: "input",
+          design: {
+            col: 4
+          }
+        }
+      }
+    },
     experience: {
       interface: "group",
-      value: [
-        {
-          company: "7Span",
-          years: "5"
-        }
-      ],
       repeater: {
         max: 10,
         min: 2
@@ -144,6 +161,24 @@ export default {
         }
       ]
     },
+    state: {
+      interface: "select",
+      choices: {
+        request: {
+          url: "https://api.mcook.co.in:8989/web/v3/search_form_entity/",
+          params: {
+            type: "inventory_category",
+            search: null
+          },
+          adapter(res) {
+            return res.data.data;
+          }
+        }
+      },
+      design: {
+        col: 4
+      }
+    },
     city: {
       interface: "select",
       choices: [
@@ -155,11 +190,18 @@ export default {
           label: "Rajkot",
           value: "rajkot"
         }
-      ]
+      ],
+      design: {
+        col: 4
+      }
     },
+
     desc: {
       interface: "textarea",
-      rows: 10
+      rows: 2,
+      design: {
+        col: 12
+      }
     },
     photo: {
       interface: "file"
