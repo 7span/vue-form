@@ -1,7 +1,7 @@
 <template lang="pug">
 textarea.field__block(
   :value="value"
-  @input="$emit('input',$event.target.value)")
+  @input="$emit('input',$event.target.value,$event.target.value)")
 </template>
 
 <script>

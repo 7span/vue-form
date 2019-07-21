@@ -101,21 +101,54 @@ export default {
         col: 12
       },
       fields: {
-        company: {
+        e_company: {
           interface: "input",
           design: {
             col: 4
           }
         },
-        years: {
+        e_years: {
           interface: "input",
           type: "number",
           design: {
             col: 4
           }
         },
-        salary: {
-          interface: "input",
+        // salary: {
+        //   interface: "input",
+        //   design: {
+        //     col: 4
+        //   }
+        // }
+        e_po_title: {
+          interface: "select",
+          label: "Title",
+          messages: {
+            invalid: "Please enter a valid title"
+          },
+          choices: [
+            {
+              value: 1,
+              label: "Amee Jagani"
+            },
+            {
+              value: 2,
+              label: "Harsh K"
+            },
+            {
+              value: 3,
+              label: "Kaushal"
+            },
+            {
+              value: 4,
+              label: "Kaushal"
+            },
+            {
+              value: 5,
+              label: "Kaushal2"
+            }
+          ],
+          validation: "required",
           design: {
             col: 4
           }

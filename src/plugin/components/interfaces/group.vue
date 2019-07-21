@@ -3,9 +3,8 @@
   fields(
     :data="fields" 
     :values="groupValue" 
-    :valuesMeta="groupValueMeta" 
-    @input="updateValue($event)" 
-    @input-meta="updateValueMeta($event)")
+    :valuesObj="groupValueObj"
+    @input="updateValue($event)")
 
     slot(
       v-for="slot,slotName in SLOTS" 
@@ -46,14 +45,12 @@ export default {
         return this.values[this.name][this.repeater] || {};
       }
     },
-    groupValueMeta() {
-      if (!this.valuesMeta) {
-        return {};
-      }
+
+    groupValueObj() {
       if (this.repeater === null) {
-        return this.valuesMeta[this.name] || {};
+        return this.valuesObj[this.name] || {};
       } else {
-        return this.valuesMeta[this.name][this.repeater] || {};
+        return this.valuesObj[this.name][this.repeater] || {};
       }
     }
   },
@@ -68,14 +65,12 @@ export default {
         [event.field]: event.value
       };
 
-      this.$emit("input", value);
-    },
-    updateValueMeta(event) {
-      let value = {
-        ...this.groupValueMeta,
-        [event.field]: event.value
+      let valueObj = {
+        ...this.groupValueObj,
+        [event.field]: event.valueObj
       };
-      this.$emit("input-meta", value);
+
+      this.$emit("input", value, valueObj, event.repeaterIndex);
     }
   }
 };

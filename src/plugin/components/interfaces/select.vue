@@ -14,7 +14,23 @@ export default {
   mixins: [
     require("@/plugin/mixins/interface").default,
     require("@/plugin/mixins/choice").default
-  ]
+  ],
+  methods: {
+    /**
+     * Emit the actual value as well as choice object
+     * This helps to make decesion based on other values of choices
+     */
+    updateValue(event) {
+      let value = event.target.value;
+
+      //Find the Object with all the values
+      let choice = this.preparedChoices.find(
+        choice => choice[this.choicesConfig.valueKey] == value
+      );
+
+      this.$emit("input", value, choice);
+    }
+  }
 };
 </script>
 

@@ -11,10 +11,9 @@
       :name="fieldName"
       :config="fieldConfig"
       :value="values[fieldName]"
-      :valueMeta="valuesMeta ? valuesMeta[fieldName] : {}"
-      :values="values" 
-      :valuesMeta="valuesMeta"
-      @input-meta="$emit('input-meta',{field:fieldName,value:$event})"
+      :values="values"
+      :valueObj="valuesObj[fieldName]"
+      :valuesObj="valuesObj"
       @input="input(fieldName,arguments)")
 
       slot(
@@ -43,7 +42,7 @@ export default {
     values: {
       type: [Object, Array]
     },
-    valuesMeta: {
+    valuesObj: {
       type: [Object, Array]
     }
   },
@@ -68,11 +67,13 @@ export default {
         return !config.hide;
       }
     },
+
     input(fieldName, args) {
       this.$emit("input", {
         field: fieldName,
         value: args[0],
-        valueObj: args[1]
+        valueObj: args[1],
+        repeaterIndex: args[2]
       });
     }
   }

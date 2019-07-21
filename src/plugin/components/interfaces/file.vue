@@ -1,7 +1,7 @@
 <template lang="pug">
 input.field__block(
   type="file"
-  @change="$emit('input',$event.target.files)")
+  @change="$emit('input',$event.target.files,$event.target.files)")
 </template>
 
 <script>

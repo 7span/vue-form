@@ -11,18 +11,16 @@ export default {
       default: null,
       type: [String, Number, Array, File, FileList, Object]
     },
-    valueMeta: {
-      default: null,
-      type: [String, Number, Array, File, FileList, Object]
-    },
     values: {
       default: null,
       type: [Object, Array]
     },
-
-    valuesMeta: {
+    valuesObj: {
       default: null,
       type: [Object, Array]
+    },
+    valueObj: {
+      default: null
     },
     design: {
       default: () => {},

@@ -6,9 +6,8 @@
   fields(
     :data="fields" 
     :values="values" 
-    :valuesMeta="valuesMeta" 
-    @input="updateValue($event)" 
-    @input-meta="updateValueMeta($event)")
+    :valuesObj="valuesObj"
+    @input="updateValue($event)")
 
     slot(
       v-for="slot,slotName in slots" 
@@ -34,9 +33,6 @@ export default {
     },
     fields: {
       type: Object
-    },
-    value: {
-      type: Object
     }
   },
 
@@ -51,7 +47,6 @@ export default {
   data() {
     return {
       values: {}, //Contains all the values of form.
-      valuesMeta: {},
       valuesObj: {},
       localSlots: ["form--before", "form--after"]
     };
@@ -63,7 +58,7 @@ export default {
       //To make the values reactive
       for (var key in defaultValues) {
         this.$set(this.values, key, defaultValues[key]);
-        this.$set(this.valuesMeta, key, defaultValues[key]);
+        this.$set(this.valuesObj, key, defaultValues[key]);
       }
       this.$emit("input", this.values);
     } else {
@@ -85,7 +80,7 @@ export default {
      * Updates the value based on key and
      * emits all the values
      */
-    updateValue({ field, value, valueObj }) {
+    updateValue({ field, value, valueObj, repeaterIndex }) {
       this.$set(this.values, field, value);
       this.$set(this.valuesObj, field, valueObj);
       this.$emit("input", this.values);
@@ -93,16 +88,9 @@ export default {
         field,
         value,
         valueObj,
+        repeaterIndex,
         values: this.values,
         valuesObj: this.valuesObj
-      });
-    },
-    updateValueMeta({ field, value }) {
-      this.$set(this.valuesMeta, field, value);
-      this.$emit("change-meta", {
-        field,
-        value,
-        values: this.valuesMeta
       });
     },
 
@@ -114,18 +102,21 @@ export default {
       //If not, it loops through all the keys and checks if the respective values is an object
       // If Object, it means the field is a group and may contain provided field.
       if (values.hasOwnProperty(field)) {
-        //If repeaterIndex is provided, the field value is an array.
-        if (repeaterIndex) {
-          this.$set(values[field], repeaterIndex, value);
-        } else {
-          this.$set(values, field, value);
-        }
+        this.$set(values, field, value);
         this.$emit("input", this.values);
       } else {
         for (var key in values) {
           let childValues = values[key];
           if (this.isObject(childValues)) {
             this.setValue(field, value, repeaterIndex, childValues);
+          }
+          if (Array.isArray(childValues)) {
+            this.setValue(
+              field,
+              value,
+              repeaterIndex,
+              childValues[repeaterIndex]
+            );
           }
         }
       }

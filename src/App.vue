@@ -46,25 +46,10 @@ export default {
   },
   methods: {
     setVal() {
-      this.$refs.vForm.setValue("company", "RAJU@JAGU.com");
+      this.$refs.vForm.setValue("e_company", "RAJU@JAGU.com", 1);
     },
-    onChange({ field, value, valuesMeta, values, valueObj, valuesObj }) {
-      console.log(field, valueObj, valuesObj);
-      switch (field) {
-        case "po_item":
-          break;
-
-        case "gender":
-          if (value == "male") {
-            this.fields.husbund_name.hide = true;
-            this.fields.father_name.hide = false;
-          }
-          if (value == "female") {
-            this.fields.father_name.hide = true;
-            this.fields.husbund_name.hide = false;
-          }
-          break;
-      }
+    onChange(data) {
+      console.log("DATA:", data);
     }
   }
 };

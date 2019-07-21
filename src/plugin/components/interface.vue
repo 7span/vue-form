@@ -9,9 +9,8 @@
       .field__before(v-if="config.design && config.design.before") {{config.design.before}}
       component(
         :is="`v-${config.interface}`"
-        v-bind="{name,valuesMeta,valueMeta,value,values,...config}"
+        v-bind="{name,value,valueObj,values,valuesObj,...config}"
         @loading="loading=$event"
-        @input-meta="inputMeta($event)"
         @input="input(arguments)")
 
         slot(
@@ -30,12 +29,11 @@
           .repeater__input
             component(
               :is="`v-${config.interface}`"
-              v-bind="{name,valuesMeta,valueMeta,values,...config}"
+              v-bind="{name,values,valuesObj,...config}"
               :value="repeaterValues[n - 1]"
-              :valueMeta="repeaterValuesMeta[n - 1]"
+              :valueObj="repeaterValuesObj[n - 1]"
               :repeater="n - 1"
               @loading="loading=$event"
-              @input-meta="inputMeta($event,n - 1)"
               @input="input(arguments,n - 1)")
 
               slot(
@@ -80,13 +78,13 @@ export default {
     value: {
       default: null
     },
-    valueMeta: {
+    valueObj: {
       default: null
     },
     values: {
       default: null
     },
-    valuesMeta: {
+    valuesObj: {
       default: null
     },
     config: {
@@ -98,8 +96,10 @@ export default {
       localConfig: { ...this.config },
       state: null,
       repeaterCount: null,
-      repeaterValues: this.value,
-      repeaterValuesMeta: [],
+      //Clones the values.
+      //If the repeater is on, then only clone the values and create an array
+      repeaterValues: this.config.repeater ? [...this.value] : null,
+      repeaterValuesObj: this.config.repeater ? [...this.valueObj] : null,
       loading: false
     };
   },
@@ -181,31 +181,26 @@ export default {
           defaultValues = this.defaultValues(this.config.fields);
         }
         this.$set(this.repeaterValues, this.repeaterCount, defaultValues);
+        this.$set(this.repeaterValuesObj, this.repeaterCount, defaultValues);
         this.repeaterCount++;
-        this.$emit("input", this.repeaterValues);
+        this.$emit("input", this.repeaterValues, this.repeaterValuesObj);
       }
     },
 
     removeRepeat(n) {
       this.repeaterCount--;
       this.repeaterValues.splice(n, 1);
-      this.$emit("input", this.repeaterValues);
+      this.repeaterValuesObj.splice(n, 1);
+      this.$emit("input", this.repeaterValues, this.repeaterValuesObj);
     },
 
     input(args, index) {
       if (index !== undefined) {
-        this.$set(this.repeaterValues, index, ...args);
-        this.$emit("input", this.repeaterValues);
+        this.$set(this.repeaterValues, index, args[0]);
+        this.$set(this.repeaterValuesObj, index, args[1]);
+        this.$emit("input", this.repeaterValues, this.repeaterValuesObj, index);
       } else {
         this.$emit("input", ...args);
-      }
-    },
-    inputMeta(event, index) {
-      if (index !== undefined) {
-        this.$set(this.repeaterValuesMeta, index, event);
-        this.$emit("input-meta", this.repeaterValuesMeta);
-      } else {
-        this.$emit("input-meta", event);
       }
     },
 
