@@ -610,14 +610,20 @@ module.exports = function (index, length) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/fields.vue?vue&type=template&id=1958d6d2&lang=pug&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"blocks"},_vm._l((_vm.data),function(fieldConfig,fieldName){return _c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isShown(fieldConfig)),expression:"isShown(fieldConfig)"}],staticClass:"block",class:[_vm.colClass(fieldConfig)]},[_vm._t(("field--before--" + fieldName)),_c('interface',{attrs:{"name":fieldName,"config":fieldConfig,"value":_vm.values[fieldName],"values":_vm.values,"valueObj":_vm.valuesObj[fieldName],"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.input(fieldName,arguments)}},scopedSlots:_vm._u([_vm._l((_vm.SLOTS),function(slot,slotName){return {key:slotName,fn:function(scope){return _vm._t(slotName,null,{"scope":scope})}}})],null,true)}),_vm._t(("field--after--" + fieldName))],2)}),0)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/fields.vue?vue&type=template&id=3883936b&lang=pug&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"blocks"},_vm._l((_vm.data),function(fieldConfig,fieldName){return _c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isShown(fieldConfig)),expression:"isShown(fieldConfig)"}],staticClass:"block",class:[_vm.colClass(fieldConfig)]},[_vm._t(("field--before--" + fieldName)),_c('interface',{attrs:{"name":fieldName,"config":fieldConfig,"value":_vm.values[fieldName],"values":_vm.values,"valueObj":_vm.valuesObj[fieldName],"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.input(fieldName,arguments)}},scopedSlots:_vm._u([_vm._l((_vm.SLOTS),function(slot,slotName){return {key:slotName,fn:function(scope){return _vm._t(slotName,null,{"scope":scope})}}})],null,true)}),_vm._t(("field--after--" + fieldName),null,{"value":_vm.values[fieldName],"values":_vm.values,"valueObj":_vm.valuesObj[fieldName],"valuesObj":_vm.valuesObj})],2)}),0)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/plugin/components/fields.vue?vue&type=template&id=1958d6d2&lang=pug&
+// CONCATENATED MODULE: ./src/plugin/components/fields.vue?vue&type=template&id=3883936b&lang=pug&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/fields.vue?vue&type=script&lang=js&
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -4346,6 +4352,9 @@ __webpack_require__.r(__webpack_exports__);
       default: null,
       type: [Object, Array]
     },
+    valueObj: {
+      default: null
+    },
     design: {
       default: function _default() {},
       type: Object
@@ -5111,12 +5120,12 @@ var es6_object_keys = __webpack_require__("456d");
 // EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/defineProperty.js
 var defineProperty = __webpack_require__("bd86");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/app.vue?vue&type=template&id=759c0d58&lang=pug&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/app.vue?vue&type=template&id=cd3a210a&lang=pug&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"v-form"},[_vm._t("form--before"),_c('fields',{attrs:{"data":_vm.fields,"values":_vm.values,"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.updateValue($event)}},scopedSlots:_vm._u([_vm._l((_vm.slots),function(slot,slotName){return {key:slotName,fn:function(scope){return _vm._t(slotName,null,{"scope":scope})}}})],null,true)}),_vm._t("form--after")],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/plugin/app.vue?vue&type=template&id=759c0d58&lang=pug&
+// CONCATENATED MODULE: ./src/plugin/app.vue?vue&type=template&id=cd3a210a&lang=pug&
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/app.vue?vue&type=script&lang=js&
 
@@ -5220,11 +5229,10 @@ var staticRenderFns = []
      */
     setValue: function setValue(field, value, repeaterIndex) {
       var values = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.values;
+
       //Checks if the provided values object contains the field.
       //If not, it loops through all the keys and checks if the respective values is an object
       // If Object, it means the field is a group and may contain provided field.
-      console.log(values);
-
       if (values.hasOwnProperty(field)) {
         this.$set(values, field, value);
         this.$emit("input", this.values);

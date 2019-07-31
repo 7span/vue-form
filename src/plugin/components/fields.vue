@@ -1,20 +1,22 @@
 <template lang="pug">
 .blocks
   .block(
-    v-for="fieldConfig,fieldName in data"
+    v-for="fieldConfig,fieldName in fields"
     v-show="isShown(fieldConfig)"
     :class="[colClass(fieldConfig)]")
 
     slot(:name="`field--before--${fieldName}`")
-
+    
     interface(
+      :key="fieldName"
       :name="fieldName"
+      :fields="fields[fieldName]" 
       :config="fieldConfig"
-      :value="values[fieldName]"
+      :value="value && value[fieldName]"
       :values="values"
-      :valueObj="valuesObj[fieldName]"
+      :valueObj="valueObj && valueObj[fieldName]"
       :valuesObj="valuesObj"
-      @input="input(fieldName,arguments)")
+      @input="$emit('input',$event)")
 
       slot(
         v-for="slot,slotName in SLOTS" 
@@ -23,7 +25,13 @@
         :name="slotName"
         :scope="scope")
 
-    slot(:name="`field--after--${fieldName}`")
+    slot(
+      :name="`field--after--${fieldName}`"
+      :value="values[fieldName]"
+      :values="values"
+      :valueObj="valuesObj[fieldName]"
+      :valuesObj="valuesObj")
+      
 </template>
 
 <script>
@@ -36,8 +44,14 @@ export default {
   },
 
   props: {
-    data: {
+    fields: {
       type: Object
+    },
+    value: {
+      type: [Object, Array]
+    },
+    valueObj: {
+      type: [Object, Array]
     },
     values: {
       type: [Object, Array]
@@ -66,15 +80,6 @@ export default {
       } else {
         return !config.hide;
       }
-    },
-
-    input(fieldName, args) {
-      this.$emit("input", {
-        field: fieldName,
-        value: args[0],
-        valueObj: args[1],
-        repeaterIndex: args[2]
-      });
     }
   }
 };

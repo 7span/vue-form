@@ -1,7 +1,7 @@
 <template lang="pug">
 .field__group
   fields(
-    :data="fields" 
+    :fields="fields" 
     :values="groupValue" 
     :valuesObj="groupValueObj"
     @input="updateValue($event)")
@@ -67,7 +67,7 @@ export default {
 
       let valueObj = {
         ...this.groupValueObj,
-        [event.field]: event.valueObj
+        [event.field]: event.valueObj.value
       };
 
       this.$emit("input", value, valueObj, event.repeaterIndex);

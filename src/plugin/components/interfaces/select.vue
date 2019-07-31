@@ -1,7 +1,7 @@
 <template lang="pug">
 select.field__block(
   :value="value"
-  @change="updateValue($event)")
+  @change="input($event)")
   option(:value="null" disabled="disabled" selected) {{$attrs.placeholder || "Select Option"}}
   option(
     v-for="choice in preparedChoices" 
@@ -20,15 +20,17 @@ export default {
      * Emit the actual value as well as choice object
      * This helps to make decesion based on other values of choices
      */
-    updateValue(event) {
-      let value = event.target.value;
+    input(e) {
+      let value = e.target.value;
 
       //Find the Object with all the values
       let choice = this.preparedChoices.find(
         choice => choice[this.choicesConfig.valueKey] == value
       );
 
-      this.$emit("input", value, choice);
+      this.$emit("input", value, {
+        value: choice
+      });
     }
   }
 };

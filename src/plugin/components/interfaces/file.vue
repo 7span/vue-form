@@ -1,12 +1,19 @@
 <template lang="pug">
 input.field__block(
   type="file"
-  @change="$emit('input',$event.target.files,$event.target.files)")
+  @change="input($event)")
 </template>
 
 <script>
 export default {
   name: "interface-file",
-  mixins: [require("@/plugin/mixins/interface").default]
+  mixins: [require("@/plugin/mixins/interface").default],
+  methods: {
+    input(e) {
+      this.$emit("input", e.target.files, {
+        value: e.target.files
+      });
+    }
+  }
 };
 </script>

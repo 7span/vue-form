@@ -55,7 +55,14 @@ export default {
     },
     education: {
       interface: "input",
-      value: ["111", "222"],
+      value: [
+        {
+          value: "1111"
+        },
+        {
+          value: "2222"
+        }
+      ],
       repeater: {
         max: 4,
         min: 2

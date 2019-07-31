@@ -10,7 +10,6 @@ export default {
         let fieldConfig = fields[field];
         if (fieldConfig.value) {
           defaultValues[field] = fieldConfig.value;
-          this.$emit("change", { field, value: fieldConfig.value });
         } else {
           //If the repeater mode is on, the default value should be blank array
           if (fieldConfig.interface == "group" && fieldConfig.repeater) {
@@ -18,7 +17,9 @@ export default {
             defaultValues[field] = [];
             //Generaes objects for minimum number of entries required in Repeater Object
             for (var i = 0; i < min; i++) {
-              defaultValues[field][i] = this.defaultValues(fieldConfig.fields);
+              defaultValues[field][i] = {
+                value: this.defaultValues(fieldConfig.fields)
+              };
             }
           } else if (fieldConfig.interface == "group") {
             defaultValues[field] = this.defaultValues(fieldConfig.fields);
@@ -31,6 +32,18 @@ export default {
       }
 
       return defaultValues;
+    },
+
+    titleCase(str) {
+      return str
+        .replace(/([^A-Z])([A-Z])/g, "$1 $2") // split cameCase
+        .replace(/[_\-]+/g, " ") // split snake_case and lisp-case
+        .toLowerCase()
+        .replace(/(^\w|\b\w)/g, function(m) {
+          return m.toUpperCase();
+        }) // title case words
+        .replace(/\s+/g, " ") // collapse repeated whitespace
+        .replace(/^\s+|\s+$/, ""); // remove leading/trailing whitespace
     },
 
     isObject(variable) {

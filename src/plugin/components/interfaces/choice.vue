@@ -57,7 +57,9 @@ export default {
         );
       }
 
-      this.$emit("input", value, choice);
+      this.$emit("input", value, {
+        value: choice
+      });
     }
   }
 };

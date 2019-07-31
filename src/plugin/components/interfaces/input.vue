@@ -2,7 +2,7 @@
 input.field__block(
   :type="$attrs.type"
   :value="value"
-  @input="updateValue($event)")
+  @input="input($event)")
 </template>
 
 <script>
@@ -10,12 +10,14 @@ export default {
   name: "interface-input",
   mixins: [require("@/plugin/mixins/interface").default],
   methods: {
-    updateValue(event) {
-      let value = event.target.value;
+    input(e) {
+      let value = e.target.value;
       if (this.$attrs.type == "number") {
         value = parseFloat(value);
       }
-      this.$emit("input", value, value);
+      this.$emit("input", value, {
+        value: value
+      });
     }
   }
 };

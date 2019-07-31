@@ -12,8 +12,32 @@ const install = (Vue, options) => {
   });
 
   Vue.component("VForm", appWithOptions);
-  //This is recursive component, hence defined globally.
   Vue.component("Fields", require("@/plugin/components/fields.vue").default);
+  Vue.component(
+    "VInput",
+    require("@/plugin/components/interfaces/input.vue").default
+  );
+  Vue.component(
+    "VTextarea",
+    require("@/plugin/components/interfaces/textarea.vue").default
+  );
+  Vue.component(
+    "VSelect",
+    require("@/plugin/components/interfaces/select.vue").default
+  );
+  Vue.component(
+    "VChoice",
+    require("@/plugin/components/interfaces/choice.vue").default
+  );
+  Vue.component(
+    "VFile",
+    require("@/plugin/components/interfaces/file.vue").default
+  );
+  // Vue.component(
+  //   "VGroup",
+  //   require("@/plugin/components/interfaces/group.vue").default
+  // );
+  Vue.component("VGroup", require("@/plugin/components/fields.vue").default);
 };
 
 const plugin = {

@@ -4,7 +4,9 @@
   slot(name="form--before")
 
   fields(
-    :data="fields" 
+    :fields="fields" 
+    :value="values"
+    :valueObj="valuesObj"
     :values="values" 
     :valuesObj="valuesObj"
     @input="updateValue($event)")
@@ -47,8 +49,7 @@ export default {
   data() {
     return {
       values: {}, //Contains all the values of form.
-      valuesObj: {},
-      localSlots: ["form--before", "form--after"]
+      valuesObj: {}
     };
   },
 
@@ -80,7 +81,7 @@ export default {
      * Updates the value based on key and
      * emits all the values
      */
-    updateValue({ field, value, valueObj, repeaterIndex }) {
+    updateValue({ field, value, valueObj, index }) {
       this.$set(this.values, field, value);
       this.$set(this.valuesObj, field, valueObj);
       this.$emit("input", this.values);
@@ -88,7 +89,7 @@ export default {
         field,
         value,
         valueObj,
-        repeaterIndex,
+        index: index, //If repeater field, this value will be defined
         values: this.values,
         valuesObj: this.valuesObj
       });

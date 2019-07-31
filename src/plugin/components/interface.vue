@@ -4,12 +4,13 @@
 
     //LABEL
     label {{getLabel}} 
-
     .field__group(v-if="!config.repeater")
       .field__before(v-if="config.design && config.design.before") {{config.design.before}}
       component(
         :is="`v-${config.interface}`"
-        v-bind="{name,value,valueObj,values,valuesObj,...config}"
+        v-bind="{name,values,valuesObj,...config}"
+        :value="value"
+        :valueObj="valueObj"
         @loading="loading=$event"
         @input="input(arguments)")
 
@@ -30,8 +31,8 @@
             component(
               :is="`v-${config.interface}`"
               v-bind="{name,values,valuesObj,...config}"
-              :value="repeaterValues[n - 1]"
-              :valueObj="repeaterValuesObj[n - 1]"
+              :value="value && value[n - 1].value"
+              :valueObj="valueObj && valueObj[n - 1].value"
               :repeater="n - 1"
               @loading="loading=$event"
               @input="input(arguments,n - 1)")
@@ -63,14 +64,6 @@ export default {
   name: "interface",
   mixins: [require("@/plugin/helper").default],
   inject: ["CONFIG", "SLOTS"],
-  components: {
-    VInput: require("@/plugin/components/interfaces/input.vue").default,
-    VTextarea: require("@/plugin/components/interfaces/textarea.vue").default,
-    VSelect: require("@/plugin/components/interfaces/select.vue").default,
-    VChoice: require("@/plugin/components/interfaces/choice.vue").default,
-    VFile: require("@/plugin/components/interfaces/file.vue").default,
-    VGroup: require("@/plugin/components/interfaces/group.vue").default
-  },
   props: {
     name: {
       default: null
@@ -172,48 +165,104 @@ export default {
   methods: {
     repeat() {
       if (this.canRepeat) {
-        /**
-         * This adds an object with null values
-         * to make sure that every fields added in DOM has respective key.
-         */
+        // This adds an object with null values
+        // To make sure that every fields added in DOM has respective key.
         let defaultValues = null;
         if (this.config.fields) {
           defaultValues = this.defaultValues(this.config.fields);
         }
-        this.$set(this.repeaterValues, this.repeaterCount, defaultValues);
-        this.$set(this.repeaterValuesObj, this.repeaterCount, defaultValues);
+        this.$set(this.repeaterValues, this.repeaterCount, {
+          value: defaultValues
+        });
+        this.$set(this.repeaterValuesObj, this.repeaterCount, {
+          value: defaultValues
+        });
+
+        this.emitValue({
+          value: this.repeaterValues,
+          valueObj: this.repeaterValuesObj,
+          index: this.repeaterCount
+        });
         this.repeaterCount++;
-        this.$emit("input", this.repeaterValues, this.repeaterValuesObj);
       }
     },
 
-    removeRepeat(n) {
+    removeRepeat(index) {
       this.repeaterCount--;
-      this.repeaterValues.splice(n, 1);
-      this.repeaterValuesObj.splice(n, 1);
-      this.$emit("input", this.repeaterValues, this.repeaterValuesObj);
+      this.repeaterValues.splice(index, 1);
+      this.repeaterValuesObj.splice(index, 1);
+
+      this.emitValue({
+        value: this.repeaterValues,
+        valueObj: this.repeaterValuesObj,
+        index: index
+      });
     },
 
     input(args, index) {
-      if (index !== undefined) {
-        this.$set(this.repeaterValues, index, args[0]);
-        this.$set(this.repeaterValuesObj, index, args[1]);
-        this.$emit("input", this.repeaterValues, this.repeaterValuesObj, index);
-      } else {
-        this.$emit("input", ...args);
+      let value, valueObj;
+
+      // If repeater is provded and group interface
+      // Need to set merged object at provided index.
+      // Please note that repeater fields' value is inside "value" key.
+      if (this.config.interface == "group" && index !== undefined) {
+        let fieldName = args[0].field;
+        this.$set(this.repeaterValues, index, {
+          value: {
+            ...this.repeaterValues[index].value,
+            [fieldName]: args[0].value
+          }
+        });
+        this.$set(this.repeaterValuesObj, index, {
+          value: {
+            ...this.repeaterValuesObj[index].value,
+            [fieldName]: args[0].valueObj
+          }
+        });
+
+        value = this.repeaterValues;
+        valueObj = this.repeaterValuesObj;
       }
+      //If group interface, the received args is a prepared object.
+      // Merge values with already existing values
+      else if (this.config.interface == "group") {
+        let fieldName = args[0].field;
+        value = {
+          ...this.value,
+          [fieldName]: args[0].value
+        };
+        valueObj = {
+          ...this.valueObj,
+          [fieldName]: args[0].valueObj
+        };
+      }
+      // If only Index is provided, the normal repeater field
+      else if (index !== undefined) {
+        this.$set(this.repeaterValues, index, {
+          value: args[0]
+        });
+        this.$set(this.repeaterValuesObj, index, {
+          value: args[1]
+        });
+        value = this.repeaterValues;
+        valueObj = this.repeaterValuesObj;
+      }
+      // Normal Field
+      else {
+        value = args[0];
+        valueObj = args[1];
+      }
+
+      this.emitValue({ value, index, valueObj });
     },
 
-    titleCase(str) {
-      return str
-        .replace(/([^A-Z])([A-Z])/g, "$1 $2") // split cameCase
-        .replace(/[_\-]+/g, " ") // split snake_case and lisp-case
-        .toLowerCase()
-        .replace(/(^\w|\b\w)/g, function(m) {
-          return m.toUpperCase();
-        }) // title case words
-        .replace(/\s+/g, " ") // collapse repeated whitespace
-        .replace(/^\s+|\s+$/, ""); // remove leading/trailing whitespace
+    emitValue({ value, valueObj, index }) {
+      this.$emit("input", {
+        field: this.name,
+        value,
+        index,
+        valueObj
+      });
     }
   }
 };

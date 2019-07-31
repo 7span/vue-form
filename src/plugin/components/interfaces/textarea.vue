@@ -1,7 +1,7 @@
 <template lang="pug">
 textarea.field__block(
   :value="value"
-  @input="$emit('input',$event.target.value,$event.target.value)")
+  @input="input(e)")
 </template>
 
 <script>
@@ -12,6 +12,13 @@ export default {
     rows: {
       default: 5,
       type: Number
+    }
+  },
+  methods: {
+    input(e) {
+      $emit("input", e.target.value, {
+        value: e.target.value
+      });
     }
   }
 };

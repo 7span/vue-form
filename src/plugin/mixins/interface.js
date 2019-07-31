@@ -3,6 +3,7 @@ export default {
   props: {
     label: {},
     interface: {},
+    fields: {},
     state: {
       default: null,
       type: String
