@@ -57,6 +57,7 @@ export default {
       interface: "input",
       value: [
         {
+          _id: "1234",
           value: "1111"
         },
         {

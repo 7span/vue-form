@@ -81,14 +81,16 @@ export default {
      * Updates the value based on key and
      * emits all the values
      */
-    updateValue({ field, value, valueObj, index }) {
+    updateValue({ field, value, valueObj, index, action,changed }) {
       this.$set(this.values, field, value);
       this.$set(this.valuesObj, field, valueObj);
       this.$emit("input", this.values);
       this.$emit("change", {
         field,
+        action,
         value,
         valueObj,
+        changed,
         index: index, //If repeater field, this value will be defined
         values: this.values,
         valuesObj: this.valuesObj
@@ -121,6 +123,10 @@ export default {
           }
         }
       }
+    },
+
+    setConfig(data) {
+      this.$root.$emit("v-form::set-config", data);
     }
   }
 };

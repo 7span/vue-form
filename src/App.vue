@@ -1,6 +1,7 @@
 <template lang="pug">
   .demo.p--xl
-    button(@click="setVal") Call Raju
+    button(@click="setVal") Set Value
+    button(@click="setConfig") Set Config
     v-form(
       ref="vForm"
       v-model="values" 
@@ -9,11 +10,11 @@
       :fields="fields" 
       :adapters="adapters")
 
-      template(#repeater--add) 
-        b +
+      //- template(#repeater--add) 
+      //-   b +
 
-      template(#repeater--remove) 
-        b -
+      //- template(#repeater--remove) 
+      //-   b -
 
 </template>
 
@@ -48,8 +49,16 @@ export default {
     setVal() {
       this.$refs.vForm.setValue("e_company", "RAJU@JAGU.com", 1);
     },
+    setConfig() {
+      this.$refs.vForm.setConfig({
+        field: "education",
+        key: "placeholder",
+        value: "LALLALA",
+        index: 2
+      });
+    },
     onChange(data) {
-      console.log("DATA:", data);
+      console.log("DATA:", data.changed);
     }
   }
 };
