@@ -7,7 +7,8 @@
 
     slot(:name="`field--before--${fieldName}`")
     
-    interface(
+    field(
+      :index="index"
       :key="fieldName"
       :name="fieldName"
       :fields="fields[fieldName]" 
@@ -38,29 +39,16 @@
 export default {
   name: "fields",
   inject: ["CONFIG", "SLOTS"],
-
-  components: {
-    Interface: require("@/plugin/components/interface.vue").default
-  },
-
+  mixins: [
+    //Because this also behaves as interface when grouped.
+    require("@/plugin/mixins/interface").default
+  ],
   props: {
-    fields: {
-      type: Object
-    },
-    value: {
-      type: [Object, Array]
-    },
-    valueObj: {
-      type: [Object, Array]
-    },
-    values: {
-      type: [Object, Array]
-    },
-    valuesObj: {
-      type: [Object, Array]
+    index: {
+      default: null,
+      type: Number
     }
   },
-
   methods: {
     /**
      * Sets the grid size of ss-cols

@@ -1,7 +1,21 @@
 <template lang="pug">
   .demo.p--xl
-    button(@click="setVal") Set Value
-    button(@click="setConfig") Set Config
+
+    p Set Values
+    .gx--sm
+      button.button(@click='setValue({field: "email",value: "harsh@7span.com"})') Value
+      button.button(@click='setValue({field: "education",value: "BTECH",index: 1})') Repeater Value
+      button.button(@click='setValue({field: "company",value: "7Span"})') Group Value
+      button.button(@click='setValue({field: "e_company",value: "7Span Tech",index: 1})') Grouped Repeater Value
+
+    p Set Config
+    .gx--sm.mb--xl
+      button.button(@click='setConfig({field: "email",key:"after",value: "#"})') Config
+      button.button(@click='setConfig({field: "education",key:"after",value: "#",index: 1})') Repeater Config
+      button.button(@click='setConfig({field: "company",key:"after",value: "#"})') Group Config
+      button.button(@click='setConfig({field: "e_company",key:"after",value: "#",index: 1})') Grouped Repeater Config
+
+
     v-form(
       ref="vForm"
       v-model="values" 
@@ -46,19 +60,15 @@ export default {
     };
   },
   methods: {
-    setVal() {
-      this.$refs.vForm.setValue("e_company", "RAJU@JAGU.com", 1);
+    setValue(obj) {
+      this.$refs.vForm.setValue(obj);
     },
-    setConfig() {
-      this.$refs.vForm.setConfig({
-        field: "education",
-        key: "placeholder",
-        value: "LALLALA",
-        index: 2
-      });
+    setConfig(obj) {
+      this.$refs.vForm.setConfig(obj);
     },
+
     onChange(data) {
-      console.log("DATA:", data.changed);
+      console.log("DATA:", data);
     }
   }
 };

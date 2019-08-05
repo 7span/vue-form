@@ -33,7 +33,7 @@ export default {
     },
     repeater: {
       default: null,
-      type: Number
+      type: [Object, Number]
     }
   },
 

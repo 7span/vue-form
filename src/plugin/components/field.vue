@@ -1,70 +1,65 @@
 <template lang="pug">
-.interface(:class="`interface--${config.interface}`")
-  .field(:class="fieldClasses")
+.field(:class="fieldClasses")
 
-    //LABEL
-    label {{getLabel}} 
-    .field__group(v-if="!config.repeater")
-      .field__before(v-if="config.design && config.design.before") {{config.design.before}}
-      component(
-        :is="`v-${config.interface}`"
-        v-bind="{name,values,valuesObj,...mergedConfig}"
-        :value="value"
-        :valueObj="valueObj"
-        @loading="loading=$event"
-        @input="input(arguments)")
+  //LABEL
+  label {{getLabel}}
 
-        slot(
-          v-for="slot,slotName in SLOTS" 
-          :slot="slotName" 
-          slot-scope="scope" 
-          :name="slotName"
-          :scope="scope")
+  //FIELD GROUP
+  field-group(
+    v-if="!config.repeater"
+    v-bind="{name,values,valuesObj}"
+    :config="mergedConfig"
+    :value="value"
+    :valueObj="valueObj"
+    @loading="loading=$event"
+    @input="input(arguments,{action:'input'})"
+  )
 
-      .field__after(v-if="config.design && config.design.after") {{config.design.after}}
 
-    //INPUT REPEATER
-    .repeater(v-else)
-      .repeater__items
-        .repeater__item(v-for="(item,i) in repeaterValues" v-show="!item._delete")
-          .repeater__input
-            component(
-              :is="`v-${config.interface}`"
-              v-bind="{name,values,valuesObj,...repeaterMergedConfig(i)}"
-              :value="value && value[i] && value[i].value"
-              :valueObj="valueObj && valueObj[i] && valueObj[i].value"
-              :repeater="i"
-              @loading="loading=$event"
-              @input="input(arguments,i)")
+  //INPUT REPEATER
+  .repeater(v-else)
+    .repeater__items
+      .repeater__item(v-for="(item,i) in repeaterValues" v-show="!item._delete")
+        .repeater__input
 
-              slot(
-                v-for="slot,slotName in SLOTS" 
-                :slot="slotName" 
-                slot-scope="scope" 
-                :name="slotName"
-                :scope="scope")
+          field-group(
+            :config="repeaterMergedConfig(i)"
+            v-bind="{name,values,valuesObj}"
+            :value="value && value[i] && value[i].value"
+            :valueObj="valueObj && valueObj[i] && valueObj[i].value"
+            :index="i"
+            @loading="loading=$event"
+            @input="input(arguments,{index:i,action:'input'})"
+          )
 
-          .repeater__remove(v-if="canRemoveRepeat")
-            button.button.is-danger.is-trn.p--0.is-square(@click="removeRepeat(i)") 
-              slot(name="repeater--remove")
-                icon-remove.button__icon
-      
-      //DESC
-      small(v-if="desc") {{desc}}
+          //-   slot(
+          //-     v-for="slot,slotName in SLOTS" 
+          //-     :slot="slotName" 
+          //-     slot-scope="scope" 
+          //-     :name="slotName"
+          //-     :scope="scope")
 
-      //REPEATER
-      .repeater__add
-        button.button.is-primary.is-trn.p--0.mt--sm(
-          v-if="config.repeater && canRepeat"
-          @click="repeat") 
-            slot(name="repeater--add")
-              icon-add.button__icon
-              span Add More
+        .repeater__remove(v-if="canRemoveRepeat")
+          button.button.is-danger.is-trn.p--0.is-square(@click="removeRepeat(i)") 
+            slot(name="repeater--remove")
+              icon-remove.button__icon
+    
+    //DESC
+    small(v-if="desc") {{desc}}
+
+    //REPEATER
+    .repeater__add
+      button.button.is-primary.is-trn.p--0.mt--sm(
+        v-if="config.repeater && canRepeat"
+        @click="repeat") 
+          slot(name="repeater--add")
+            icon-add.button__icon
+            span Add More
 </template>
 
 <script>
 export default {
-  name: "interface",
+  name: "field",
   mixins: [require("@/plugin/helper").default],
   components: {
     IconRemove: require("@/plugin/components/icons/remove").default,
@@ -72,6 +67,13 @@ export default {
   },
   inject: ["CONFIG", "SLOTS"],
   props: {
+    index: {
+      type: Number,
+      default: null
+    },
+    fields: {
+      default: null
+    },
     name: {
       default: null
     },
@@ -103,16 +105,17 @@ export default {
   created() {
     //Changes the local config
     this.$root.$on("v-form::set-config", data => this.setConfig(data));
+    this.$root.$on("v-form::set-value", data => this.setValue(data));
   },
 
   computed: {
     //Clones the values.
     //If the repeater is on, then only clone the values and create an array
     repeaterValues() {
-      return this.config.repeater ? [...this.value] : null;
+      return this.config.repeater ? [...this.value] : [];
     },
     repeaterValuesObj() {
-      return this.config.repeater ? [...this.valueObj] : null;
+      return this.config.repeater ? [...this.valueObj] : [];
     },
     repeaterCount() {
       return this.repeaterValues.filter(item => !item._delete).length;
@@ -126,7 +129,7 @@ export default {
     },
 
     fieldClasses() {
-      let classes = [];
+      let classes = [`field--${this.config.interface}`];
       if (this.state == "invalid") classes.push("is-danger");
       if (this.state == "valid") classes.push("is-success");
       if (this.loading) classes.push("is-loading");
@@ -246,7 +249,7 @@ export default {
       });
     },
 
-    input(args, index) {
+    input(args, { index, action }) {
       let value, valueObj;
 
       // If repeater is provded and group interface
@@ -299,22 +302,20 @@ export default {
         value = args[0];
         valueObj = args[1];
       }
-
       this.emitValue({
         value,
         index,
         valueObj,
-        action: "change",
+        action,
         changed: args[0].changed
       });
     },
 
-    emitValue({ value, valueObj, index, action, changed }) {
-      if (changed) {
-        changed.push(this.name);
-      } else {
-        changed = [this.name];
-      }
+    emitValue({ value, valueObj, index, action, changed = [] }) {
+      changed.push({
+        field: this.name,
+        action
+      });
       this.$emit("input", {
         field: this.name,
         index: this.indexWithoutDeleted(index),
@@ -325,17 +326,29 @@ export default {
       });
     },
 
-    setConfig({ field, key, value, index }) {
-      if (field != this.name) {
-        return;
+    setValue({ field, value, index }) {
+      if (field != this.name) return;
+      if (index == null || index == this.index) {
+        this.input([value, { value }], { action: "set-value" });
       }
+      if (index != null && this.index == null) {
+        this.input([value, { value }], { index, action: "set-value" });
+      }
+    },
+
+    setConfig({ field, key, value, index }) {
+      //Check If the field is same as provided
+      if (field != this.name) return;
 
       //If index is not provided change the local config
       //If index is provided, merge the value with local config and put it in the array at provided  index
       //The config will be passed from array then.
-      if (index === undefined) {
+      if (index == null || index == this.index) {
         this.$set(this.localConfig, key, value);
-      } else if (index < this.repeaterCount) {
+      }
+      // This is a special case where top level fields do not have repeater index as props
+      // Hence need to keep an array of separate configuration array.
+      if (index != null && this.index == null) {
         this.$set(this.repeaterLocalConfig, index, {
           ...this.mergedConfig,
           [key]: value
