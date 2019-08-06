@@ -24,11 +24,8 @@
       :fields="fields" 
       :adapters="adapters")
 
-      //- template(#repeater--add) 
-      //-   b +
-
-      //- template(#repeater--remove) 
-      //-   b -
+      template(slot="field--after--email") 
+        span Gmail & Yahoo Only!
 
 </template>
 

@@ -12,11 +12,11 @@ const install = (Vue, options) => {
   });
 
   Vue.component("VForm", appWithOptions);
-  Vue.component("Field", require("@/plugin/components/field.vue").default);
   Vue.component(
-    "FieldGroup",
-    require("@/plugin/components/field-group.vue").default
+    "Repeater",
+    require("@/plugin/components/repeater.vue").default
   );
+  Vue.component("Field", require("@/plugin/components/field.vue").default);
   Vue.component("Fields", require("@/plugin/components/fields.vue").default);
   Vue.component(
     "VInput",
@@ -38,10 +38,6 @@ const install = (Vue, options) => {
     "VFile",
     require("@/plugin/components/interfaces/file.vue").default
   );
-  // Vue.component(
-  //   "VGroup",
-  //   require("@/plugin/components/interfaces/group.vue").default
-  // );
   Vue.component("VGroup", require("@/plugin/components/fields.vue").default);
 };
 

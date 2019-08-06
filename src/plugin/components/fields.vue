@@ -3,11 +3,12 @@
   .block(
     v-for="fieldConfig,fieldName in fields"
     v-show="isShown(fieldConfig)"
-    :class="[colClass(fieldConfig)]")
+    :class="[colClass(fieldConfig,fieldName)]")
 
     slot(:name="`field--before--${fieldName}`")
     
-    field(
+    component(
+      :is="whichComponent(fieldConfig)"
       :index="index"
       :key="fieldName"
       :name="fieldName"
@@ -19,12 +20,12 @@
       :valuesObj="valuesObj"
       @input="$emit('input',$event)")
 
-      slot(
-        v-for="slot,slotName in SLOTS" 
-        :slot="slotName" 
-        slot-scope="scope" 
-        :name="slotName"
-        :scope="scope")
+      //- slot(
+      //-   v-for="slot,slotName in SLOTS" 
+      //-   :slot="slotName" 
+      //-   slot-scope="scope" 
+      //-   :name="slotName"
+      //-   :scope="scope")
 
     slot(
       :name="`field--after--${fieldName}`"
@@ -54,12 +55,14 @@ export default {
      * Sets the grid size of ss-cols
      * If not defined, gets it from default configs
      */
-    colClass(field) {
+    colClass(field, name) {
+      let classes = [`block--${name}`];
       let col =
         (field.design && field.design.col) ||
         (this.CONFIG.defaults.design && this.CONFIG.defaults.design.col) ||
         12;
-      return `is-${col}`;
+      classes.push(`is-${col}`);
+      return classes;
     },
 
     isShown(config) {
@@ -67,6 +70,14 @@ export default {
         return true;
       } else {
         return !config.hide;
+      }
+    },
+
+    whichComponent(config) {
+      if (config.repeater) {
+        return "repeater";
+      } else {
+        return "field";
       }
     }
   }

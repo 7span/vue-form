@@ -38,6 +38,9 @@ export default {
     },
     meta: {
       type: Object
+    },
+    value: {
+      type: Object
     }
   },
 
@@ -84,7 +87,7 @@ export default {
      * Updates the value based on key and
      * emits all the values
      */
-    updateValue({ field, value, valueObj, index, action, changed }) {
+    updateValue({ field, value, valueObj, changed }) {
       this.$set(this.values, field, value);
       this.$set(this.valuesObj, field, valueObj);
       this.$emit("input", this.values);
@@ -95,45 +98,10 @@ export default {
       let changedActions = changed.map(item => item.action);
       if (!changedActions.includes("set-value")) {
         this.$emit("change", {
-          field,
-          action,
-          value,
-          valueObj,
           changed,
-          index: index, //If repeater field, this value will be defined
           values: this.values,
           valuesObj: this.valuesObj
         });
-      }
-    },
-
-    /**
-     * NOT BEING USED
-     * Sets the value based on provided fields
-     */
-    setValueX(field, value, repeaterIndex, values = this.values) {
-      //Checks if the provided values object contains the field.
-      //If not, it loops through all the keys and checks if the respective values is an object
-      // If Object, it means the field is a group and may contain provided field.
-      if (values.hasOwnProperty(field)) {
-        this.$set(values, field, value);
-        this.$emit("input", this.values);
-        this.$emit("update:meta", this.valuesObj);
-      } else {
-        for (var key in values) {
-          let childValues = values[key];
-          if (this.isObject(childValues)) {
-            this.setValue(field, value, repeaterIndex, childValues);
-          }
-          if (Array.isArray(childValues)) {
-            this.setValue(
-              field,
-              value,
-              repeaterIndex,
-              childValues[repeaterIndex]
-            );
-          }
-        }
       }
     },
 
