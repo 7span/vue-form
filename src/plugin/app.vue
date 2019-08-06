@@ -92,7 +92,8 @@ export default {
 
       //If value is not set by the setValue function
       // This check will avoid infinite iteration on change and set-value
-      if (action != "set-value") {
+      let changedActions = changed.map(item => item.action);
+      if (!changedActions.includes("set-value")) {
         this.$emit("change", {
           field,
           action,

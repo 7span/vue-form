@@ -182,10 +182,24 @@ export default {
   methods: {
     //Ignores $delete:true items
     indexWithoutDeleted(index) {
+      if (index == null) return null;
+
       let newIndex = index + 0;
       for (var i = 0; i < index; i++) {
         if (this.repeaterValues[i] && this.repeaterValues[i]._delete === true) {
           newIndex--;
+        }
+      }
+      return newIndex;
+    },
+
+    indexWithDeleted(index) {
+      if (index == null) return null;
+
+      let newIndex = index + 0;
+      for (var i = 0; i < index; i++) {
+        if (this.repeaterValues[i] && this.repeaterValues[i]._delete === true) {
+          newIndex++;
         }
       }
       return newIndex;
@@ -304,18 +318,31 @@ export default {
       }
       this.emitValue({
         value,
-        index,
         valueObj,
+        index,
         action,
+        originalValue: args[0],
+        originalValueObj: args[1],
         changed: args[0].changed
       });
     },
 
-    emitValue({ value, valueObj, index, action, changed = [] }) {
+    emitValue({
+      originalValue,
+      originalValueObj,
+      value,
+      valueObj,
+      index,
+      action,
+      changed = []
+    }) {
+      //Keeps track of all the fields that are updated.
       changed.push({
         field: this.name,
-        action
+        action,
+        index
       });
+
       this.$emit("input", {
         field: this.name,
         index: this.indexWithoutDeleted(index),
@@ -328,28 +355,30 @@ export default {
 
     setValue({ field, value, index }) {
       if (field != this.name) return;
-      if (index == null || index == this.index) {
+      const _index = this.indexWithDeleted(index);
+      console.log(_index, index);
+      if (_index == null || _index == this.index) {
         this.input([value, { value }], { action: "set-value" });
       }
-      if (index != null && this.index == null) {
-        this.input([value, { value }], { index, action: "set-value" });
+      if (_index != null && this.index == null) {
+        this.input([value, { value }], { index: _index, action: "set-value" });
       }
     },
 
     setConfig({ field, key, value, index }) {
       //Check If the field is same as provided
       if (field != this.name) return;
-
+      const _index = this.indexWithDeleted(index);
       //If index is not provided change the local config
       //If index is provided, merge the value with local config and put it in the array at provided  index
       //The config will be passed from array then.
-      if (index == null || index == this.index) {
+      if (_index == null || _index == this.index) {
         this.$set(this.localConfig, key, value);
       }
       // This is a special case where top level fields do not have repeater index as props
       // Hence need to keep an array of separate configuration array.
-      if (index != null && this.index == null) {
-        this.$set(this.repeaterLocalConfig, index, {
+      if (_index != null && this.index == null) {
+        this.$set(this.repeaterLocalConfig, _index, {
           ...this.mergedConfig,
           [key]: value
         });
