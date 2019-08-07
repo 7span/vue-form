@@ -23,9 +23,15 @@
       :config="config" 
       :fields="fields" 
       :adapters="adapters")
+      
+      //template(slot="repeater--add") 
+        span ADDDDDDDD
 
       template(slot="field--after--email") 
-        span Gmail & Yahoo Only!
+        span AFTER: Gmail & Yahoo Only!
+
+      template(slot="field--end--education--1") 
+        span END: Gmail & Yahoo Only!
 
 </template>
 

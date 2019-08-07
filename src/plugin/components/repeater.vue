@@ -1,9 +1,10 @@
 <template lang="pug">
-.repeater
+.field.repeater
+  label {{config.label || titleCase(name)}}
   .repeater__items
     .repeater__item(v-for="(item,i) in repeaterValues" v-show="!item._delete")
       .repeater__input
-
+        
         field(
           :index="indexWithoutDeleted(i)"
           :config="config"
@@ -14,6 +15,10 @@
           :valuesObj="valuesObj"
           @loading="loading=$event"
           @input="input($event,{index:i})")
+
+          //Passdown Slots
+          template(v-for="slot in Object.keys($slots)" :slot="slot")
+            slot(:name="slot")
 
       .repeater__remove(v-if="canRemoveRepeat")
         button.button.is-danger.is-trn.p--0.is-square(@click="removeRepeat(i)") 
@@ -157,7 +162,7 @@ export default {
               field: this.name,
               value: this.repeaterValues,
               valueObj: this.repeaterValuesObj,
-              action: "repeat-add",
+              action: "repeater-add",
               index: this.indexWithoutDeleted(index)
             }
           ]
@@ -191,7 +196,7 @@ export default {
             field: this.name,
             value: this.repeaterValues,
             valueObj: this.repeaterValuesObj,
-            action: "repeat-remove",
+            action: "repeater-remove",
             index: this.indexWithoutDeleted(index)
           }
         ]
@@ -206,17 +211,11 @@ export default {
         value: data.valueObj
       });
 
-      //Add index value to lastly changed field+
-      let lastChanged = data.changed[data.changed.length - 1];
-      lastChanged.index = this.indexWithoutDeleted(index);
-      let changed = data.changed;
-      changed[data.changed.length - 1] = lastChanged;
-
       this.$emit("input", {
         field: this.name,
         value: this.repeaterValues,
         valueObj: this.repeaterValuesObj,
-        changed: changed
+        changed: data.changed
       });
     }
   }

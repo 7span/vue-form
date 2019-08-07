@@ -6,7 +6,8 @@
     :class="[colClass(fieldConfig,fieldName)]")
 
     slot(:name="`field--before--${fieldName}`")
-    
+    slot(v-if="index" :name="`field--before--${fieldName}--${index}`")
+
     component(
       :is="whichComponent(fieldConfig)"
       :index="index"
@@ -20,19 +21,12 @@
       :valuesObj="valuesObj"
       @input="$emit('input',$event)")
 
-      //- slot(
-      //-   v-for="slot,slotName in SLOTS" 
-      //-   :slot="slotName" 
-      //-   slot-scope="scope" 
-      //-   :name="slotName"
-      //-   :scope="scope")
+      //Passdown Slots
+      template(v-for="slot in Object.keys($slots)" :slot="slot")
+        slot(:name="slot")
 
-    slot(
-      :name="`field--after--${fieldName}`"
-      :value="values[fieldName]"
-      :values="values"
-      :valueObj="valuesObj[fieldName]"
-      :valuesObj="valuesObj")
+    slot(:name="`field--after--${fieldName}`")
+    slot(v-if="index" :name="`field--after--${fieldName}--${index}`")
       
 </template>
 
@@ -48,6 +42,11 @@ export default {
     index: {
       default: null,
       type: Number
+    }
+  },
+  computed: {
+    slots() {
+      return this.$slots;
     }
   },
   methods: {

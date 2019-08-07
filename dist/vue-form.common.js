@@ -341,13 +341,6 @@ setToStringTag(global.JSON, 'JSON', true);
 
 /***/ }),
 
-/***/ "01c5":
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
 /***/ "01f9":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -608,23 +601,18 @@ module.exports = function (index, length) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/fields.vue?vue&type=template&id=0df4ded6&lang=pug&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"blocks"},_vm._l((_vm.fields),function(fieldConfig,fieldName){return _c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isShown(fieldConfig)),expression:"isShown(fieldConfig)"}],staticClass:"block",class:[_vm.colClass(fieldConfig)]},[_vm._t(("field--before--" + fieldName)),_c('field',{key:fieldName,attrs:{"index":_vm.index,"name":fieldName,"fields":_vm.fields[fieldName],"config":fieldConfig,"value":_vm.value && _vm.value[fieldName],"values":_vm.values,"valueObj":_vm.valueObj && _vm.valueObj[fieldName],"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.$emit('input',$event)}},scopedSlots:_vm._u([_vm._l((_vm.SLOTS),function(slot,slotName){return {key:slotName,fn:function(scope){return _vm._t(slotName,null,{"scope":scope})}}})],null,true)}),_vm._t(("field--after--" + fieldName),null,{"value":_vm.values[fieldName],"values":_vm.values,"valueObj":_vm.valuesObj[fieldName],"valuesObj":_vm.valuesObj})],2)}),0)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/fields.vue?vue&type=template&id=5f547abb&lang=pug&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"blocks"},_vm._l((_vm.fields),function(fieldConfig,fieldName){return _c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.isShown(fieldConfig)),expression:"isShown(fieldConfig)"}],staticClass:"block",class:[_vm.colClass(fieldConfig,fieldName)]},[_vm._t(("field--before--" + fieldName)),(_vm.index)?_vm._t(("field--before--" + fieldName + "--" + _vm.index)):_vm._e(),_c(_vm.whichComponent(fieldConfig),{key:fieldName,tag:"component",attrs:{"index":_vm.index,"name":fieldName,"fields":_vm.fields[fieldName],"config":fieldConfig,"value":_vm.value && _vm.value[fieldName],"values":_vm.values,"valueObj":_vm.valueObj && _vm.valueObj[fieldName],"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.$emit('input',$event)}}},[_vm._l((Object.keys(_vm.$slots)),function(slot){return _c('template',{slot:slot},[_vm._t(slot)],2)})],2),_vm._t(("field--after--" + fieldName)),(_vm.index)?_vm._t(("field--after--" + fieldName + "--" + _vm.index)):_vm._e()],2)}),0)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/plugin/components/fields.vue?vue&type=template&id=0df4ded6&lang=pug&
+// CONCATENATED MODULE: ./src/plugin/components/fields.vue?vue&type=template&id=5f547abb&lang=pug&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
 var es6_number_constructor = __webpack_require__("c5f6");
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/fields.vue?vue&type=script&lang=js&
 
-//
-//
-//
-//
-//
 //
 //
 //
@@ -668,20 +656,34 @@ var es6_number_constructor = __webpack_require__("c5f6");
       type: Number
     }
   },
+  computed: {
+    slots: function slots() {
+      return this.$slots;
+    }
+  },
   methods: {
     /**
      * Sets the grid size of ss-cols
      * If not defined, gets it from default configs
      */
-    colClass: function colClass(field) {
+    colClass: function colClass(field, name) {
+      var classes = ["block--".concat(name)];
       var col = field.design && field.design.col || this.CONFIG.defaults.design && this.CONFIG.defaults.design.col || 12;
-      return "is-".concat(col);
+      classes.push("is-".concat(col));
+      return classes;
     },
     isShown: function isShown(config) {
       if (config.hide === undefined || config.hide === null) {
         return true;
       } else {
         return !config.hide;
+      }
+    },
+    whichComponent: function whichComponent(config) {
+      if (config.repeater) {
+        return "repeater";
+      } else {
+        return "field";
       }
     }
   }
@@ -802,6 +804,17 @@ module.exports = (
   'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
 ).split(',');
 
+
+/***/ }),
+
+/***/ "1747":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_repeater_vue_vue_type_style_index_0_id_047e94be_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2a80");
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_repeater_vue_vue_type_style_index_0_id_047e94be_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_repeater_vue_vue_type_style_index_0_id_047e94be_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_repeater_vue_vue_type_style_index_0_id_047e94be_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 
@@ -1158,6 +1171,13 @@ module.exports = function (exec) {
   }
 };
 
+
+/***/ }),
+
+/***/ "2a80":
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 
@@ -1785,17 +1805,6 @@ module.exports = {};
 
 /***/ }),
 
-/***/ "49c2":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_field_vue_vue_type_style_index_0_id_2de3ca69_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("01c5");
-/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_field_vue_vue_type_style_index_0_id_2de3ca69_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_field_vue_vue_type_style_index_0_id_2de3ca69_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
-/* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_ref_8_oneOf_1_0_node_modules_css_loader_index_js_ref_8_oneOf_1_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_8_oneOf_1_2_node_modules_sass_loader_lib_loader_js_ref_8_oneOf_1_3_node_modules_cache_loader_dist_cjs_js_ref_0_0_node_modules_vue_loader_lib_index_js_vue_loader_options_field_vue_vue_type_style_index_0_id_2de3ca69_lang_scss_scoped_true___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
 /***/ "4bf8":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1834,107 +1843,6 @@ module.exports = function (exec, skipClosing) {
   return safe;
 };
 
-
-/***/ }),
-
-/***/ "501a":
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/field-group.vue?vue&type=template&id=aec65b66&lang=pug&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"field__group"},[(_vm.config.before)?_c('div',{staticClass:"field__before"},[_vm._v(_vm._s(_vm.config.before))]):_vm._e(),_c(("v-" + (_vm.config.interface)),_vm._b({tag:"component",attrs:{"index":_vm.index,"value":_vm.value,"valueObj":_vm.valueObj},on:{"loading":function($event){return _vm.$emit('loading',$event)},"input":function($event){return _vm.$emit('input',arguments[0],arguments[1])}}},'component',Object.assign({}, {name: _vm.name,values: _vm.values,valuesObj: _vm.valuesObj},_vm.config),false)),(_vm.config.after)?_c('div',{staticClass:"field__after"},[_vm._v(_vm._s(_vm.config.after))]):_vm._e()],1)}
-var staticRenderFns = []
-
-
-// CONCATENATED MODULE: ./src/plugin/components/field-group.vue?vue&type=template&id=aec65b66&lang=pug&
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/defineProperty.js
-var defineProperty = __webpack_require__("bd86");
-
-// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
-var es6_number_constructor = __webpack_require__("c5f6");
-
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/field-group.vue?vue&type=script&lang=js&
-
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ var field_groupvue_type_script_lang_js_ = ({
-  props: Object(defineProperty["a" /* default */])({
-    index: {
-      default: null,
-      type: Number
-    },
-    config: {
-      type: Object
-    },
-    name: {
-      default: null
-    },
-    value: {
-      default: null
-    },
-    valueObj: {
-      default: null
-    },
-    values: {
-      default: null
-    },
-    valuesObj: {
-      default: null
-    }
-  }, "config", {
-    default: null
-  })
-});
-// CONCATENATED MODULE: ./src/plugin/components/field-group.vue?vue&type=script&lang=js&
- /* harmony default export */ var components_field_groupvue_type_script_lang_js_ = (field_groupvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
-var componentNormalizer = __webpack_require__("2877");
-
-// CONCATENATED MODULE: ./src/plugin/components/field-group.vue
-
-
-
-
-
-/* normalize component */
-
-var component = Object(componentNormalizer["a" /* default */])(
-  components_field_groupvue_type_script_lang_js_,
-  render,
-  staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* harmony default export */ var field_group = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
@@ -2555,12 +2463,12 @@ module.exports = function (it) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/field.vue?vue&type=template&id=2de3ca69&scoped=true&lang=pug&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"field",class:_vm.fieldClasses},[_c('label',[_vm._v(_vm._s(_vm.getLabel))]),(!_vm.config.repeater)?_c('field-group',_vm._b({attrs:{"config":_vm.mergedConfig,"value":_vm.value,"valueObj":_vm.valueObj},on:{"loading":function($event){_vm.loading=$event},"input":function($event){return _vm.input(arguments,{action:'input'})}}},'field-group',{name: _vm.name,values: _vm.values,valuesObj: _vm.valuesObj},false)):_c('div',{staticClass:"repeater"},[_c('div',{staticClass:"repeater__items"},_vm._l((_vm.repeaterValues),function(item,i){return _c('div',{directives:[{name:"show",rawName:"v-show",value:(!item._delete),expression:"!item._delete"}],staticClass:"repeater__item"},[_c('div',{staticClass:"repeater__input"},[_c('field-group',_vm._b({attrs:{"config":_vm.repeaterMergedConfig(i),"value":_vm.value && _vm.value[i] && _vm.value[i].value,"valueObj":_vm.valueObj && _vm.valueObj[i] && _vm.valueObj[i].value,"index":i},on:{"loading":function($event){_vm.loading=$event},"input":function($event){return _vm.input(arguments,{index:i,action:'input'})}}},'field-group',{name: _vm.name,values: _vm.values,valuesObj: _vm.valuesObj},false))],1),(_vm.canRemoveRepeat)?_c('div',{staticClass:"repeater__remove"},[_c('button',{staticClass:"button is-danger is-trn p--0 is-square",on:{"click":function($event){return _vm.removeRepeat(i)}}},[_vm._t("repeater--remove",[_c('icon-remove',{staticClass:"button__icon"})])],2)]):_vm._e()])}),0),(_vm.desc)?_c('small',[_vm._v(_vm._s(_vm.desc))]):_vm._e(),_c('div',{staticClass:"repeater__add"},[(_vm.config.repeater && _vm.canRepeat)?_c('button',{staticClass:"button is-primary is-trn p--0 mt--sm",on:{"click":_vm.repeat}},[_vm._t("repeater--add",[_c('icon-add',{staticClass:"button__icon"}),_c('span',[_vm._v("Add More")])])],2):_vm._e()])])],1)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/field.vue?vue&type=template&id=b54e95ce&lang=pug&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"field",class:_vm.fieldClasses},[_vm._t(("field--start--" + _vm.name)),(_vm.index)?_vm._t(("field--start--" + _vm.name + "--" + _vm.index)):_vm._e(),(_vm.index==null)?_c('label',[_vm._v(_vm._s(_vm.mergedConfig.label || _vm.titleCase(_vm.name)))]):_vm._e(),_c('div',{staticClass:"field__group"},[(_vm.mergedConfig.before)?_c('div',{staticClass:"field__before"},[_vm._v(_vm._s(_vm.mergedConfig.before))]):_vm._e(),_c(("v-" + (_vm.mergedConfig.interface)),_vm._b({tag:"component",attrs:{"index":_vm.index,"value":_vm.value,"valueObj":_vm.valueObj},on:{"loading":function($event){return _vm.$emit('loading',$event)},"input":function($event){return _vm.input(arguments,{action:'input'})}}},'component',Object.assign({}, {name: _vm.name,values: _vm.values,valuesObj: _vm.valuesObj},_vm.mergedConfig),false)),_vm._l((Object.keys(_vm.$slots)),function(slot){return _c('template',{slot:slot},[_vm._t(slot)],2)}),(_vm.mergedConfig.after)?_c('div',{staticClass:"field__after"},[_vm._v(_vm._s(_vm.mergedConfig.after))]):_vm._e()],2),_vm._t(("field--end--" + _vm.name)),(_vm.index)?_vm._t(("field--end--" + _vm.name + "--" + _vm.index)):_vm._e()],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/plugin/components/field.vue?vue&type=template&id=2de3ca69&scoped=true&lang=pug&
+// CONCATENATED MODULE: ./src/plugin/components/field.vue?vue&type=template&id=b54e95ce&lang=pug&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js
 var es7_object_get_own_property_descriptors = __webpack_require__("8e6e");
@@ -2574,49 +2482,12 @@ var es6_array_iterator = __webpack_require__("cadf");
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.keys.js
 var es6_object_keys = __webpack_require__("456d");
 
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/toConsumableArray.js + 3 modules
+var toConsumableArray = __webpack_require__("75fc");
+
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es6.function.name.js
 var es6_function_name = __webpack_require__("7f7f");
 
-// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js
-var is_array = __webpack_require__("a745");
-var is_array_default = /*#__PURE__*/__webpack_require__.n(is_array);
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/arrayWithoutHoles.js
-
-function _arrayWithoutHoles(arr) {
-  if (is_array_default()(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }
-
-    return arr2;
-  }
-}
-// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/array/from.js
-var from = __webpack_require__("774e");
-var from_default = /*#__PURE__*/__webpack_require__.n(from);
-
-// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/is-iterable.js
-var is_iterable = __webpack_require__("c8bb");
-var is_iterable_default = /*#__PURE__*/__webpack_require__.n(is_iterable);
-
-// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/iterableToArray.js
-
-
-function _iterableToArray(iter) {
-  if (is_iterable_default()(Object(iter)) || Object.prototype.toString.call(iter) === "[object Arguments]") return from_default()(iter);
-}
-// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/nonIterableSpread.js
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
-}
-// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/toConsumableArray.js
-
-
-
-function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
-}
 // EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/defineProperty.js
 var defineProperty = __webpack_require__("bd86");
 
@@ -2665,50 +2536,19 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { if
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ var fieldvue_type_script_lang_js_ = ({
   name: "field",
   mixins: [__webpack_require__("bec3").default],
-  components: {
-    IconRemove: __webpack_require__("e48c").default,
-    IconAdd: __webpack_require__("7190").default
-  },
-  inject: ["CONFIG", "SLOTS"],
   props: {
     index: {
-      type: Number,
-      default: null
+      default: null,
+      type: Number
+    },
+    config: {
+      type: Object
     },
     fields: {
-      default: null
+      type: Object
     },
     name: {
       default: null
@@ -2724,17 +2564,11 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { if
     },
     valuesObj: {
       default: null
-    },
-    config: {
-      default: null
     }
   },
   data: function data() {
     return {
-      localConfig: _objectSpread({}, this.config),
-      repeaterLocalConfig: [],
-      state: null,
-      loading: false
+      localConfig: {}
     };
   },
   created: function created() {
@@ -2749,22 +2583,11 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { if
     });
   },
   computed: {
-    //Clones the values.
-    //If the repeater is on, then only clone the values and create an array
-    repeaterValues: function repeaterValues() {
-      return this.config.repeater ? _toConsumableArray(this.value) : [];
-    },
-    repeaterValuesObj: function repeaterValuesObj() {
-      return this.config.repeater ? _toConsumableArray(this.valueObj) : [];
-    },
-    repeaterCount: function repeaterCount() {
-      return this.repeaterValues.filter(function (item) {
-        return !item._delete;
-      }).length;
-    },
     mergedConfig: function mergedConfig() {
       return _objectSpread({}, this.config, {}, this.localConfig);
-    },
+    }
+  },
+  methods: {
     fieldClasses: function fieldClasses() {
       var classes = ["field--".concat(this.config.interface)];
       if (this.state == "invalid") classes.push("is-danger");
@@ -2772,260 +2595,80 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { if
       if (this.loading) classes.push("is-loading");
       return classes;
     },
-    getLabel: function getLabel() {
-      return this.config.label || this.titleCase(this.name);
-    },
-    desc: function desc() {
-      var messages = this.config.messages;
-      if (!messages) return null;
-
-      if (this.state == "valid" && messages.valid) {
-        return messages.valid;
-      } else if (this.state == "invalid" && messages.invalid) {
-        return messages.invalid;
-      } else if (this.state === null && messages.desc) {
-        return messages.desc;
-      } else {
-        return null;
-      }
-    },
-    canRepeat: function canRepeat() {
-      if (this.config.repeater.max) {
-        if (this.repeaterCount < this.config.repeater.max) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    },
-    canRemoveRepeat: function canRemoveRepeat() {
-      if (this.config.repeater.min) {
-        if (this.repeaterCount > this.config.repeater.min) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    }
-  },
-  methods: {
-    //Ignores $delete:true items
-    indexWithoutDeleted: function indexWithoutDeleted(index) {
-      if (index == null) return null;
-      var newIndex = index + 0;
-
-      for (var i = 0; i < index; i++) {
-        if (this.repeaterValues[i] && this.repeaterValues[i]._delete === true) {
-          newIndex--;
-        }
-      }
-
-      return newIndex;
-    },
-    indexWithDeleted: function indexWithDeleted(index) {
-      if (index == null) return null;
-      var newIndex = index + 0;
-
-      for (var i = 0; i < index; i++) {
-        if (this.repeaterValues[i] && this.repeaterValues[i]._delete === true) {
-          newIndex++;
-        }
-      }
-
-      return newIndex;
-    },
-    //If the config is set in repeaterLocalConfig, use it. Else the mergedConfig
-    repeaterMergedConfig: function repeaterMergedConfig(index) {
-      return this.repeaterLocalConfig[index] || this.mergedConfig;
-    },
-    repeat: function repeat() {
-      if (this.canRepeat) {
-        // This adds an object with null values
-        // To make sure that every fields added in DOM has respective key.
-        var defaultValues = null;
-
-        if (this.config.fields) {
-          defaultValues = this.defaultValues(this.config.fields);
-        }
-
-        var index = this.repeaterValues.length;
-        this.$set(this.repeaterValues, index, {
-          value: defaultValues
-        });
-        this.$set(this.repeaterValuesObj, index, {
-          value: defaultValues
-        });
-        this.emitValue({
-          value: this.repeaterValues,
-          valueObj: this.repeaterValuesObj,
-          index: index,
-          action: "repeat-add"
-        });
-      }
-    },
-    removeRepeat: function removeRepeat(index) {
-      //If the `id` is existing in repeater item, it is saved on server
-      //We need to keep it and set $delete:true to let api know to remove item.
-      if (this.repeaterValues[index]._id) {
-        this.$set(this.repeaterValues, index, _objectSpread({}, this.repeaterValues[index], {
-          _delete: true
-        }));
-        this.$set(this.repeaterValuesObj, index, _objectSpread({}, this.repeaterValuesObj[index], {
-          _delete: true
-        }));
-      } else {
-        this.repeaterValues.splice(index, 1);
-        this.repeaterValuesObj.splice(index, 1);
-      } //Remove the local configuration of repeater field at provided index
-
-
-      this.repeaterLocalConfig.splice(index, 1);
-      this.emitValue({
-        value: this.repeaterValues,
-        valueObj: this.repeaterValuesObj,
-        index: index,
-        action: "repeat-remove"
-      });
-    },
     input: function input(args, _ref) {
-      var index = _ref.index,
-          action = _ref.action;
-      var value, valueObj; // If repeater is provded and group interface
-      // Need to set merged object at provided index.
-      // Please note that repeater fields' value is inside "value" key.
+      var action = _ref.action;
+      var toEmit; // When the field is group, the value is already formatted.
+      // Just need to rearrange values to represent the parent field.
 
-      if (this.config.interface == "group" && index !== undefined) {
-        var fieldName = args[0].field;
-        this.$set(this.repeaterValues, index, {
-          value: _objectSpread({}, this.repeaterValues[index].value, Object(defineProperty["a" /* default */])({}, fieldName, args[0].value))
-        });
-        this.$set(this.repeaterValuesObj, index, {
-          value: _objectSpread({}, this.repeaterValuesObj[index].value, Object(defineProperty["a" /* default */])({}, fieldName, args[0].valueObj))
-        });
-        value = this.repeaterValues;
-        valueObj = this.repeaterValuesObj;
-      } //If group interface, the received args is a prepared object.
-      // Merge values with already existing values
-      else if (this.config.interface == "group") {
-          var _fieldName = args[0].field;
-          value = _objectSpread({}, this.value, Object(defineProperty["a" /* default */])({}, _fieldName, args[0].value));
-          valueObj = _objectSpread({}, this.valueObj, Object(defineProperty["a" /* default */])({}, _fieldName, args[0].valueObj));
-        } // If only Index is provided, the normal repeater field
-        else if (index !== undefined) {
-            this.$set(this.repeaterValues, index, {
-              value: args[0]
-            });
-            this.$set(this.repeaterValuesObj, index, {
-              value: args[1]
-            });
-            value = this.repeaterValues;
-            valueObj = this.repeaterValuesObj;
-          } // Normal Field
-          else {
-              value = args[0];
-              valueObj = args[1];
-            }
+      if (this.config.interface == "group") {
+        var data = args[0]; // The child field
 
-      this.emitValue({
-        value: value,
-        valueObj: valueObj,
-        index: index,
-        action: action,
-        originalValue: args[0],
-        originalValueObj: args[1],
-        changed: args[0].changed
-      });
+        var value = _objectSpread({}, this.value, Object(defineProperty["a" /* default */])({}, data.field, data.value));
+
+        var valueObj = _objectSpread({}, this.valueObj, Object(defineProperty["a" /* default */])({}, data.field, data.valueObj));
+
+        toEmit = {
+          field: this.name,
+          value: value,
+          valueObj: valueObj,
+          changed: [].concat(Object(toConsumableArray["a" /* default */])(data.changed), [{
+            field: this.name,
+            action: "child-input",
+            value: value,
+            valueObj: valueObj,
+            index: this.index
+          }])
+        };
+      } else {
+        toEmit = {
+          field: this.name,
+          value: args[0],
+          valueObj: args[1],
+          changed: [{
+            field: this.name,
+            action: action,
+            value: args[0],
+            valueObj: args[1],
+            index: this.index
+          }]
+        };
+      }
+
+      this.$emit("input", toEmit);
     },
-    emitValue: function emitValue(_ref2) {
-      var originalValue = _ref2.originalValue,
-          originalValueObj = _ref2.originalValueObj,
+    setValue: function setValue(_ref2) {
+      var field = _ref2.field,
           value = _ref2.value,
-          valueObj = _ref2.valueObj,
-          index = _ref2.index,
-          action = _ref2.action,
-          _ref2$changed = _ref2.changed,
-          changed = _ref2$changed === void 0 ? [] : _ref2$changed;
-      //Keeps track of all the fields that are updated.
-      changed.push({
-        field: this.name,
-        action: action,
-        index: index
-      });
-      this.$emit("input", {
-        field: this.name,
-        index: this.indexWithoutDeleted(index),
-        value: value,
-        valueObj: valueObj,
-        action: action,
-        changed: changed
-      });
+          index = _ref2.index;
+
+      if (field == this.name && (index == null || index == this.index)) {
+        this.input([value, {
+          value: value
+        }], {
+          action: "set-value"
+        });
+      }
     },
-    setValue: function setValue(_ref3) {
+    setConfig: function setConfig(_ref3) {
       var field = _ref3.field,
+          key = _ref3.key,
           value = _ref3.value,
           index = _ref3.index;
-      if (field != this.name) return;
 
-      var _index = this.indexWithDeleted(index);
-
-      console.log(_index, index);
-
-      if (_index == null || _index == this.index) {
-        this.input([value, {
-          value: value
-        }], {
-          action: "set-value"
-        });
-      }
-
-      if (_index != null && this.index == null) {
-        this.input([value, {
-          value: value
-        }], {
-          index: _index,
-          action: "set-value"
-        });
-      }
-    },
-    setConfig: function setConfig(_ref4) {
-      var field = _ref4.field,
-          key = _ref4.key,
-          value = _ref4.value,
-          index = _ref4.index;
       //Check If the field is same as provided
-      if (field != this.name) return;
-
-      var _index = this.indexWithDeleted(index); //If index is not provided change the local config
-      //If index is provided, merge the value with local config and put it in the array at provided  index
-      //The config will be passed from array then.
-
-
-      if (_index == null || _index == this.index) {
+      //If index is not provided change the local config
+      if (field == this.name && (index == null || index == this.index)) {
         this.$set(this.localConfig, key, value);
-      } // This is a special case where top level fields do not have repeater index as props
-      // Hence need to keep an array of separate configuration array.
-
-
-      if (_index != null && this.index == null) {
-        this.$set(this.repeaterLocalConfig, _index, _objectSpread({}, this.mergedConfig, Object(defineProperty["a" /* default */])({}, key, value)));
       }
     }
   }
 });
 // CONCATENATED MODULE: ./src/plugin/components/field.vue?vue&type=script&lang=js&
  /* harmony default export */ var components_fieldvue_type_script_lang_js_ = (fieldvue_type_script_lang_js_); 
-// EXTERNAL MODULE: ./src/plugin/components/field.vue?vue&type=style&index=0&id=2de3ca69&lang=scss&scoped=true&
-var fieldvue_type_style_index_0_id_2de3ca69_lang_scss_scoped_true_ = __webpack_require__("49c2");
-
 // EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 var componentNormalizer = __webpack_require__("2877");
 
 // CONCATENATED MODULE: ./src/plugin/components/field.vue
-
 
 
 
@@ -3039,12 +2682,12 @@ var component = Object(componentNormalizer["a" /* default */])(
   staticRenderFns,
   false,
   null,
-  "2de3ca69",
+  null,
   null
   
 )
 
-/* harmony default export */ var components_field = __webpack_exports__["default"] = (component.exports);
+/* harmony default export */ var field = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
@@ -3224,6 +2867,55 @@ __webpack_require__("9c6c")(KEY);
 
 /***/ }),
 
+/***/ "75fc":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/array/is-array.js
+var is_array = __webpack_require__("a745");
+var is_array_default = /*#__PURE__*/__webpack_require__.n(is_array);
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/arrayWithoutHoles.js
+
+function _arrayWithoutHoles(arr) {
+  if (is_array_default()(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }
+
+    return arr2;
+  }
+}
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/array/from.js
+var from = __webpack_require__("774e");
+var from_default = /*#__PURE__*/__webpack_require__.n(from);
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/core-js/is-iterable.js
+var is_iterable = __webpack_require__("c8bb");
+var is_iterable_default = /*#__PURE__*/__webpack_require__.n(is_iterable);
+
+// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/iterableToArray.js
+
+
+function _iterableToArray(iter) {
+  if (is_iterable_default()(Object(iter)) || Object.prototype.toString.call(iter) === "[object Arguments]") return from_default()(iter);
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/nonIterableSpread.js
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+// CONCATENATED MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/toConsumableArray.js
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return _toConsumableArray; });
+
+
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+/***/ }),
+
 /***/ "765d":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3313,6 +3005,302 @@ module.exports = __webpack_require__("584a").getIteratorMethod = function (it) {
     || Iterators[classof(it)];
 };
 
+
+/***/ }),
+
+/***/ "7cfb":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/repeater.vue?vue&type=template&id=047e94be&scoped=true&lang=pug&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"field repeater"},[_c('label',[_vm._v(_vm._s(_vm.config.label || _vm.titleCase(_vm.name)))]),_c('div',{staticClass:"repeater__items"},_vm._l((_vm.repeaterValues),function(item,i){return _c('div',{directives:[{name:"show",rawName:"v-show",value:(!item._delete),expression:"!item._delete"}],staticClass:"repeater__item"},[_c('div',{staticClass:"repeater__input"},[_c('field',{attrs:{"index":_vm.indexWithoutDeleted(i),"config":_vm.config,"name":_vm.name,"value":_vm.value && _vm.value[i] && _vm.value[i].value,"valueObj":_vm.valueObj && _vm.valueObj[i] && _vm.valueObj[i].value,"values":_vm.values,"valuesObj":_vm.valuesObj},on:{"loading":function($event){_vm.loading=$event},"input":function($event){return _vm.input($event,{index:i})}}},[_vm._l((Object.keys(_vm.$slots)),function(slot){return _c('template',{slot:slot},[_vm._t(slot)],2)})],2)],1),(_vm.canRemoveRepeat)?_c('div',{staticClass:"repeater__remove"},[_c('button',{staticClass:"button is-danger is-trn p--0 is-square",on:{"click":function($event){return _vm.removeRepeat(i)}}},[_vm._t("repeater--remove",[_c('icon-remove',{staticClass:"button__icon"})])],2)]):_vm._e()])}),0),(_vm.desc)?_c('small',[_vm._v(_vm._s(_vm.desc))]):_vm._e(),_c('div',{staticClass:"repeater__add"},[(_vm.config.repeater && _vm.canRepeat)?_c('button',{staticClass:"button is-primary is-trn p--0 mt--sm",on:{"click":_vm.repeat}},[_vm._t("repeater--add",[_c('icon-add',{staticClass:"button__icon"}),_c('span',[_vm._v("Add More")])])],2):_vm._e()])])}
+var staticRenderFns = []
+
+
+// CONCATENATED MODULE: ./src/plugin/components/repeater.vue?vue&type=template&id=047e94be&scoped=true&lang=pug&
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js
+var es7_object_get_own_property_descriptors = __webpack_require__("8e6e");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/web.dom.iterable.js
+var web_dom_iterable = __webpack_require__("ac6a");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.array.iterator.js
+var es6_array_iterator = __webpack_require__("cadf");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.object.keys.js
+var es6_object_keys = __webpack_require__("456d");
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/defineProperty.js
+var defineProperty = __webpack_require__("bd86");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.function.name.js
+var es6_function_name = __webpack_require__("7f7f");
+
+// EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/toConsumableArray.js + 3 modules
+var toConsumableArray = __webpack_require__("75fc");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es6.number.constructor.js
+var es6_number_constructor = __webpack_require__("c5f6");
+
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/components/repeater.vue?vue&type=script&lang=js&
+
+
+
+
+
+
+
+
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { if (i % 2) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { Object(defineProperty["a" /* default */])(target, key, source[key]); }); } else { Object.defineProperties(target, Object.getOwnPropertyDescriptors(arguments[i])); } } return target; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ var repeatervue_type_script_lang_js_ = ({
+  name: "repeater",
+  mixins: [__webpack_require__("bec3").default],
+  components: {
+    IconRemove: __webpack_require__("e48c").default,
+    IconAdd: __webpack_require__("7190").default
+  },
+  inject: ["CONFIG", "SLOTS"],
+  props: {
+    index: {
+      type: Number,
+      default: null
+    },
+    fields: {
+      default: null
+    },
+    name: {
+      default: null
+    },
+    value: {
+      type: Array,
+      default: function _default() {
+        return [];
+      }
+    },
+    valueObj: {
+      type: Array,
+      default: function _default() {
+        return [];
+      }
+    },
+    values: {
+      default: null
+    },
+    valuesObj: {
+      default: null
+    },
+    config: {
+      default: null
+    }
+  },
+  data: function data() {
+    return {
+      state: null,
+      loading: false,
+      //Clones the values.
+      repeaterValues: Object(toConsumableArray["a" /* default */])(this.value),
+      repeaterValuesObj: Object(toConsumableArray["a" /* default */])(this.valueObj)
+    };
+  },
+  computed: {
+    repeaterCount: function repeaterCount() {
+      return this.repeaterValues.filter(function (item) {
+        return !item._delete;
+      }).length;
+    },
+    desc: function desc() {
+      var messages = this.config.messages;
+      if (!messages) return null;
+
+      if (this.state == "valid" && messages.valid) {
+        return messages.valid;
+      } else if (this.state == "invalid" && messages.invalid) {
+        return messages.invalid;
+      } else if (this.state === null && messages.desc) {
+        return messages.desc;
+      } else {
+        return null;
+      }
+    },
+    canRepeat: function canRepeat() {
+      if (!this.config.repeater.max) {
+        return true;
+      } else {
+        return this.repeaterCount < this.config.repeater.max;
+      }
+    },
+    canRemoveRepeat: function canRemoveRepeat() {
+      if (!this.config.repeater.min) {
+        return true;
+      } else {
+        return this.repeaterCount > this.config.repeater.min;
+      }
+    }
+  },
+  methods: {
+    //Ignores $delete:true items
+    indexWithoutDeleted: function indexWithoutDeleted(index) {
+      if (index == null) return null;
+      var newIndex = index + 0;
+
+      for (var i = 0; i < index; i++) {
+        if (this.repeaterValues[i] && this.repeaterValues[i]._delete === true) {
+          newIndex--;
+        }
+      }
+
+      return newIndex;
+    },
+    repeat: function repeat() {
+      if (this.canRepeat) {
+        // This adds an object with null values
+        // To make sure that every fields added in DOM has respective key.
+        var defaultValues = null;
+
+        if (this.config.fields) {
+          defaultValues = this.defaultValues(this.config.fields);
+        }
+
+        var index = this.repeaterValues.length;
+        this.$set(this.repeaterValues, index, {
+          value: defaultValues
+        });
+        this.$set(this.repeaterValuesObj, index, {
+          value: defaultValues
+        });
+        this.$emit("input", {
+          field: this.name,
+          value: this.repeaterValues,
+          valueObj: this.repeaterValuesObj,
+          changed: [{
+            field: this.name,
+            value: this.repeaterValues,
+            valueObj: this.repeaterValuesObj,
+            action: "repeater-add",
+            index: this.indexWithoutDeleted(index)
+          }]
+        });
+      }
+    },
+    removeRepeat: function removeRepeat(index) {
+      //If the `id` is existing in repeater item, it is saved on server
+      //We need to keep it and set $delete:true to let api know to remove item.
+      if (this.repeaterValues[index]._id) {
+        this.$set(this.repeaterValues, index, _objectSpread({}, this.repeaterValues[index], {
+          _delete: true
+        }));
+        this.$set(this.repeaterValuesObj, index, _objectSpread({}, this.repeaterValuesObj[index], {
+          _delete: true
+        }));
+      } else {
+        this.repeaterValues.splice(index, 1);
+        this.repeaterValuesObj.splice(index, 1);
+      }
+
+      this.$emit("input", {
+        field: this.name,
+        value: this.repeaterValues,
+        valueObj: this.repeaterValuesObj,
+        changed: [{
+          field: this.name,
+          value: this.repeaterValues,
+          valueObj: this.repeaterValuesObj,
+          action: "repeater-remove",
+          index: this.indexWithoutDeleted(index)
+        }]
+      });
+    },
+    input: function input(data, _ref) {
+      var index = _ref.index;
+      this.$set(this.repeaterValues, index, {
+        value: data.value
+      });
+      this.$set(this.repeaterValuesObj, index, {
+        value: data.valueObj
+      });
+      this.$emit("input", {
+        field: this.name,
+        value: this.repeaterValues,
+        valueObj: this.repeaterValuesObj,
+        changed: data.changed
+      });
+    }
+  }
+});
+// CONCATENATED MODULE: ./src/plugin/components/repeater.vue?vue&type=script&lang=js&
+ /* harmony default export */ var components_repeatervue_type_script_lang_js_ = (repeatervue_type_script_lang_js_); 
+// EXTERNAL MODULE: ./src/plugin/components/repeater.vue?vue&type=style&index=0&id=047e94be&lang=scss&scoped=true&
+var repeatervue_type_style_index_0_id_047e94be_lang_scss_scoped_true_ = __webpack_require__("1747");
+
+// EXTERNAL MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
+var componentNormalizer = __webpack_require__("2877");
+
+// CONCATENATED MODULE: ./src/plugin/components/repeater.vue
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(componentNormalizer["a" /* default */])(
+  components_repeatervue_type_script_lang_js_,
+  render,
+  staticRenderFns,
+  false,
+  null,
+  "047e94be",
+  null
+  
+)
+
+/* harmony default export */ var repeater = __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
@@ -5329,12 +5317,12 @@ var es6_object_keys = __webpack_require__("456d");
 // EXTERNAL MODULE: ./node_modules/@babel/runtime-corejs2/helpers/esm/defineProperty.js
 var defineProperty = __webpack_require__("bd86");
 
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/app.vue?vue&type=template&id=601c4e38&lang=pug&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"v-form"},[_vm._t("form--before"),_c('fields',{attrs:{"fields":_vm.fields,"value":_vm.values,"valueObj":_vm.valuesObj,"values":_vm.values,"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.updateValue($event)}},scopedSlots:_vm._u([_vm._l((_vm.slots),function(slot,slotName){return {key:slotName,fn:function(scope){return _vm._t(slotName,null,{"scope":scope})}}})],null,true)}),_vm._t("form--after")],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"be7b28f6-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/pug-plain-loader!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/plugin/app.vue?vue&type=template&id=0fafe470&lang=pug&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"v-form"},[_vm._t("form--start"),_c('fields',{attrs:{"fields":_vm.fields,"value":_vm.values,"valueObj":_vm.valuesObj,"values":_vm.values,"valuesObj":_vm.valuesObj},on:{"input":function($event){return _vm.updateValue($event)}}},[_vm._l((Object.keys(_vm.$slots)),function(slot){return _c('template',{slot:slot},[_vm._t(slot)],2)})],2),_vm._t("form--end")],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/plugin/app.vue?vue&type=template&id=601c4e38&lang=pug&
+// CONCATENATED MODULE: ./src/plugin/app.vue?vue&type=template&id=0fafe470&lang=pug&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es7.array.includes.js
 var es7_array_includes = __webpack_require__("6762");
@@ -5347,10 +5335,6 @@ var es6_string_includes = __webpack_require__("2fdb");
 
 
 
-//
-//
-//
-//
 //
 //
 //
@@ -5385,6 +5369,9 @@ var es6_string_includes = __webpack_require__("2fdb");
       type: Object
     },
     meta: {
+      type: Object
+    },
+    value: {
       type: Object
     }
   },
@@ -5431,8 +5418,6 @@ var es6_string_includes = __webpack_require__("2fdb");
       var field = _ref.field,
           value = _ref.value,
           valueObj = _ref.valueObj,
-          index = _ref.index,
-          action = _ref.action,
           changed = _ref.changed;
       this.$set(this.values, field, value);
       this.$set(this.valuesObj, field, valueObj);
@@ -5446,45 +5431,10 @@ var es6_string_includes = __webpack_require__("2fdb");
 
       if (!changedActions.includes("set-value")) {
         this.$emit("change", {
-          field: field,
-          action: action,
-          value: value,
-          valueObj: valueObj,
           changed: changed,
-          index: index,
-          //If repeater field, this value will be defined
           values: this.values,
           valuesObj: this.valuesObj
         });
-      }
-    },
-
-    /**
-     * NOT BEING USED
-     * Sets the value based on provided fields
-     */
-    setValueX: function setValueX(field, value, repeaterIndex) {
-      var values = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : this.values;
-
-      //Checks if the provided values object contains the field.
-      //If not, it loops through all the keys and checks if the respective values is an object
-      // If Object, it means the field is a group and may contain provided field.
-      if (values.hasOwnProperty(field)) {
-        this.$set(values, field, value);
-        this.$emit("input", this.values);
-        this.$emit("update:meta", this.valuesObj);
-      } else {
-        for (var key in values) {
-          var childValues = values[key];
-
-          if (this.isObject(childValues)) {
-            this.setValue(field, value, repeaterIndex, childValues);
-          }
-
-          if (Array.isArray(childValues)) {
-            this.setValue(field, value, repeaterIndex, childValues[repeaterIndex]);
-          }
-        }
       }
     },
     setConfig: function setConfig(data) {
@@ -5540,18 +5490,14 @@ var plugin_install = function install(Vue, options) {
     }
   });
   Vue.component("VForm", appWithOptions);
+  Vue.component("Repeater", __webpack_require__("7cfb").default);
   Vue.component("Field", __webpack_require__("6c09").default);
-  Vue.component("FieldGroup", __webpack_require__("501a").default);
   Vue.component("Fields", __webpack_require__("114b").default);
   Vue.component("VInput", __webpack_require__("7071").default);
   Vue.component("VTextarea", __webpack_require__("b6fe").default);
   Vue.component("VSelect", __webpack_require__("85ee").default);
   Vue.component("VChoice", __webpack_require__("31b6").default);
-  Vue.component("VFile", __webpack_require__("8217").default); // Vue.component(
-  //   "VGroup",
-  //   require("@/plugin/components/interfaces/group.vue").default
-  // );
-
+  Vue.component("VFile", __webpack_require__("8217").default);
   Vue.component("VGroup", __webpack_require__("114b").default);
 };
 

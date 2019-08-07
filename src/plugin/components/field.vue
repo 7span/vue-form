@@ -1,8 +1,12 @@
 <template lang="pug">
 .field(:class="fieldClasses")
-  //LABEL
-  label(v-if="index==null || index == 0") {{getLabel}}
+
+  slot(:name="`field--start--${name}`")
+  slot(v-if="index" :name="`field--start--${name}--${index}`")
+
+  label(v-if="index==null") {{mergedConfig.label || titleCase(name)}}
   .field__group
+
     .field__before(v-if="mergedConfig.before") {{mergedConfig.before}}
 
     component(
@@ -14,7 +18,14 @@
       @loading="$emit('loading',$event)"
       @input="input(arguments,{action:'input'})")
 
+    //Passdown Slots
+    template(v-for="slot in Object.keys($slots)" :slot="slot")
+      slot(:name="slot")
+
     .field__after(v-if="mergedConfig.after") {{mergedConfig.after}}
+
+  slot(:name="`field--end--${name}`")
+  slot(v-if="index" :name="`field--end--${name}--${index}`")
 </template>
 
 <script>
@@ -27,6 +38,9 @@ export default {
       type: Number
     },
     config: {
+      type: Object
+    },
+    fields: {
       type: Object
     },
     name: {
@@ -59,9 +73,6 @@ export default {
   },
 
   computed: {
-    getLabel() {
-      return this.config.label || this.titleCase(this.name);
-    },
     mergedConfig() {
       return {
         ...this.config,
@@ -104,7 +115,8 @@ export default {
               field: this.name,
               action: "child-input",
               value,
-              valueObj
+              valueObj,
+              index: this.index
             }
           ]
         };
@@ -118,7 +130,8 @@ export default {
               field: this.name,
               action: action,
               value: args[0],
-              valueObj: args[1]
+              valueObj: args[1],
+              index: this.index
             }
           ]
         };

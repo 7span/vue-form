@@ -1,7 +1,6 @@
 <template lang="pug">
 .v-form
-
-  slot(name="form--before")
+  slot(name="form--start")
 
   fields(
     :fields="fields" 
@@ -11,14 +10,11 @@
     :valuesObj="valuesObj"
     @input="updateValue($event)")
 
-    slot(
-      v-for="slot,slotName in slots" 
-      :slot="slotName" 
-      slot-scope="scope" 
-      :name="slotName" 
-      :scope="scope")
+    //Passdown Slots
+    template(v-for="slot in Object.keys($slots)" :slot="slot")
+      slot(:name="slot")
 
-  slot(name="form--after")
+  slot(name="form--end")
 
 </template>
 
