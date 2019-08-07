@@ -1,34 +1,33 @@
 <template lang="pug">
 .field.repeater
-  label {{config.label || titleCase(name)}}
   .repeater__items
     .repeater__item(v-for="(item,i) in repeaterValues" v-show="!item._delete")
       .repeater__input
         
+        //Field
         field(
           :index="indexWithoutDeleted(i)"
           :config="config"
           :name="name"
           :value="value && value[i] && value[i].value"
-          :valueObj="valueObj && valueObj[i] && valueObj[i].value"
-          :values="values"
-          :valuesObj="valuesObj"
+          :value-obj="valueObj && valueObj[i] && valueObj[i].value"
           @loading="loading=$event"
           @input="input($event,{index:i})")
 
           //Passdown Slots
-          template(v-for="slot in Object.keys($slots)" :slot="slot")
-            slot(:name="slot")
+          template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
+            slot(:name="slot" v-bind="scope")
 
+      //Remove Repeater
       .repeater__remove(v-if="canRemoveRepeat")
         button.button.is-danger.is-trn.p--0.is-square(@click="removeRepeat(i)") 
           slot(name="repeater--remove")
             icon-remove.button__icon
   
-  //DESC
+  //Desc
   small(v-if="desc") {{desc}}
 
-  //REPEATER
+  //Add Repeater
   .repeater__add
     button.button.is-primary.is-trn.p--0.mt--sm(
       v-if="config.repeater && canRepeat"
@@ -46,7 +45,7 @@ export default {
     IconRemove: require("@/plugin/components/icons/remove").default,
     IconAdd: require("@/plugin/components/icons/add").default
   },
-  inject: ["CONFIG", "SLOTS"],
+  inject: ["CONFIG"],
   props: {
     index: {
       type: Number,
@@ -65,12 +64,6 @@ export default {
     valueObj: {
       type: Array,
       default: () => []
-    },
-    values: {
-      default: null
-    },
-    valuesObj: {
-      default: null
     },
     config: {
       default: null

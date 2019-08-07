@@ -1,31 +1,35 @@
 <template lang="pug">
 .field(:class="fieldClasses")
+  //Start Slots
+  slot(:name="`field--start--${name}`" v-bind="slotScopes")
+  slot(v-if="index!=null" :name="`field--start--${name}--${index}`" v-bind="slotScopes")
 
-  slot(:name="`field--start--${name}`")
-  slot(v-if="index" :name="`field--start--${name}--${index}`")
+  label(v-if="index==null || index===0") {{mergedConfig.label || titleCase(name)}}
 
-  label(v-if="index==null") {{mergedConfig.label || titleCase(name)}}
+  //Field Group
   .field__group
-
     .field__before(v-if="mergedConfig.before") {{mergedConfig.before}}
 
+    //Interface
     component(
       :index="index"
       :is="`v-${mergedConfig.interface}`"
-      v-bind="{name,values,valuesObj,...mergedConfig}"
+      v-bind="{...mergedConfig}"
+      :name="name"
       :value="value"
-      :valueObj="valueObj"
+      :value-obj="valueObj"
       @loading="$emit('loading',$event)"
       @input="input(arguments,{action:'input'})")
 
-    //Passdown Slots
-    template(v-for="slot in Object.keys($slots)" :slot="slot")
-      slot(:name="slot")
+      //Passdown Slots
+      template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
+        slot(:name="slot" v-bind="scope")
 
     .field__after(v-if="mergedConfig.after") {{mergedConfig.after}}
 
-  slot(:name="`field--end--${name}`")
-  slot(v-if="index" :name="`field--end--${name}--${index}`")
+  //End Slots
+  slot(:name="`field--end--${name}`" v-bind="slotScopes")
+  slot(v-if="index!=null" :name="`field--end--${name}--${index}`" v-bind="slotScopes")
 </template>
 
 <script>
@@ -51,12 +55,6 @@ export default {
     },
     valueObj: {
       default: null
-    },
-    values: {
-      default: null
-    },
-    valuesObj: {
-      default: null
     }
   },
 
@@ -78,6 +76,15 @@ export default {
         ...this.config,
         ...this.localConfig
       };
+    },
+
+    slotScopes() {
+      return {
+        value: this.value,
+        valueObj: this.valueObj,
+        config: this.mergedConfig,
+        index: this.index
+      };
     }
   },
 
@@ -91,35 +98,11 @@ export default {
     },
 
     input(args, { action }) {
-      let toEmit;
-
+      var toEmit;
       // When the field is group, the value is already formatted.
       // Just need to rearrange values to represent the parent field.
-      if (this.config.interface == "group") {
-        let data = args[0]; // The child field
-        let value = {
-          ...this.value,
-          [data.field]: data.value
-        };
-        let valueObj = {
-          ...this.valueObj,
-          [data.field]: data.valueObj
-        };
-        toEmit = {
-          field: this.name,
-          value,
-          valueObj,
-          changed: [
-            ...data.changed,
-            {
-              field: this.name,
-              action: "child-input",
-              value,
-              valueObj,
-              index: this.index
-            }
-          ]
-        };
+      if (!args[1]) {
+        toEmit = args[0];
       } else {
         toEmit = {
           field: this.name,

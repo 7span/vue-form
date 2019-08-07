@@ -1,6 +1,7 @@
 <template lang="pug">
   .demo.p--xl
 
+
     p Set Values
     .gx--sm
       button.button(@click='setValue({field: "email",value: "harsh@7span.com"})') Value
@@ -27,11 +28,14 @@
       //template(slot="repeater--add") 
         span ADDDDDDDD
 
-      template(slot="field--after--email") 
-        span AFTER: Gmail & Yahoo Only!
+      template(#form--start="data")
+        h2 VForm
 
-      template(slot="field--end--education--1") 
-        span END: Gmail & Yahoo Only!
+      //template(#field--end--email="data") 
+        span Gmail & Yahoo Only! {{data}}
+
+      //template(#field--end--education--1="data") 
+        span {{data.repeaterValueObj}}
 
 </template>
 
@@ -66,12 +70,22 @@ export default {
     setValue(obj) {
       this.$refs.vForm.setValue(obj);
     },
+
     setConfig(obj) {
       this.$refs.vForm.setConfig(obj);
     },
 
     onChange(data) {
       console.log("DATA:", data);
+      let _changed = data.changed[0];
+      //Change unit
+      if (_changed.field == "years") {
+        let unit = _changed.valueObj.value.unit;
+        this.$refs.vForm.setValue({
+          field: "salary",
+          value: "50000"
+        });
+      }
     }
   }
 };

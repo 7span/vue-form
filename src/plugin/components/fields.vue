@@ -4,36 +4,37 @@
     v-for="fieldConfig,fieldName in fields"
     v-show="isShown(fieldConfig)"
     :class="[colClass(fieldConfig,fieldName)]")
+    
+    //Before Slots
+    slot(:name="`field--before--${fieldName}`" v-bind="slotScopes(fieldName)")
+    slot(v-if="index!=null" :name="`field--before--${fieldName}--${index}`" v-bind="slotScopes(fieldName)")
 
-    slot(:name="`field--before--${fieldName}`")
-    slot(v-if="index" :name="`field--before--${fieldName}--${index}`")
-
+    //Field
     component(
       :is="whichComponent(fieldConfig)"
       :index="index"
       :key="fieldName"
       :name="fieldName"
-      :fields="fields[fieldName]" 
+      :fields="fields.fields" 
       :config="fieldConfig"
       :value="value && value[fieldName]"
-      :values="values"
-      :valueObj="valueObj && valueObj[fieldName]"
-      :valuesObj="valuesObj"
-      @input="$emit('input',$event)")
+      :value-obj="valueObj && valueObj[fieldName]"
+      @input="input($event,fieldName)")
 
       //Passdown Slots
-      template(v-for="slot in Object.keys($slots)" :slot="slot")
-        slot(:name="slot")
+      template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
+        slot(:name="slot" v-bind="scope")
 
-    slot(:name="`field--after--${fieldName}`")
-    slot(v-if="index" :name="`field--after--${fieldName}--${index}`")
+    //After Slots
+    slot(:name="`field--after--${fieldName}`" v-bind="slotScopes(fieldName)")
+    slot(v-if="index!=null" :name="`field--after--${fieldName}--${index}`" v-bind="slotScopes(fieldName)")
       
 </template>
 
 <script>
 export default {
   name: "fields",
-  inject: ["CONFIG", "SLOTS"],
+  inject: ["CONFIG"],
   mixins: [
     //Because this also behaves as interface when grouped.
     require("@/plugin/mixins/interface").default
@@ -44,12 +45,48 @@ export default {
       type: Number
     }
   },
-  computed: {
-    slots() {
-      return this.$slots;
-    }
+  data() {
+    return {
+      groupValues: { ...this.value },
+      groupValuesObj: { ...this.valueObj }
+    };
   },
+
   methods: {
+    input(e, name) {
+      console.log("FROM FIELD", name, e);
+      console.log("GROUP BEFORE", this.groupValues);
+      this.$set(this.groupValues, e.field, e.value);
+      this.$set(this.groupValuesObj, e.field, e.valueObj);
+      console.log("GROUP AFTER", this.groupValues);
+
+      let toEmit = {
+        field: this.$attrs.name,
+        value: this.groupValues,
+        valueObj: this.groupValuesObj,
+        changed: [
+          ...e.changed,
+          {
+            field: name,
+            action: "child-input",
+            value: this.groupValues,
+            valueObj: this.groupValuesObj,
+            index: this.index
+          }
+        ]
+      };
+      this.$emit("input", toEmit);
+    },
+
+    slotScopes(name) {
+      return {
+        value: this.value && this.value[name],
+        valueObj: this.valueObj && this.valueObj[name],
+        config: this.fields[name],
+        index: this.index
+      };
+    },
+
     /**
      * Sets the grid size of ss-cols
      * If not defined, gets it from default configs

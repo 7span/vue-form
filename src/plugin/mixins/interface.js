@@ -1,5 +1,5 @@
 export default {
-  inject: ["CONFIG", "SLOTS"],
+  inject: ["CONFIG"],
   props: {
     label: {},
     interface: {},
@@ -11,14 +11,6 @@ export default {
     value: {
       default: null,
       type: [String, Number, Array, File, FileList, Object]
-    },
-    values: {
-      default: null,
-      type: [Object, Array]
-    },
-    valuesObj: {
-      default: null,
-      type: [Object, Array]
     },
     valueObj: {
       default: null
