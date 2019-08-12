@@ -17,7 +17,7 @@ const install = (Vue, options) => {
     require("@/plugin/components/repeater.vue").default
   );
   Vue.component("Field", require("@/plugin/components/field.vue").default);
-  Vue.component("Fields", require("@/plugin/components/fields.vue").default);
+  Vue.component("Group", require("@/plugin/components/group.vue").default);
   Vue.component(
     "VInput",
     require("@/plugin/components/interfaces/input.vue").default
@@ -38,7 +38,19 @@ const install = (Vue, options) => {
     "VFile",
     require("@/plugin/components/interfaces/file.vue").default
   );
-  Vue.component("VGroup", require("@/plugin/components/fields.vue").default);
+
+  //TitleCase Labels
+  Vue.filter("titleCase", value => {
+    return value
+      .replace(/([^A-Z])([A-Z])/g, "$1 $2") // split cameCase
+      .replace(/[_\-]+/g, " ") // split snake_case and lisp-case
+      .toLowerCase()
+      .replace(/(^\w|\b\w)/g, function(m) {
+        return m.toUpperCase();
+      }) // title case words
+      .replace(/\s+/g, " ") // collapse repeated whitespace
+      .replace(/^\s+|\s+$/, ""); // remove leading/trailing whitespace
+  });
 };
 
 const plugin = {

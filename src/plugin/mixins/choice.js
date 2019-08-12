@@ -3,12 +3,12 @@
  * This avoids errors like 'can not read of undefined'
  */
 
-const CHOICES_CONFIG = {
+const CHOICES_SETTINGS = {
   labelKey: "label",
   valueKey: "value"
 };
 
-const REQUEST_CONFIG = {
+const REQUEST_SETTINGS = {
   url: null,
   params: {},
   adapter(res) {
@@ -23,7 +23,7 @@ export default {
     };
   },
 
-  inject: ["ADAPTERS", "CONFIG"],
+  inject: ["ADAPTERS", "SETTINGS"],
 
   computed: {
     /**
@@ -31,14 +31,14 @@ export default {
      */
     choicesConfig() {
       let config = {
-        ...CHOICES_CONFIG,
+        ...CHOICES_SETTINGS,
         ...this.choices
       };
 
       //If choice is not array, the request object shold be prepared to send request
       if (!Array.isArray(this.choices)) {
         let request = {
-          ...REQUEST_CONFIG,
+          ...REQUEST_SETTINGS,
           ...this.choices.request
         };
         config = { ...config, request };
@@ -55,17 +55,26 @@ export default {
     }
   },
 
-  created() {
-    // If choices is an array, use the options as it is.
-    // If it's an object, process it and then return array.
-    if (Array.isArray(this.choices)) {
-      this.preparedChoices = this.choices;
-    } else {
-      this.getChoices();
+  watch: {
+    choices() {
+      this.prepareChoices();
     }
   },
 
+  created() {
+    this.prepareChoices();
+  },
+
   methods: {
+    prepareChoices() {
+      // If choices is an array, use the options as it is.
+      // If it's an object, process it and then return array.
+      if (Array.isArray(this.choices)) {
+        this.preparedChoices = this.choices;
+      } else {
+        this.getChoices();
+      }
+    },
     /**
      * Builds a list of options for select,radio,checkbox
      * based on request object provided.
@@ -73,7 +82,7 @@ export default {
     getChoices() {
       let _request = this.choicesConfig.request;
       this.loading = true;
-      this.CONFIG.axios
+      this.SETTINGS.axios
         .get(_request.url, {
           params: {
             ..._request.params

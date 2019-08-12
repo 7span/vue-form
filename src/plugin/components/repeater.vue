@@ -1,18 +1,21 @@
 <template lang="pug">
 .field.repeater
+
+  label.repeater__label {{name | titleCase}}
+
   .repeater__items
-    .repeater__item(v-for="(item,i) in repeaterValues" v-show="!item._delete")
+    .repeater__item(v-for="(item,i) in repeaterValue" v-show="item && !item._delete")
       .repeater__input
         
         //Field
-        field(
+        component(
+          :is="componentType(mergedConfig)"
           :index="indexWithoutDeleted(i)"
-          :config="config"
-          :name="name"
-          :value="value && value[i] && value[i].value"
-          :value-obj="valueObj && valueObj[i] && valueObj[i].value"
-          @loading="loading=$event"
-          @input="input($event,{index:i})")
+          :config="mergedConfig"
+          :name="name" 
+          :key="`${name}--${i}`"
+          :value="repeaterValue[i] && repeaterValue[i].value"
+          @input="input(arguments,{index:i})")
 
           //Passdown Slots
           template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
@@ -25,7 +28,7 @@
             icon-remove.button__icon
   
   //Desc
-  small(v-if="desc") {{desc}}
+  small(v-if="config.desc") {{config.desc}}
 
   //Add Repeater
   .repeater__add
@@ -40,63 +43,37 @@
 <script>
 export default {
   name: "repeater",
-  mixins: [require("@/plugin/helper").default],
+  mixins: [
+    require("@/plugin/helper").default,
+    require("@/plugin/mixins/fields").default
+  ],
   components: {
     IconRemove: require("@/plugin/components/icons/remove").default,
     IconAdd: require("@/plugin/components/icons/add").default
   },
-  inject: ["CONFIG"],
+  inject: ["SETTINGS"],
   props: {
-    index: {
-      type: Number,
-      default: null
-    },
-    fields: {
-      default: null
-    },
-    name: {
-      default: null
-    },
     value: {
       type: Array,
       default: () => []
-    },
-    valueObj: {
-      type: Array,
-      default: () => []
-    },
-    config: {
-      default: null
     }
   },
 
   data() {
     return {
-      state: null,
-      loading: false,
-      //Clones the values.
-      repeaterValues: [...this.value],
-      repeaterValuesObj: [...this.valueObj]
+      // Need to clone values to avoid directly mutating props.
+      repeaterValue: [],
+      repeaterMetaValue: []
     };
+  },
+
+  created() {
+    this.setDefaultValues();
   },
 
   computed: {
     repeaterCount() {
-      return this.repeaterValues.filter(item => !item._delete).length;
-    },
-
-    desc() {
-      let messages = this.config.messages;
-      if (!messages) return null;
-      if (this.state == "valid" && messages.valid) {
-        return messages.valid;
-      } else if (this.state == "invalid" && messages.invalid) {
-        return messages.invalid;
-      } else if (this.state === null && messages.desc) {
-        return messages.desc;
-      } else {
-        return null;
-      }
+      return this.repeaterValue.filter(item => !item._delete).length;
     },
 
     canRepeat() {
@@ -117,13 +94,39 @@ export default {
   },
 
   methods: {
+    setDefaultValues() {
+      let min = this.config.repeater.min || 1;
+      let defalutValueCount = this.value.length;
+      let diff = min - defalutValueCount;
+
+      if (diff > 0) {
+        let diffArray = new Array(diff);
+        let defaultValue = [...this.value, ...diffArray];
+        this.$set(this, "repeaterValue", defaultValue);
+        this.$set(this, "repeaterMetaValue", defaultValue);
+      } else {
+        let defaultValue = [...this.value];
+        this.$set(this, "repeaterValue", defaultValue);
+        this.$set(this, "repeaterMetaValue", defaultValue);
+      }
+
+      this.$emit("input", this.repeaterValue, [
+        {
+          field: this.name,
+          action: "repeater-default-value",
+          value: this.repeaterValue,
+          metaValue: this.repeaterMetaValue
+        }
+      ]);
+    },
+
     //Ignores $delete:true items
     indexWithoutDeleted(index) {
       if (index == null) return null;
 
       let newIndex = index + 0;
       for (var i = 0; i < index; i++) {
-        if (this.repeaterValues[i] && this.repeaterValues[i]._delete === true) {
+        if (this.repeaterValue[i] && this.repeaterValue[i]._delete === true) {
           newIndex--;
         }
       }
@@ -138,78 +141,66 @@ export default {
         if (this.config.fields) {
           defaultValues = this.defaultValues(this.config.fields);
         }
-        let index = this.repeaterValues.length;
-        this.$set(this.repeaterValues, index, {
-          value: defaultValues
-        });
-        this.$set(this.repeaterValuesObj, index, {
+        let index = this.repeaterValue.length;
+        this.$set(this.repeaterValue, index, {
           value: defaultValues
         });
 
-        this.$emit("input", {
-          field: this.name,
-          value: this.repeaterValues,
-          valueObj: this.repeaterValuesObj,
-          changed: [
-            {
-              field: this.name,
-              value: this.repeaterValues,
-              valueObj: this.repeaterValuesObj,
-              action: "repeater-add",
-              index: this.indexWithoutDeleted(index)
-            }
-          ]
-        });
+        this.$emit("input", this.repeaterValue, [
+          {
+            field: this.name,
+            value: this.repeaterValue,
+            action: "repeater-add",
+            index: this.indexWithoutDeleted(index)
+          }
+        ]);
       }
     },
 
     removeRepeat(index) {
       //If the `id` is existing in repeater item, it is saved on server
       //We need to keep it and set $delete:true to let api know to remove item.
-      if (this.repeaterValues[index]._id) {
-        this.$set(this.repeaterValues, index, {
-          ...this.repeaterValues[index],
-          _delete: true
-        });
-        this.$set(this.repeaterValuesObj, index, {
-          ...this.repeaterValuesObj[index],
+      if (this.repeaterValue[index]._id) {
+        this.$set(this.repeaterValue, index, {
+          ...this.repeaterValue[index],
           _delete: true
         });
       } else {
-        this.repeaterValues.splice(index, 1);
-        this.repeaterValuesObj.splice(index, 1);
+        this.repeaterValue.splice(index, 1);
       }
 
-      this.$emit("input", {
-        field: this.name,
-        value: this.repeaterValues,
-        valueObj: this.repeaterValuesObj,
-        changed: [
-          {
-            field: this.name,
-            value: this.repeaterValues,
-            valueObj: this.repeaterValuesObj,
-            action: "repeater-remove",
-            index: this.indexWithoutDeleted(index)
-          }
-        ]
-      });
+      this.$emit("input", this.repeaterValue, [
+        {
+          field: this.name,
+          value: this.repeaterValue,
+          action: "repeater-remove",
+          index: this.indexWithoutDeleted(index)
+        }
+      ]);
     },
 
-    input(data, { index }) {
-      this.$set(this.repeaterValues, index, {
-        value: data.value
+    input(args, { index }) {
+      var changeMerged;
+      console.log("==>>", JSON.stringify(this.repeaterValue));
+      this.$set(this.repeaterValue, index, {
+        value: args[0]
       });
-      this.$set(this.repeaterValuesObj, index, {
-        value: data.valueObj
+      console.log("==>>", JSON.stringify(this.repeaterValue));
+
+      this.$set(this.repeaterMetaValue, index, {
+        value: args[1][args[1].length - 1].metaValue
       });
 
-      this.$emit("input", {
+      let changed = {
         field: this.name,
-        value: this.repeaterValues,
-        valueObj: this.repeaterValuesObj,
-        changed: data.changed
-      });
+        action: "repeater-input",
+        value: this.repeaterValue,
+        metaValue: this.repeaterMetaValue,
+        index: index
+      };
+      changeMerged = [...args[1], changed];
+
+      this.$emit("input", this.repeaterValue, changeMerged);
     }
   }
 };
@@ -223,6 +214,7 @@ export default {
   }
   &__item {
     display: flex;
+    align-items: center;
     + .repeater__item {
       margin-top: 10px;
     }
@@ -233,7 +225,6 @@ export default {
   &__remove {
     flex: 0 0 auto;
     margin-left: 10px;
-    align-self: flex-end;
   }
 }
 </style>

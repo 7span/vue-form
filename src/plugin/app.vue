@@ -2,12 +2,12 @@
 .v-form
   slot(name="form--start" :value="value")
 
-  fields(
-    v-if="value"
-    :fields="fields" 
+  group(
+    key="v-form"
+    :name="name"
+    :config="config" 
     :value="value"
-    :value-obj="valueObj"
-    @input="updateValue($event)")
+    @input="updateValue(arguments)")
 
     //Passdown Slots
     template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
@@ -22,7 +22,7 @@ export default {
   name: "v-form",
   mixins: [require("@/plugin/helper").default],
   props: {
-    config: {
+    settings: {
       type: Object
     },
     adapters: {
@@ -31,7 +31,7 @@ export default {
     fields: {
       type: Object
     },
-    meta: {
+    metaValue: {
       type: Object
     },
     value: {
@@ -39,30 +39,32 @@ export default {
     }
   },
 
+  data() {
+    return {
+      name: "v-form",
+      config: {
+        fields: this.fields
+      }
+    };
+  },
+
   provide() {
     return {
-      CONFIG: this.config,
+      SETTINGS: this.settings,
       ADAPTERS: this.adapters
     };
   },
 
-  data() {
-    return {
-      valueObj: {}
-    };
-  },
-
   created() {
-    if (this.fields) {
-      let defaultValues = this.defaultValues(this.fields);
-      this.$emit("input", {...defaultValues});
-      this.$set(this, "valueObj", {...defaultValues});
-    } else {
-      console.error(
-        "The fields are not defined. If you're getting it from async process make sure you start rendering form after the fields are populated."
-      );
-      return;
-    }
+    // if (this.fields) {
+    //   let defaultValues = this.defaultValues(this.fields);
+    //   this.$emit("input", { ...defaultValues });
+    // } else {
+    //   console.error(
+    //     "The fields are not defined. If you're getting it from async process make sure you start rendering form after the fields are populated."
+    //   );
+    //   return;
+    // }
   },
 
   methods: {
@@ -70,20 +72,15 @@ export default {
      * Updates the value based on key and
      * emits all the values
      */
-    updateValue(data) {
-      this.$emit("input", data.value);
-      this.$set(this, "valueObj", data.valueObj);
-      this.$emit("update:meta", data.valueObj);
+    updateValue(args) {
+      this.$emit("input", args[0]);
+      this.$emit("update:meta-value", args[1][args[1].length - 1].metaValue);
 
-      //If value is not set by the setValue function
+      // If value is not set by the setValue function
       // This check will avoid infinite iteration on change and set-value
-      let changedActions = data.changed.map(item => item.action);
+      let changedActions = args[1].map(item => item.action);
       if (!changedActions.includes("set-value")) {
-        this.$emit("change", {
-          changed: data.changed,
-          value: this.value,
-          valueObj: this.valueObj
-        });
+        this.$emit("change", args[1]);
       }
     },
 

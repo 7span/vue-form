@@ -1,10 +1,11 @@
 <template lang="pug">
 .field(:class="fieldClasses")
+
   //Start Slots
   slot(:name="`field--start--${name}`" v-bind="slotScopes")
   slot(v-if="index!=null" :name="`field--start--${name}--${index}`" v-bind="slotScopes")
 
-  label(v-if="index==null || index===0") {{mergedConfig.label || titleCase(name)}}
+  label.field__label {{(mergedConfig.label || name) | titleCase}}
 
   //Field Group
   .field__group
@@ -17,8 +18,7 @@
       v-bind="{...mergedConfig}"
       :name="name"
       :value="value"
-      :value-obj="valueObj"
-      @loading="$emit('loading',$event)"
+      @loading="loading=$event"
       @input="input(arguments,{action:'input'})")
 
       //Passdown Slots
@@ -35,32 +35,24 @@
 <script>
 export default {
   name: "field",
-  mixins: [require("@/plugin/helper").default],
+  mixins: [
+    require("@/plugin/helper").default,
+    require("@/plugin/mixins/fields").default
+  ],
   props: {
-    index: {
-      default: null,
-      type: Number
-    },
-    config: {
-      type: Object
-    },
-    fields: {
-      type: Object
-    },
-    name: {
-      default: null
-    },
     value: {
       default: null
     },
-    valueObj: {
+    index: {
+      type: Number,
       default: null
     }
   },
 
   data() {
     return {
-      localConfig: {}
+      loading: false,
+      metaValue: null
     };
   },
 
@@ -71,17 +63,10 @@ export default {
   },
 
   computed: {
-    mergedConfig() {
-      return {
-        ...this.config,
-        ...this.localConfig
-      };
-    },
-
     slotScopes() {
       return {
         value: this.value,
-        valueObj: this.valueObj,
+        metaValue: this.metaValue,
         config: this.mergedConfig,
         index: this.index
       };
@@ -98,28 +83,16 @@ export default {
     },
 
     input(args, { action }) {
-      var toEmit;
-      // When the field is group, the value is already formatted.
-      // Just need to rearrange values to represent the parent field.
-      if (!args[1]) {
-        toEmit = args[0];
-      } else {
-        toEmit = {
+      var changed = [
+        {
           field: this.name,
+          action: action,
           value: args[0],
-          valueObj: args[1],
-          changed: [
-            {
-              field: this.name,
-              action: action,
-              value: args[0],
-              valueObj: args[1],
-              index: this.index
-            }
-          ]
-        };
-      }
-      this.$emit("input", toEmit);
+          metaValue: args[1],
+          index: this.index
+        }
+      ];
+      this.$emit("input", args[0], changed);
     },
 
     setValue({ field, value, index }) {
@@ -129,13 +102,23 @@ export default {
     },
 
     setConfig({ field, key, value, index }) {
+      if (field !== this.name) return;
       //Check If the field is same as provided
       //If index is not provided change the local config
-      if (field == this.name && (index == null || index == this.index)) {
+      if (index == null || index == this.index) {
         this.$set(this.localConfig, key, value);
       }
     }
   }
 };
 </script>
+
+<style lang="scss">
+.field__group {
+  > .blocks {
+    flex: 1 1 auto;
+  }
+}
+</style>
+
 

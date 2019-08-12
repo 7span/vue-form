@@ -1,5 +1,5 @@
 export default {
-  inject: ["CONFIG"],
+  inject: ["SETTINGS"],
   props: {
     label: {},
     interface: {},
@@ -11,9 +11,6 @@ export default {
     value: {
       default: null,
       type: [String, Number, Array, File, FileList, Object]
-    },
-    valueObj: {
-      default: null
     },
     design: {
       default: () => {},

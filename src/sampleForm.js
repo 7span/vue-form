@@ -59,9 +59,6 @@ export default {
         {
           _id: "1234",
           value: "1111"
-        },
-        {
-          value: "2222"
         }
       ],
       repeater: {
