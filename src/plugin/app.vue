@@ -1,18 +1,23 @@
 <template lang="pug">
 .v-form
+  
+  // Form Start Slot
   slot(name="form--start" :value="value")
-
+  
+  // Group
+  //- By default the first interface will always be a group of fields.
   group(
     key="v-form"
     :name="name"
     :config="config" 
     :value="value"
-    @input="updateValue(arguments)")
+    @input="input(arguments)")
 
     //Passdown Slots
     template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
       slot(:name="slot" v-bind="scope")
 
+  //Form End Slot
   slot(name="form--end" :value="value")
 
 </template>
@@ -20,7 +25,6 @@
 <script>
 export default {
   name: "v-form",
-  mixins: [require("@/plugin/helper").default],
   props: {
     settings: {
       type: Object
@@ -55,39 +59,42 @@ export default {
     };
   },
 
-  created() {
-    // if (this.fields) {
-    //   let defaultValues = this.defaultValues(this.fields);
-    //   this.$emit("input", { ...defaultValues });
-    // } else {
-    //   console.error(
-    //     "The fields are not defined. If you're getting it from async process make sure you start rendering form after the fields are populated."
-    //   );
-    //   return;
-    // }
-  },
-
   methods: {
     /**
-     * Updates the value based on key and
-     * emits all the values
+     * Emits the final value
+     * @param {Array} args
+     * @param {Object} args[0] Contains all the fields and values.
+     * @param {Array} args[1] The array of changed fields and its values.
      */
-    updateValue(args) {
-      this.$emit("input", args[0]);
-      this.$emit("update:meta-value", args[1][args[1].length - 1].metaValue);
+    input(args) {
+      let value = args[0];
+      let changed = [...args[1]]; //Cloning an array to remove reference;
+      let metaValue = changed[changed.length - 1].metaValue;
 
-      // If value is not set by the setValue function
+      this.$emit("input", value);
+      this.$emit("update:meta-value", metaValue);
+
+      // If value is not set by the setValue function, emit the change event
       // This check will avoid infinite iteration on change and set-value
-      let changedActions = args[1].map(item => item.action);
-      if (!changedActions.includes("set-value")) {
-        this.$emit("change", args[1]);
-      }
+      let actions = changed.map(item => item.action);
+      let emit = !actions.some(item => {
+        return [
+          "set-value",
+          "repeater-default-value",
+          "group-default-value"
+        ].includes(item);
+      });
+
+      if (emit) this.$emit("change", changed);
     },
 
+    /**
+     * Both the methods emits the event at root level.
+     * The field has a listner to find the required field and apply changes.
+     */
     setConfig(data) {
       this.$root.$emit("v-form::set-config", data);
     },
-
     setValue(data) {
       this.$root.$emit("v-form::set-value", data);
     }

@@ -7,6 +7,10 @@ export default {
     config: {
       type: Object,
       default: null
+    },
+    parentInterface: {
+      type: String,
+      default: null
     }
   },
 
@@ -28,6 +32,19 @@ export default {
       delete config.value;
 
       return config;
+    },
+
+    isLabel() {
+      if (this.parentInterface == "repeater") {
+        return false;
+      } else if (
+        this.parentInterface == "group" &&
+        this.index != null &&
+        this.index != 0
+      ) {
+        return false;
+      }
+      return true;
     }
   },
 

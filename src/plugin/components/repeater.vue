@@ -1,27 +1,34 @@
 <template lang="pug">
 .field.repeater
 
+  // Repeater Label
+  //- When the repeater mode is on, display the name of the field here to avoid repeatation in child fields.
   label.repeater__label {{name | titleCase}}
 
   .repeater__items
     .repeater__item(v-for="(item,i) in repeaterValue" v-show="item && !item._delete")
+      
+      // Repeater Input
       .repeater__input
         
-        //Field
+        // Field
+        //- Passdowm index value to child field to let it know the index.
         component(
           :is="componentType(mergedConfig)"
-          :index="indexWithoutDeleted(i)"
-          :config="mergedConfig"
           :name="name" 
           :key="`${name}--${i}`"
+          :index="indexWithoutDeleted(i)"
+          :config="mergedConfig"
           :value="repeaterValue[i] && repeaterValue[i].value"
-          @input="input(arguments,{index:i})")
+          parent-interface="repeater"
+          @setRepeaterConfig="setConfig($event)"
+          @input="input(arguments,i)")
 
-          //Passdown Slots
+          // Passdown Slots
           template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
             slot(:name="slot" v-bind="scope")
 
-      //Remove Repeater
+      // Remove Repeater
       .repeater__remove(v-if="canRemoveRepeat")
         button.button.is-danger.is-trn.p--0.is-square(@click="removeRepeat(i)") 
           slot(name="repeater--remove")
@@ -43,10 +50,7 @@
 <script>
 export default {
   name: "repeater",
-  mixins: [
-    require("@/plugin/helper").default,
-    require("@/plugin/mixins/fields").default
-  ],
+  mixins: [require("@/plugin/mixins/fields").default],
   components: {
     IconRemove: require("@/plugin/components/icons/remove").default,
     IconAdd: require("@/plugin/components/icons/add").default
@@ -94,20 +98,24 @@ export default {
   },
 
   methods: {
+    /**
+     * Sets the default values of Repeater fields.
+     * Ensures the minimum repeater required fields.
+     */
     setDefaultValues() {
       let min = this.config.repeater.min || 1;
       let defalutValueCount = this.value.length;
       let diff = min - defalutValueCount;
+      this.repeaterValue = [...this.value];
+      this.repeaterMetaValue = [...this.value];
 
+      // If the diffrence of minimum required fields and default values is greater than 0
+      // Need to push the blank values in repeater values to show minimum required fields
       if (diff > 0) {
-        let diffArray = new Array(diff);
-        let defaultValue = [...this.value, ...diffArray];
-        this.$set(this, "repeaterValue", defaultValue);
-        this.$set(this, "repeaterMetaValue", defaultValue);
-      } else {
-        let defaultValue = [...this.value];
-        this.$set(this, "repeaterValue", defaultValue);
-        this.$set(this, "repeaterMetaValue", defaultValue);
+        for (var i = 0; i < diff; i++) {
+          this.repeaterValue.push({ value: null });
+          this.repeaterMetaValue.push({ value: null });
+        }
       }
 
       this.$emit("input", this.repeaterValue, [
@@ -136,20 +144,16 @@ export default {
     repeat() {
       if (this.canRepeat) {
         // This adds an object with null values
-        // To make sure that every fields added in DOM has respective key.
-        let defaultValues = null;
-        if (this.config.fields) {
-          defaultValues = this.defaultValues(this.config.fields);
-        }
         let index = this.repeaterValue.length;
         this.$set(this.repeaterValue, index, {
-          value: defaultValues
+          value: null
         });
 
         this.$emit("input", this.repeaterValue, [
           {
             field: this.name,
             value: this.repeaterValue,
+            metaValue: this.repeaterMetaValue,
             action: "repeater-add",
             index: this.indexWithoutDeleted(index)
           }
@@ -174,33 +178,65 @@ export default {
           field: this.name,
           value: this.repeaterValue,
           action: "repeater-remove",
+          metaValue: this.repeaterMetaValue,
           index: this.indexWithoutDeleted(index)
         }
       ]);
     },
 
-    input(args, { index }) {
-      var changeMerged;
-      console.log("==>>", JSON.stringify(this.repeaterValue));
+    /**
+     * On the input of child fields, merges the values in local values and emits the merged value.
+     * @param {Array} args Contains 2 values. 1st is original value, 2nd is metaValue
+     * @param {String,Object,Array} args[0] The field value
+     * @param {Array} args[1] The array of changed fields and its values.
+     */
+    input(args, index) {
+      let value = args[0];
+      let changed = [...args[1]];
+
+      // Merging the original value
       this.$set(this.repeaterValue, index, {
         value: args[0]
       });
-      console.log("==>>", JSON.stringify(this.repeaterValue));
 
+      // Merging the meta value
       this.$set(this.repeaterMetaValue, index, {
-        value: args[1][args[1].length - 1].metaValue
+        value: changed[changed.length - 1].metaValue
       });
 
-      let changed = {
+      changed.push({
         field: this.name,
         action: "repeater-input",
         value: this.repeaterValue,
         metaValue: this.repeaterMetaValue,
         index: index
-      };
-      changeMerged = [...args[1], changed];
+      });
 
-      this.$emit("input", this.repeaterValue, changeMerged);
+      this.$emit("input", this.repeaterValue, changed);
+    },
+
+    /**
+     * When the configuration of the repeater child is updated and no index is provided,
+     * The configuration should apply to all existing and upcoming repeater fields.
+     * @param {Obj} args
+     * @param {String} args.field Which field's config to update
+     * @param {String} args.key Option to update
+     * @param {String} args.value Option's value to set
+     */
+    setConfig({ key, value, field }) {
+      //If field is defined, the request came from form-group and hence merge it with fields.
+      if (field) {
+        let fields = {
+          ...this.config.fields,
+          [field]: {
+            ...this.config.fields[field],
+            [key]: value
+          }
+        };
+        this.$set(this.localConfig, "fields", fields);
+      } else {
+        this.$set(this.localConfig, key, value);
+      }
     }
   }
 };
