@@ -82,8 +82,23 @@ export default {
         value: this.value,
         metaValue: this.metaValue,
         config: this.mergedConfig,
+        parentValue: this.parentValue,
+        parentMetaValue: this.parentMetaValue,
         index: this.index
       };
+    },
+
+    isLabel() {
+      if (this.parentInterface == "repeater") {
+        return false;
+      } else if (
+        this.parentInterface == "group" &&
+        this.index != null &&
+        this.index != 0
+      ) {
+        return false;
+      }
+      return true;
     }
   },
 
@@ -138,7 +153,6 @@ export default {
      * Updates the configuration of a field.
      * If the index is provided and field is child of repeater, only that index will updated.
      * If not, will update all exisiting fields.
-     * TODO: Make sure the upcoming repeater fields also inherit the updated configuration.
      * @param {Object} data
      * @param {String} data.field The field name to update config of.
      * @param {String} data.key Which key of a config object to update.

@@ -32,6 +32,8 @@
         :index="index"
         :value="groupValue && groupValue[fieldName]"
         :parent-interface="name=='v-form'?null:'group'"
+        :parent-value="groupValue"
+        :parent-meta-value="groupMetaValue"
         @setGroupConfig="$emit('setRepeaterConfig',$event)"
         @input="input(arguments,fieldName)")
 
@@ -142,6 +144,8 @@ export default {
       return {
         value: this.value && this.value[name],
         metaValue: this.metaValue && this.metaValue[name],
+        parentValue: this.value,
+        parentMetaValue: this.metaValue,
         config: this.config.fields[name],
         index: this.index
       };

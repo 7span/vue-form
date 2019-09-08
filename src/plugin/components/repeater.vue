@@ -21,6 +21,8 @@
           :config="mergedConfig"
           :value="repeaterValue[i] && repeaterValue[i].value"
           parent-interface="repeater"
+          :parent-value="repeaterValue"
+          :parent-meta-value="repeaterMetaValue"
           @setRepeaterConfig="setConfig($event)"
           @input="input(arguments,i)")
 
