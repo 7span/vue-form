@@ -1,61 +1,75 @@
-<template lang="pug">
-.field.repeater
+<template>
+  <div class="field repeater">
+    <!-- Repeater Label
+    When the repeater mode is on, display the name of the field here to avoid repeatation in child fields.-->
+    <label class="repeater__label">{{name | titleCase}}</label>
 
-  // Repeater Label
-  //- When the repeater mode is on, display the name of the field here to avoid repeatation in child fields.
-  label.repeater__label {{name | titleCase}}
+    <div class="repeater__items">
+      <div class="repeater__item" v-for="(item,i) in repeaterValue" v-show="item && !item._delete">
+        <!-- Repeater Input -->
+        <div class="repeater__input">
+          <!-- Field
+          Passdowm index value to child field to let it know the index.-->
+          <component
+            :is="componentType(mergedConfig)"
+            :name="name"
+            :key="`${name}--${i}`"
+            :index="indexWithoutDeleted(i)"
+            :config="mergedConfig"
+            :value="repeaterValue[i] && repeaterValue[i].value"
+            parent-interface="repeater"
+            :parent-value="repeaterValue"
+            :parent-meta-value="repeaterMetaValue"
+            @setRepeaterConfig="setConfig($event)"
+            @input="input(arguments,i)"
+          >
+            <!-- Passdown Slots -->
+            <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+              <slot :name="slot" v-bind="scope" />
+            </template>
+          </component>
+        </div>
 
-  .repeater__items
-    .repeater__item(v-for="(item,i) in repeaterValue" v-show="item && !item._delete")
-      
-      // Repeater Input
-      .repeater__input
-        
-        // Field
-        //- Passdowm index value to child field to let it know the index.
-        component(
-          :is="componentType(mergedConfig)"
-          :name="name" 
-          :key="`${name}--${i}`"
-          :index="indexWithoutDeleted(i)"
-          :config="mergedConfig"
-          :value="repeaterValue[i] && repeaterValue[i].value"
-          parent-interface="repeater"
-          :parent-value="repeaterValue"
-          :parent-meta-value="repeaterMetaValue"
-          @setRepeaterConfig="setConfig($event)"
-          @input="input(arguments,i)")
+        <!-- Remove Repeater -->
+        <div v-if="canRemoveRepeat" class="repeater__remove">
+          <button
+            class="button button--danger button--trn p--0 button--square"
+            @click="removeRepeat(i)"
+          >
+            <slot name="repeater--remove">
+              <icon-remove class="button__icon"></icon-remove>
+            </slot>
+          </button>
+        </div>
+      </div>
+    </div>
 
-          // Passdown Slots
-          template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
-            slot(:name="slot" v-bind="scope")
+    <!-- Desc -->
+    <small v-if="config.desc">{{config.desc}}</small>
 
-      // Remove Repeater
-      .repeater__remove(v-if="canRemoveRepeat")
-        button.button.is-danger.is-trn.p--0.is-square(@click="removeRepeat(i)") 
-          slot(name="repeater--remove")
-            icon-remove.button__icon
-  
-  //Desc
-  small(v-if="config.desc") {{config.desc}}
-
-  //Add Repeater
-  .repeater__add
-    button.button.is-primary.is-trn.p--0.mt--sm(
-      v-if="config.repeater && canRepeat"
-      @click="repeat") 
-        slot(name="repeater--add")
-          icon-add.button__icon
-          span Add More
+    <!-- Add Repeater -->
+    <div class="repeater__add">
+      <button
+        v-if="config.repeater && canRepeat"
+        @click="repeat"
+        class="button button--primary button--trn p--0 mt--sm"
+      >
+        <slot name="repeater--add">
+          <icon-add class="button__icon"></icon-add>
+          <span>Add More</span>
+        </slot>
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
   name: "repeater",
-  mixins: [require("@/plugin/mixins/fields").default],
+  mixins: [require("../mixins/fields").default],
   components: {
-    IconRemove: require("@/plugin/components/icons/remove").default,
-    IconAdd: require("@/plugin/components/icons/add").default
+    IconRemove: require("./icons/remove").default,
+    IconAdd: require("./icons/add").default
   },
   inject: ["SETTINGS"],
   props: {

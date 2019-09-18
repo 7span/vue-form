@@ -1,10 +1,10 @@
 import Vue from "vue";
 import App from "./App.vue";
 
-import plugin from "./plugin";
+import plugin from "./plugin.js";
 Vue.use(plugin);
 
-require("@7span/styles/scss/styles.scss");
+require("@7span/shilp/scss/styles.scss");
 
 Vue.config.productionTip = false;
 

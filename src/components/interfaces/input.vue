@@ -1,5 +1,5 @@
 <template lang="pug">
-input.field__block(
+input.field-block(
   :type="$attrs.type"
   :value="value"
   @input="input($event)")
@@ -8,7 +8,7 @@ input.field__block(
 <script>
 export default {
   name: "interface-input",
-  mixins: [require("@/plugin/mixins/interface").default],
+  mixins: [require("../../mixins/interface").default],
   methods: {
     input(e) {
       let value = e.target.value;

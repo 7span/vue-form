@@ -1,7 +1,7 @@
 <template lang="pug">
 .field__input
-  .grid(:class="`is-${design.grid}`") 
-    .field(
+  .options
+    div(
       :class="[typeClass]" 
       v-for="choice in preparedChoices")
       input(
@@ -17,12 +17,12 @@
 export default {
   name: "interface-choice",
   mixins: [
-    require("@/plugin/mixins/interface").default,
-    require("@/plugin/mixins/choice").default
+    require("../../mixins/interface").default,
+    require("../../mixins/choice").default
   ],
   computed: {
     typeClass() {
-      return `is-${this.$attrs.type}`;
+      return this.$attrs.type;
     }
   },
   data() {

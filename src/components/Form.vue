@@ -1,25 +1,20 @@
-<template lang="pug">
-.v-form
-  
-  // Form Start Slot
-  slot(name="form--start" :value="value")
-  
-  // Group
-  //- By default the first interface will always be a group of fields.
-  group(
-    key="v-form"
-    :name="name"
-    :config="config" 
-    :value="value"
-    @input="input(arguments)")
+<template>
+  <div class="v-form">
+    <!-- Form Start Slot -->
+    <slot name="form--start" :value="value" />
 
-    //Passdown Slots
-    template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
-      slot(:name="slot" v-bind="scope")
+    <!-- Group -->
+    <!--  By default the first interface will always be a group of fields. -->
+    <group key="v-form" :name="name" :config="config" :value="value" @input="input(arguments)">
+      <!-- Passdown Slots -->
+      <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+        <slot :name="slot" v-bind="scope" />
+      </template>
+    </group>
 
-  //Form End Slot
-  slot(name="form--end" :value="value")
-
+    <!-- Form End Slot -->
+    <slot name="form--end" :value="value" />
+  </div>
 </template>
 
 <script>

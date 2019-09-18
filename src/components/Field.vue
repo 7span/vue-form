@@ -1,59 +1,50 @@
-<template lang="pug">
-.field(:class="fieldClasses")
+<template>
+  <div class="field" :class="fieldClasses">
+    <!-- Start Slots
+    If the index is not provided the slots will render in all the repeater child fields
+    To add specific index slot, append slot index.
+    The syntex is: field--start--[field-name]--[index]-->
+    <slot :name="`field--start--${name}`" v-bind="slotScopes" />
+    <slot v-if="index!=null" :name="`field--start--${name}--${index}`" v-bind="slotScopes" />
 
-  //Start Slots
-  //- If the index is not provided the slots will render in all the repeater child fields
-  //- To add specific index slot, append slot index.
-  //- The syntex is: field--start--[field-name]--[index]
-  slot(
-    :name="`field--start--${name}`" 
-    v-bind="slotScopes")
-  slot(
-    v-if="index!=null" 
-    :name="`field--start--${name}--${index}`" 
-    v-bind="slotScopes")
+    <!-- Label
+    If the index is defined, the label should be displayed at repeater level.-->
+    <label v-if="isLabel" class="field__label">{{(mergedConfig.label || name) | titleCase}}</label>
 
-  // Label
-  //- If the index is defined, the label should be displayed at repeater level.
-  label.field__label(v-if="isLabel") {{(mergedConfig.label || name) | titleCase}}
+    <!-- Field Group -->
+    <div class="field__group">
+      <div v-if="mergedConfig.before" class="field__before">{{mergedConfig.before}}</div>
 
-  // Field Group
-  .field__group
+      <!-- Interface
+      Extract all the configuration from this point to interface.
+      This will help directly apply HTML attributes on interfaces if not accepted as props.-->
+      <component
+        :is="`s-${mergedConfig.interface}`"
+        :name="name"
+        v-bind="{...mergedConfig}"
+        :value="value"
+        :index="index"
+        @loading="loading=$event"
+        @input="input(arguments,{action:'input'})"
+      >
+        <!-- Passdown Slots -->
+        <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+          <slot :name="slot" v-bind="scope" />
+        </template>
+      </component>
+      <div v-if="mergedConfig.after" class="field__after">{{mergedConfig.after}}</div>
+    </div>
 
-    .field__before(v-if="mergedConfig.before") {{mergedConfig.before}}
-
-    // Interface
-    //- Extract all the configuration from this point to interface.
-    //- This will help directly apply HTML attributes on interfaces if not accepted as props.
-    component(
-      :is="`v-${mergedConfig.interface}`"
-      :name="name"
-      v-bind="{...mergedConfig}"
-      :value="value"
-      :index="index"
-      @loading="loading=$event"
-      @input="input(arguments,{action:'input'})")
-
-      // Passdown Slots
-      template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
-        slot(:name="slot" v-bind="scope")
-
-    .field__after(v-if="mergedConfig.after") {{mergedConfig.after}}
-
-  // End Slots
-  slot(
-    :name="`field--end--${name}`" 
-    v-bind="slotScopes")
-  slot(
-    v-if="index!=null" 
-    :name="`field--end--${name}--${index}`" 
-    v-bind="slotScopes")
+    <!-- End Slots -->
+    <slot :name="`field--end--${name}`" v-bind="slotScopes" />
+    <slot v-if="index!=null" :name="`field--end--${name}--${index}`" v-bind="slotScopes" />
+  </div>
 </template>
 
 <script>
 export default {
   name: "field",
-  mixins: [require("@/plugin/mixins/fields").default],
+  mixins: [require("../mixins/fields").default],
   props: {
     value: {
       default: null
@@ -105,9 +96,9 @@ export default {
   methods: {
     fieldClasses() {
       let classes = [`field--${this.config.interface}`];
-      if (this.state == "invalid") classes.push("is-danger");
-      if (this.state == "valid") classes.push("is-success");
-      if (this.loading) classes.push("is-loading");
+      if (this.state == "invalid") classes.push("field--danger");
+      if (this.state == "valid") classes.push("field--success");
+      if (this.loading) classes.push("field--loading");
       return classes;
     },
 

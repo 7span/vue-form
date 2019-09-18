@@ -1,5 +1,5 @@
 <template lang="pug">
-input.field__block(
+input.field-block(
   type="file"
   @change="input($event)")
 </template>
@@ -7,7 +7,7 @@ input.field__block(
 <script>
 export default {
   name: "interface-file",
-  mixins: [require("@/plugin/mixins/interface").default],
+  mixins: [require("../../mixins/interface").default],
   methods: {
     input(e) {
       this.$emit("input", e.target.files, {

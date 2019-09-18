@@ -1,5 +1,5 @@
 <template lang="pug">
-textarea.field__block(
+textarea.field-block(
   :value="value"
   @input="input(e)")
 </template>
@@ -7,7 +7,7 @@ textarea.field__block(
 <script>
 export default {
   name: "interface-textarea",
-  mixins: [require("@/plugin/mixins/interface").default],
+  mixins: [require("../../mixins/interface").default],
   props: {
     rows: {
       default: 5,

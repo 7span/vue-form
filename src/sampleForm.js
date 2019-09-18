@@ -11,7 +11,7 @@ export default {
   },
   fields: {
     name: {
-      interface: "input",
+      interface: "textbox",
       type: "text",
       label: "Name",
       placeholder: "e.g. Harsh Kansagara",
@@ -24,19 +24,18 @@ export default {
       }
     },
     email: {
-      interface: "input",
+      interface: "textbox",
       placeholder: "e.g. mail@theharsh.in",
       type: "email"
     },
     gender: {
-      interface: "choice",
-      type: "radio",
+      interface: "radio",
       value: "male",
       design: {
         grid: 2,
         col: 6
       },
-      choices: [
+      options: [
         {
           label: "Male",
           value: "male"
@@ -48,13 +47,13 @@ export default {
       ]
     },
     husbund_name: {
-      interface: "input"
+      interface: "textbox"
     },
     father_name: {
-      interface: "input"
+      interface: "textbox"
     },
     education: {
-      interface: "input",
+      interface: "textbox",
       value: [
         {
           _id: "1234",
@@ -76,20 +75,20 @@ export default {
       },
       fields: {
         company: {
-          interface: "input",
+          interface: "textbox",
           design: {
             col: 4
           }
         },
         years: {
-          interface: "input",
+          interface: "textbox",
           type: "number",
           design: {
             col: 4
           }
         },
         salary: {
-          interface: "input",
+          interface: "textbox",
           design: {
             col: 4
           }
@@ -107,13 +106,13 @@ export default {
       },
       fields: {
         e_company: {
-          interface: "input",
+          interface: "textbox",
           design: {
             col: 4
           }
         },
         e_years: {
-          interface: "input",
+          interface: "textbox",
           type: "number",
           design: {
             col: 4
@@ -131,7 +130,7 @@ export default {
           messages: {
             invalid: "Please enter a valid title"
           },
-          choices: [
+          options: [
             {
               value: 1,
               label: "Amee Jagani"
@@ -161,14 +160,13 @@ export default {
       }
     },
     skills: {
-      interface: "choice",
-      type: "checkbox",
+      interface: "checkbox",
       design: {
         grid: 4,
         col: 12
       },
       value: ["html", "js"],
-      choices: [
+      options: [
         {
           label: "HTML",
           value: "html"
@@ -219,7 +217,7 @@ export default {
     },
     city: {
       interface: "select",
-      choices: [
+      options: [
         {
           label: "Ahmedabad",
           value: "ahmedabad"
@@ -242,10 +240,10 @@ export default {
       }
     },
     photo: {
-      interface: "file"
+      interface: "textbox"
     },
     birth_date: {
-      interface: "input",
+      interface: "textbox",
       type: "date"
     }
   }

@@ -1,19 +1,20 @@
 <template lang="pug">
-select.field__block(
-  :value="value"
-  @change="input($event)")
-  option(:value="null" disabled="disabled" selected) {{$attrs.placeholder || "Select Option"}}
-  option(
-    v-for="choice in preparedChoices" 
-    :value="choice[choicesConfig.valueKey]") {{choice[choicesConfig.labelKey]}}
+.select.field-block
+  select(
+    :value="value"
+    @change="input($event)")
+    option(:value="null" disabled="disabled" selected) {{$attrs.placeholder || "Select Option"}}
+    option(
+      v-for="choice in preparedChoices" 
+      :value="choice[choicesConfig.valueKey]") {{choice[choicesConfig.labelKey]}}
 </template>
 
 <script>
 export default {
   name: "interface-select",
   mixins: [
-    require("@/plugin/mixins/interface").default,
-    require("@/plugin/mixins/choice").default
+    require("../../mixins/interface").default,
+    require("../../mixins/choice").default
   ],
   methods: {
     /**

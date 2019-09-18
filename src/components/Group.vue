@@ -1,55 +1,56 @@
-<template lang="pug">
-.group.field
+<template>
+  <div class="group field">
+    <!-- Group Label
+    Hide if it is the top level group
+    If index is provided, the repeater has already displayed the label.-->
+    <label v-if="name!='v-form' && index==null" class="group__label">{{name | titleCase}}</label>
 
-  // Group Label
-  //- Hide if it is the top level group
-  //- If index is provided, the repeater has already displayed the label.
-  label.group__label(v-if="name!='v-form' && index==null") {{name | titleCase}}
+    <div class="blocks">
+      <div
+        v-for="fieldConfig,fieldName in config.fields"
+        v-show="!fieldConfig.hide"
+        :class="[blockClasses(fieldName,fieldConfig)]"
+        class="block"
+      >
+        <!-- Before Slots -->
+        <slot :name="`field--before--${fieldName}`" v-bind="slotScopes(fieldName)" />
+        <slot
+          v-if="index!=null"
+          :name="`field--before--${fieldName}--${index}`"
+          v-bind="slotScopes(fieldName)"
+        />
 
-  .blocks
+        <!-- Field
+        Need to keep the top level group's child interfaces as null to manage lable displays.-->
+        <component
+          :is="componentType(fieldConfig)"
+          :key="fieldName"
+          :name="fieldName"
+          :config="fieldConfig"
+          :index="index"
+          :value="groupValue && groupValue[fieldName]"
+          :parent-interface="name=='v-form'?null:'group'"
+          :parent-value="groupValue"
+          :parent-meta-value="groupMetaValue"
+          @setGroupConfig="$emit('setRepeaterConfig',$event)"
+          @input="input(arguments,fieldName)"
+        >
+          <!-- Passdown Slots 3 -->
+          <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+            <slot :name="slot" v-bind="scope" />
+          </template>
+        </component>
 
-    .block(
-      v-for="fieldConfig,fieldName in config.fields"
-      v-show="!fieldConfig.hide"
-      :class="[blockClasses(fieldName,fieldConfig)]")
-      
-      // Before Slots
-      slot(
-        :name="`field--before--${fieldName}`" 
-        v-bind="slotScopes(fieldName)")
-      slot(
-        v-if="index!=null" 
-        :name="`field--before--${fieldName}--${index}`" 
-        v-bind="slotScopes(fieldName)")
-
-      // Field
-      //- Need to keep the top level group's child interfaces as null to manage lable displays.
-      component(
-        :is="componentType(fieldConfig)"
-        :key="fieldName" 
-        :name="fieldName"
-        :config="fieldConfig"
-        :index="index"
-        :value="groupValue && groupValue[fieldName]"
-        :parent-interface="name=='v-form'?null:'group'"
-        :parent-value="groupValue"
-        :parent-meta-value="groupMetaValue"
-        @setGroupConfig="$emit('setRepeaterConfig',$event)"
-        @input="input(arguments,fieldName)")
-
-        // Passdown Slots
-        template(v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope")
-          slot(:name="slot" v-bind="scope")
-
-      // After Slots
-      slot(
-        :name="`field--after--${fieldName}`" 
-        v-bind="slotScopes(fieldName)")
-      slot(
-        v-if="index!=null" 
-        :name="`field--after--${fieldName}--${index}`" 
-        v-bind="slotScopes(fieldName)")
-      
+        <!-- After Slots -->
+        <slot :name="`field--after--${fieldName}`" v-bind="slotScopes(fieldName)" />
+        <slot
+          v-if="index!=null"
+          :name="`field--after--${fieldName}--${index}`"
+          v-bind="slotScopes(fieldName)"
+        />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -57,7 +58,7 @@ export default {
   name: "group",
   inject: ["SETTINGS"],
 
-  mixins: [require("@/plugin/mixins/fields").default],
+  mixins: [require("../mixins/fields").default],
 
   props: {
     value: {
@@ -156,12 +157,12 @@ export default {
      * If not defined, gets it from default configs
      */
     blockClasses(name, config) {
-      let classes = [`block--${name}`];
+      let classes = [`block block--${name}`];
       let col =
         (config.design && config.design.col) ||
         (this.SETTINGS.defaults.design && this.SETTINGS.defaults.design.col) ||
         12;
-      classes.push(`is-${col}`);
+      classes.push(`block--${col}`);
       return classes;
     }
   }
