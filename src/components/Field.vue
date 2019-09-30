@@ -9,7 +9,10 @@
 
     <!-- Label
     If the index is defined, the label should be displayed at repeater level.-->
-    <label v-if="isLabel" class="field__label">{{(mergedConfig.label || name) | titleCase}}</label>
+    <label v-if="isLabel" class="field__label">
+      <template v-if="mergedConfig.label">{{mergedConfig.label}}</template>
+      <template v-else>{{name | titleCase}}</template>
+    </label>
 
     <!-- Field Group -->
     <div class="field__group">
@@ -21,7 +24,7 @@
       <component
         :is="`s-${mergedConfig.interface}`"
         :name="name"
-        v-bind="{...mergedConfig}"
+        v-bind="{...fieldProps}"
         :value="value"
         :index="index"
         @loading="loading=$event"
@@ -68,6 +71,13 @@ export default {
   },
 
   computed: {
+    fieldProps() {
+      if (["repeater", "group"].includes(this.mergedConfig.interface)) {
+        return this.mergedConfig;
+      } else {
+        return this.mergedConfig.props;
+      }
+    },
     slotScopes() {
       return {
         value: this.value,
@@ -135,7 +145,7 @@ export default {
      */
     setValue({ field, value, index }) {
       if (field !== this.name) return;
-      if (index == null || index == this.index) {
+      if (index == this.index) {
         this.input([value, { value }], { action: "set-value" });
       }
     },

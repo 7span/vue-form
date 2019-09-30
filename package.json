@@ -1,10 +1,11 @@
 {
   "name": "@7span/vue-form",
-  "version": "0.1.0-beta.7",
+  "version": "0.1.0-beta.10",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name vue-form src/plugin/index.js",
-    "lint": "vue-cli-service lint"
+    "build": "vue-cli-service build --target lib --name vue-form src/plugin.js",
+    "lint": "vue-cli-service lint",
+    "prepublishOnly": "npm run build"
   },
   "publishConfig": {
     "access": "public"

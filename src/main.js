@@ -4,7 +4,7 @@ import App from "./App.vue";
 import plugin from "./plugin.js";
 Vue.use(plugin);
 
-require("@7span/shilp/scss/styles.scss");
+require("./scss/style.scss");
 
 Vue.config.productionTip = false;
 

@@ -7,7 +7,7 @@
         .gy--sm
           button.button(@click='setValue({field: "email",value: "harsh@7span.com"})') Value
           button.button(@click='setValue({field: "education",value: "BTECH",index: 1})') Repeater Value w/ Index
-          button.button(@click='setValue({field: "education",value: "B.E."})') Repeater Value w/o Index
+          button.button(@click='setValue({field: "education",value: [{value:"B.E. 1"},{value:"B.E. 2"}]})') Repeater Value w/o Index
           button.button(@click='setValue({field: "company",value: "7Span"})') Group Value
           button.button(@click='setValue({field: "e_company",value: "7Span Tech",index: 1})') Grouped Repeater Value w/ Index
           button.button(@click='setValue({field: "e_company",value: "7Span Tech"})') Grouped Repeater Value w/o Index
@@ -100,6 +100,10 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
 .demo {
   max-width: 700px;
   margin: 0 auto;

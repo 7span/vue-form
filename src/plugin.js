@@ -1,5 +1,6 @@
 import helper from "./helper";
 import ShilpVue from "@7span/shilp-vue/src/plugin.js";
+import axios from "axios";
 
 const install = (Vue, options) => {
   let appWithOptions = Vue.extend({
@@ -11,7 +12,9 @@ const install = (Vue, options) => {
     }
   });
 
-  Vue.use(ShilpVue);
+  Vue.use(ShilpVue, {
+    axios: axios
+  });
 
   Vue.component("VForm", appWithOptions);
   Vue.component("Repeater", require("./components/Repeater.vue").default);

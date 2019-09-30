@@ -89,6 +89,7 @@ export default {
 
   created() {
     this.setDefaultValues();
+    this.$root.$on("v-form::set-value", data => this.setValue(data));
   },
 
   computed: {
@@ -216,9 +217,11 @@ export default {
       });
 
       // Merging the meta value
-      this.$set(this.repeaterMetaValue, index, {
-        value: changed[changed.length - 1].metaValue
-      });
+      if (changed.length > 0) {
+        this.$set(this.repeaterMetaValue, index, {
+          value: changed[changed.length - 1].metaValue
+        });
+      }
 
       changed.push({
         field: this.name,
@@ -252,6 +255,29 @@ export default {
         this.$set(this.localConfig, "fields", fields);
       } else {
         this.$set(this.localConfig, key, value);
+      }
+    },
+
+    /**
+     * Updates the value of the repeater field.
+     * @param {Object} data
+     * @param {String} data.field The field name to update value of.
+     * @param {String,Number} data.value The value to set of field.
+     */
+    setValue({ field, value, index }) {
+      if (field !== this.name) return;
+      //If index is null, expect the array.
+      if (index == null) {
+        this.repeaterValue = [...value];
+        this.repeaterMetaValue = [...value];
+        this.$emit("input", this.repeaterValue, [
+          {
+            field: this.name,
+            action: "set-value",
+            value: this.repeaterValue,
+            metaValue: this.repeaterMetaValue
+          }
+        ]);
       }
     }
   }

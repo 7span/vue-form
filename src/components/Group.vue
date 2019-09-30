@@ -1,16 +1,16 @@
 <template>
-  <div class="group field">
+  <div class="group" :class="{'field':name!='v-form'}">
     <!-- Group Label
     Hide if it is the top level group
     If index is provided, the repeater has already displayed the label.-->
     <label v-if="name!='v-form' && index==null" class="group__label">{{name | titleCase}}</label>
 
-    <div class="blocks">
-      <div
+    <s-blocks>
+      <s-block
         v-for="fieldConfig,fieldName in config.fields"
         v-show="!fieldConfig.hide"
+        :size="fieldConfig.size || SETTINGS.defaults.size"
         :class="[blockClasses(fieldName,fieldConfig)]"
-        class="block"
       >
         <!-- Before Slots -->
         <slot :name="`field--before--${fieldName}`" v-bind="slotScopes(fieldName)" />
@@ -48,8 +48,8 @@
           :name="`field--after--${fieldName}--${index}`"
           v-bind="slotScopes(fieldName)"
         />
-      </div>
-    </div>
+      </s-block>
+    </s-blocks>
   </div>
 </template>
 
@@ -157,12 +157,7 @@ export default {
      * If not defined, gets it from default configs
      */
     blockClasses(name, config) {
-      let classes = [`block block--${name}`];
-      let col =
-        (config.design && config.design.col) ||
-        (this.SETTINGS.defaults.design && this.SETTINGS.defaults.design.col) ||
-        12;
-      classes.push(`block--${col}`);
+      let classes = [`block--${name}`];
       return classes;
     }
   }

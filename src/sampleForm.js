@@ -4,47 +4,62 @@ export default {
   config: {
     axios: axios,
     defaults: {
-      design: {
-        col: 6
+      size: {
+        desktop: 6
       }
     }
   },
   fields: {
+    state: {
+      interface: "select-plus",
+      size: {
+        desktop: 6
+      },
+      props: {
+        url: "https://api.mcook.co.in:8989/web/v3/search_form_entity/",
+        params: {
+          type: "inventory_category",
+          search: null
+        },
+        responseHook(res) {
+          return res.data.data;
+        }
+      }
+    },
     name: {
       interface: "textbox",
-      type: "text",
-      label: "Name",
-      placeholder: "e.g. Harsh Kansagara",
       value: "Harsh",
-      disabled: true,
-      messages: {
+      props: {
         desc: "No numbers please",
-        valid: "This is valid",
-        invalid: "This is invalid"
+        type: "text",
+        label: "Name",
+        placeholder: "e.g. Harsh Kansagara",
+        disabled: true
       }
     },
     email: {
       interface: "textbox",
-      placeholder: "e.g. mail@theharsh.in",
-      type: "email"
+      value: "hello",
+      props: {
+        placeholder: "e.g. mail@theharsh.in",
+        type: "email"
+      }
     },
     gender: {
       interface: "radio",
       value: "male",
-      design: {
-        grid: 2,
-        col: 6
-      },
-      options: [
-        {
-          label: "Male",
-          value: "male"
-        },
-        {
-          label: "Female",
-          value: "female"
-        }
-      ]
+      props: {
+        options: [
+          {
+            label: "Male",
+            value: "male"
+          },
+          {
+            label: "Female",
+            value: "female"
+          }
+        ]
+      }
     },
     husbund_name: {
       interface: "textbox"
@@ -54,6 +69,7 @@ export default {
     },
     education: {
       interface: "textbox",
+      size: 12,
       value: [
         {
           _id: "1234",
@@ -63,35 +79,24 @@ export default {
       repeater: {
         max: 4,
         min: 2
-      },
-      design: {
-        col: 12
       }
     },
     training: {
       interface: "group",
-      design: {
-        col: 12
-      },
+      size: 12,
       fields: {
         company: {
           interface: "textbox",
-          design: {
-            col: 4
-          }
+          size: "auto"
         },
         years: {
           interface: "textbox",
           type: "number",
-          design: {
-            col: 4
-          }
+          size: "auto"
         },
         salary: {
           interface: "textbox",
-          design: {
-            col: 4
-          }
+          size: "auto"
         }
       }
     },
@@ -101,21 +106,19 @@ export default {
         max: 10,
         min: 2
       },
-      design: {
-        col: 12
-      },
+      size: 12,
       fields: {
         e_company: {
           interface: "textbox",
-          design: {
-            col: 4
+          size: {
+            desktop: 4
           }
         },
         e_years: {
           interface: "textbox",
           type: "number",
-          design: {
-            col: 4
+          size: {
+            desktop: 4
           }
         },
         // salary: {
@@ -126,117 +129,94 @@ export default {
         // }
         e_po_title: {
           interface: "select",
-          label: "Title",
-          messages: {
-            invalid: "Please enter a valid title"
+          size: {
+            desktop: 4
           },
-          options: [
-            {
-              value: 1,
-              label: "Amee Jagani"
-            },
-            {
-              value: 2,
-              label: "Harsh K"
-            },
-            {
-              value: 3,
-              label: "Kaushal"
-            },
-            {
-              value: 4,
-              label: "Kaushal"
-            },
-            {
-              value: 5,
-              label: "Kaushal2"
-            }
-          ],
-          validation: "required",
-          design: {
-            col: 4
+          props: {
+            label: "Title",
+
+            options: [
+              {
+                value: 1,
+                label: "Amee Jagani"
+              },
+              {
+                value: 2,
+                label: "Harsh K"
+              },
+              {
+                value: 3,
+                label: "Kaushal"
+              },
+              {
+                value: 4,
+                label: "Kaushal"
+              },
+              {
+                value: 5,
+                label: "Kaushal2"
+              }
+            ]
           }
         }
       }
     },
     skills: {
       interface: "checkbox",
-      design: {
-        grid: 4,
-        col: 12
-      },
       value: ["html", "js"],
-      options: [
-        {
-          label: "HTML",
-          value: "html"
-        },
-        {
-          label: "CSS",
-          value: "css"
-        },
-        {
-          label: "JS",
-          value: "js"
-        },
-        {
-          label: "VueJS",
-          value: "vue"
-        },
-        {
-          label: "React",
-          value: "react"
-        },
-        {
-          label: "Angular",
-          value: "angular"
-        },
-        {
-          label: "Ready To Learn New Tech",
-          value: "learn"
-        }
-      ]
-    },
-    state: {
-      interface: "select",
-      choices: {
-        request: {
-          url: "https://api.mcook.co.in:8989/web/v3/search_form_entity/",
-          params: {
-            type: "inventory_category",
-            search: null
+      props: {
+        options: [
+          {
+            label: "HTML",
+            value: "html"
           },
-          adapter(res) {
-            return res.data.data;
+          {
+            label: "CSS",
+            value: "css"
+          },
+          {
+            label: "JS",
+            value: "js"
+          },
+          {
+            label: "VueJS",
+            value: "vue"
+          },
+          {
+            label: "React",
+            value: "react"
+          },
+          {
+            label: "Angular",
+            value: "angular"
+          },
+          {
+            label: "Ready To Learn New Tech",
+            value: "learn"
           }
-        }
-      },
-      design: {
-        col: 4
+        ]
       }
     },
     city: {
       interface: "select",
-      options: [
-        {
-          label: "Ahmedabad",
-          value: "ahmedabad"
-        },
-        {
-          label: "Rajkot",
-          value: "rajkot"
-        }
-      ],
-      design: {
-        col: 4
-      }
+      props: {
+        options: [
+          {
+            label: "Ahmedabad",
+            value: "ahmedabad"
+          },
+          {
+            label: "Rajkot",
+            value: "rajkot"
+          }
+        ]
+      },
+      size: 4
     },
-
     desc: {
       interface: "textarea",
-      rows: 2,
-      design: {
-        col: 12
+      props: {
+        rows: 2
       }
     },
     photo: {
