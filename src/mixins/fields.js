@@ -1,3 +1,4 @@
+import { merge } from "lodash";
 export default {
   props: {
     name: {
@@ -28,10 +29,8 @@ export default {
 
   computed: {
     mergedConfig() {
-      let config = {
-        ...this.config,
-        ...this.localConfig
-      };
+      const config = merge({}, this.config, this.localConfig);
+
       //Remove repeater configuration for child element.
       delete config.repeater;
       //Remove Default Values

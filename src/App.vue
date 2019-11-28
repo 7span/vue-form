@@ -1,47 +1,39 @@
 <template lang="pug">
   .demo.p--xl
 
-    .blocks
-      .block
+    s-blocks(gap="sm")
+      s-block(:size="6")
         p Set Values
-        .gy--sm
-          button.button(@click='setValue({field: "email",value: "harsh@7span.com"})') Value
-          button.button(@click='setValue({field: "education",value: "BTECH",index: 1})') Repeater Value w/ Index
-          button.button(@click='setValue({field: "education",value: [{value:"B.E. 1"},{value:"B.E. 2"}]})') Repeater Value w/o Index
-          button.button(@click='setValue({field: "company",value: "7Span"})') Group Value
-          button.button(@click='setValue({field: "e_company",value: "7Span Tech",index: 1})') Grouped Repeater Value w/ Index
-          button.button(@click='setValue({field: "e_company",value: "7Span Tech"})') Grouped Repeater Value w/o Index
-      .block
+        s-list(stack group)
+          s-button(color="primary" style_="outline" @click.native='setValue("email","harsh@7span.com")') Value
+          s-button(color="primary" style_="outline" @click.native='setValue("education","BTECH", 1)') Repeater Value w/ Index
+          s-button(color="primary" style_="outline" @click.native='setValue("education",[{value:"B.E. 1"},{value:"B.E. 2"}])') Repeater Value w/o Index
+          s-button(color="primary" style_="outline" @click.native='setValue("company","7Span")') Group Value
+          s-button(color="primary" style_="outline" @click.native='setValue("e_company","7Span Tech",1)') Grouped Repeater Value w/ Index
+          s-button(color="primary" style_="outline" @click.native='setValue("e_company","7Span Tech")') Grouped Repeater Value w/o Index
+      s-block(:size="6")
         p Set Config
-        .gy--sm.mb--xl
-          button.button(@click='setConfig({field: "email",key:"after",value: "#"})') Config
-          button.button(@click='setConfig({field: "education",key:"after",value: "#",index: 1})') Repeater Config w/ Index
-          button.button(@click='setConfig({field: "education",key:"after",value: "#"})') Repeater Config w/o Index
-          button.button(@click='setConfig({field: "company",key:"after",value: "#"})') Group Config
-          button.button(@click='setConfig({field: "e_company",key:"after",value: "#",index: 1})') Grouped Repeater Config w/ Index
-          button.button(@click='setConfig({field: "e_company",key:"after",value: "#"})') Grouped Repeater Config w/o Index
+        s-list(stack group)
+          s-button(color="primary" style_="outline" @click.native='setConfig("email","after","#")') Config
+          s-button(color="primary" style_="outline" @click.native='setConfig("education","after","#", 1)') Repeater Config w/ Index
+          s-button(color="primary" style_="outline" @click.native='setConfig("education","after","#")') Repeater Config w/o Index
+          s-button(color="primary" style_="outline" @click.native='setConfig("company","after","#")') Group Config
+          s-button(color="primary" style_="outline" @click.native='setConfig("e_company","after","#", 1)') Grouped Repeater Config w/ Index
+          s-button(color="primary" style_="outline" @click.native='setConfig("e_company","after","#")') Grouped Repeater Config w/o Index
 
 
     v-form(
       ref="vForm"
       v-model="values" 
       :meta-value.sync="metaValue"
+      @init="init()"
       @change="onChange" 
       :settings="settings" 
-      :fields="fields" 
-      :adapters="adapters")
-      
-      //template(slot="repeater--add") 
-        span ADDDDDDDD
-
+      :callback="callback"
+      :fields="fields")
       template(#form--start="data")
         h2 VForm
 
-      //template(#field--end--training="data") 
-        span  {{data}}
-
-      //template(#field--end--education--1="data") 
-        span {{data}}
 
 </template>
 
@@ -64,23 +56,25 @@ export default {
       settings: sampleForm.config,
       fields: sampleForm.fields,
       values: null,
-      adapters: {
-        po_title: {
-          choices(res) {
-            return res.data.data;
-          }
+      callback: {
+        email({ setValue, changed }) {
+          setValue("father_name", changed.value);
         }
       }
     };
   },
 
   methods: {
-    setValue(obj) {
-      this.$refs.vForm.setValue(obj);
+    init() {
+      console.log(this.values);
     },
 
-    setConfig(obj) {
-      this.$refs.vForm.setConfig(obj);
+    setValue(field, value, index) {
+      this.$refs.vForm.setValue(field, value, index);
+    },
+
+    setConfig(field, key, value, index) {
+      this.$refs.vForm.setConfig(field, key, value, index);
     },
 
     onChange(data) {

@@ -18,24 +18,17 @@
 </template>
 
 <script>
+import { merge } from "lodash";
+import settings from "./settings";
+
 export default {
   name: "v-form",
   props: {
-    settings: {
-      type: Object
-    },
-    adapters: {
-      type: Object
-    },
-    fields: {
-      type: Object
-    },
-    metaValue: {
-      type: Object
-    },
-    value: {
-      type: Object
-    }
+    settings: Object,
+    fields: Object,
+    metaValue: Object,
+    value: Object,
+    callback: Object
   },
 
   data() {
@@ -47,10 +40,13 @@ export default {
     };
   },
 
+  mounted() {
+    this.$emit("init");
+  },
+
   provide() {
     return {
-      SETTINGS: this.settings,
-      ADAPTERS: this.adapters
+      SETTINGS: merge(settings, this.settings)
     };
   },
 
@@ -80,18 +76,41 @@ export default {
         ].includes(item);
       });
 
-      if (emit) this.$emit("change", changed);
+      if (!emit) return;
+
+      this.$emit("change", changed);
+      //Excecute callback if provided
+      changed.map(item => {
+        if (this.callback && this.callback[item.field]) {
+          this.callback[item.field]({
+            setConfig: this.setConfig,
+            setValue: this.setValue,
+            changed: changed[0],
+            changeList: changed
+          });
+        }
+      });
     },
 
     /**
      * Both the methods emits the event at root level.
      * The field has a listner to find the required field and apply changes.
      */
-    setConfig(data) {
-      this.$root.$emit("v-form::set-config", data);
+    setConfig(field, key, value, index) {
+      // let keySet = key.split(".");
+      // if (keySet.length > 1) {
+      //   const type = keySet[0];
+      //   key = keySet[1];
+      // }
+      this.$root.$emit("v-form::set-config", {
+        field,
+        key,
+        value,
+        index
+      });
     },
-    setValue(data) {
-      this.$root.$emit("v-form::set-value", data);
+    setValue(field, value, index) {
+      this.$root.$emit("v-form::set-value", { field, value, index });
     }
   }
 };

@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import { set, cloneDeep } from "lodash";
+
 export default {
   name: "field",
   mixins: [require("../mixins/fields").default],
@@ -157,13 +159,16 @@ export default {
      * @param {Object} data
      * @param {String} data.field The field name to update config of.
      * @param {String} data.key Which key of a config object to update.
+     * @param {String} data.type Defines the top level of config key if the change is needed to be made in child keys
      * @param {String,Number} data.value Value to set of provided key
      * @param {Number} data.index If the field is child of repeater, index can be used to update that value only.
      */
     setConfig({ field, key, value, index }) {
       if (field !== this.name) return;
       if (index == null || index == this.index) {
-        this.$set(this.localConfig, key, value);
+        const config = cloneDeep(this.localConfig);
+        set(config, key, value);
+        this.$set(this, "localConfig", config);
       }
       //Make sure the upcoming repeater fields also inherit the updated configuration.
       if (index == null) {

@@ -5,12 +5,13 @@
     If index is provided, the repeater has already displayed the label.-->
     <label v-if="name!='v-form' && index==null" class="group__label">{{name | titleCase}}</label>
 
-    <s-blocks>
+    <s-blocks :gap="SETTINGS.defaults.block.gap">
       <s-block
-        v-for="fieldConfig,fieldName in config.fields"
+        v-for="(fieldConfig,fieldName) in config.fields"
         v-show="!fieldConfig.hide"
-        :size="fieldConfig.size || SETTINGS.defaults.size"
+        :size="blockSize(fieldConfig)"
         :class="[blockClasses(fieldName,fieldConfig)]"
+        :key="`group--${fieldName}`"
       >
         <!-- Before Slots -->
         <slot :name="`field--before--${fieldName}`" v-bind="slotScopes(fieldName)" />
@@ -54,6 +55,8 @@
 </template>
 
 <script>
+import { cloneDeep } from "lodash";
+
 export default {
   name: "group",
   inject: ["SETTINGS"],
@@ -61,26 +64,34 @@ export default {
   mixins: [require("../mixins/fields").default],
 
   props: {
-    value: {
-      default: null,
-      type: Object
-    },
-    index: {
-      type: Number,
-      default: null
-    }
+    value: Object,
+    metaValue: Object,
+    index: Number
   },
 
   data() {
+    const groupValue = cloneDeep(this.value || {});
+    const groupMetaValue = cloneDeep(this.metaValue || {});
     return {
       //Will contain local values of group
-      groupValue: {},
-      groupMetaValue: {}
+      groupValue: groupValue,
+      groupMetaValue: groupMetaValue
     };
   },
 
   created() {
     this.setDefaultValues();
+  },
+
+  // Need to watch the values if changed in parent
+  // Because group values are maintained locally
+  watch: {
+    value(nv) {
+      this.$set(this, "groupValue", nv);
+    },
+    metaValue(nv) {
+      this.$set(this, "groupMetaValue", nv);
+    }
   },
 
   methods: {
@@ -159,6 +170,14 @@ export default {
     blockClasses(name, config) {
       let classes = [`block--${name}`];
       return classes;
+    },
+
+    blockSize(config) {
+      if (config.block && config.block.size) {
+        return config.block.size;
+      } else {
+        return this.SETTINGS.defaults.block.size;
+      }
     }
   }
 };

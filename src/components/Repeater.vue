@@ -5,7 +5,12 @@
     <label class="repeater__label">{{name | titleCase}}</label>
 
     <div class="repeater__items">
-      <div class="repeater__item" v-for="(item,i) in repeaterValue" v-show="item && !item._delete">
+      <div
+        class="repeater__item"
+        v-for="(item,i) in repeaterValue"
+        :key="`repeater--${name}--${i}`"
+        v-show="item && !item._delete"
+      >
         <!-- Repeater Input -->
         <div class="repeater__input">
           <!-- Field
@@ -13,11 +18,11 @@
           <component
             :is="componentType(mergedConfig)"
             :name="name"
-            :key="`${name}--${i}`"
             :index="indexWithoutDeleted(i)"
             :config="mergedConfig"
-            :value="repeaterValue[i] && repeaterValue[i].value"
             parent-interface="repeater"
+            :value="repeaterValue[i].value"
+            :meta-value="repeaterMetaValue[i] && repeaterMetaValue[i].value"
             :parent-value="repeaterValue"
             :parent-meta-value="repeaterMetaValue"
             @setRepeaterConfig="setConfig($event)"
@@ -32,14 +37,16 @@
 
         <!-- Remove Repeater -->
         <div v-if="canRemoveRepeat" class="repeater__remove">
-          <button
-            class="button button--danger button--trn p--0 button--square"
-            @click="removeRepeat(i)"
+          <s-button
+            class="p--0"
+            color="danger"
+            style_="muted"
+            shape="square"
+            icon="MinusCircleOutline"
+            @click.native="removeRepeat(i)"
           >
-            <slot name="repeater--remove">
-              <icon-remove class="button__icon"></icon-remove>
-            </slot>
-          </button>
+            <slot name="repeater--remove"></slot>
+          </s-button>
         </div>
       </div>
     </div>
@@ -49,28 +56,27 @@
 
     <!-- Add Repeater -->
     <div class="repeater__add">
-      <button
+      <s-button
         v-if="config.repeater && canRepeat"
-        @click="repeat"
-        class="button button--primary button--trn p--0 mt--sm"
+        class="mt--sm"
+        color="primary"
+        style_="muted"
+        @click.native="repeat"
+        icon="PlusCircleOutline"
       >
-        <slot name="repeater--add">
-          <icon-add class="button__icon"></icon-add>
-          <span>Add More</span>
-        </slot>
-      </button>
+        <slot name="repeater--add">Add</slot>
+      </s-button>
     </div>
   </div>
 </template>
 
 <script>
+import { set, cloneDeep } from "lodash";
+
 export default {
   name: "repeater",
   mixins: [require("../mixins/fields").default],
-  components: {
-    IconRemove: require("./icons/remove").default,
-    IconAdd: require("./icons/add").default
-  },
+
   inject: ["SETTINGS"],
   props: {
     value: {
@@ -115,6 +121,14 @@ export default {
   },
 
   methods: {
+    uid() {
+      return (
+        "_" +
+        Math.random()
+          .toString(36)
+          .substr(2, 9)
+      );
+    },
     /**
      * Sets the default values of Repeater fields.
      * Ensures the minimum repeater required fields.
@@ -187,7 +201,9 @@ export default {
           _delete: true
         });
       } else {
-        this.repeaterValue.splice(index, 1);
+        this.$delete(this.repeaterValue, index);
+        this.$delete(this.repeaterMetaValue, index);
+        //this.repeaterValue.splice(index, 1);
       }
 
       this.$emit("input", this.repeaterValue, [
@@ -245,16 +261,16 @@ export default {
     setConfig({ key, value, field }) {
       //If field is defined, the request came from form-group and hence merge it with fields.
       if (field) {
-        let fields = {
-          ...this.config.fields,
-          [field]: {
-            ...this.config.fields[field],
-            [key]: value
-          }
-        };
+        //Clone current configuration
+        const fields = cloneDeep(this.config.fields);
+        //Set the key
+        set(fields, `${field}.${key}`, value);
+        //Update the field
         this.$set(this.localConfig, "fields", fields);
       } else {
-        this.$set(this.localConfig, key, value);
+        const config = cloneDeep(this.localConfig);
+        set(config, key, value);
+        this.$set(this, "localConfig", config);
       }
     },
 
@@ -292,7 +308,7 @@ export default {
   }
   &__item {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     + .repeater__item {
       margin-top: 10px;
     }

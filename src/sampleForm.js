@@ -4,16 +4,21 @@ export default {
   config: {
     axios: axios,
     defaults: {
-      size: {
-        desktop: 6
+      block: {
+        size: {
+          desktop: 6
+        }
+        //gap: "xs"
       }
     }
   },
   fields: {
     state: {
-      interface: "select-plus",
-      size: {
-        desktop: 6
+      interface: "select",
+      block: {
+        size: {
+          desktop: 6
+        }
       },
       props: {
         url: "https://api.mcook.co.in:8989/web/v3/search_form_entity/",
@@ -69,7 +74,9 @@ export default {
     },
     education: {
       interface: "textbox",
-      size: 12,
+      block: {
+        size: 12
+      },
       value: [
         {
           _id: "1234",
@@ -83,7 +90,9 @@ export default {
     },
     training: {
       interface: "group",
-      size: 12,
+      block: {
+        size: 12
+      },
       fields: {
         company: {
           interface: "textbox",
@@ -106,19 +115,21 @@ export default {
         max: 10,
         min: 2
       },
-      size: 12,
+      block: {
+        size: 12
+      },
       fields: {
         e_company: {
           interface: "textbox",
-          size: {
-            desktop: 4
+          block: {
+            size: 4
           }
         },
         e_years: {
           interface: "textbox",
           type: "number",
-          size: {
-            desktop: 4
+          block: {
+            size: 4
           }
         },
         // salary: {
@@ -129,8 +140,8 @@ export default {
         // }
         e_po_title: {
           interface: "select",
-          size: {
-            desktop: 4
+          block: {
+            size: 4
           },
           props: {
             label: "Title",
@@ -211,7 +222,9 @@ export default {
           }
         ]
       },
-      size: 4
+      block: {
+        size: 4
+      }
     },
     desc: {
       interface: "textarea",
