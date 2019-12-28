@@ -2,12 +2,12 @@
   <div class="field repeater">
     <!-- Repeater Label
     When the repeater mode is on, display the name of the field here to avoid repeatation in child fields.-->
-    <label class="repeater__label">{{name | titleCase}}</label>
+    <label class="repeater__label">{{ name | titleCase }}</label>
 
     <div class="repeater__items">
       <div
         class="repeater__item"
-        v-for="(item,i) in repeaterValue"
+        v-for="(item, i) in repeaterValue"
         :key="`repeater--${name}--${i}`"
         v-show="item && !item._delete"
       >
@@ -26,7 +26,7 @@
             :parent-value="repeaterValue"
             :parent-meta-value="repeaterMetaValue"
             @setRepeaterConfig="setConfig($event)"
-            @input="input(arguments,i)"
+            @input="input(arguments, i)"
           >
             <!-- Passdown Slots -->
             <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
@@ -52,13 +52,13 @@
     </div>
 
     <!-- Desc -->
-    <small v-if="config.desc">{{config.desc}}</small>
+    <small v-if="config.desc">{{ config.desc }}</small>
 
     <!-- Add Repeater -->
     <div class="repeater__add">
       <s-button
         v-if="config.repeater && canRepeat"
-        class="mt--sm"
+        class="mt--3"
         color="primary"
         style_="muted"
         @click.native="repeat"
@@ -308,9 +308,14 @@ export default {
   }
   &__item {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     + .repeater__item {
       margin-top: 10px;
+    }
+    &:first-child {
+      .repeater__remove {
+        padding-top: 20px;
+      }
     }
   }
   &__input {

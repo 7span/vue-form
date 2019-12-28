@@ -1,5 +1,5 @@
 <template lang="pug">
-  .demo.p--xl
+  .demo.p--6
 
     s-blocks(gap="sm")
       s-block(:size="6")
@@ -103,4 +103,3 @@ body {
   margin: 0 auto;
 }
 </style>
-

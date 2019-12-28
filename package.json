@@ -1,6 +1,6 @@
 {
   "name": "@7span/vue-form",
-  "version": "0.1.0-beta.11",
+  "version": "0.1.0-beta.12",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name vue-form src/plugin.js",

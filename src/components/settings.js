@@ -4,7 +4,7 @@ export default {
       size: {
         desktop: 6
       },
-      gap: "xs"
+      gap: "2"
     }
   }
 };
