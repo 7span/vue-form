@@ -15,6 +15,8 @@
     "core-js": "^2.6.5",
     "lodash": "^4.17.15",
     "material-colors": "^1.2.6",
+    "qs": "^6.9.1",
+    "vee-validate": "^3.2.2",
     "vue": "^2.6.10",
     "vue-material-design-icons": "^4.1.0"
   },

@@ -1,13 +1,24 @@
 <template>
-  <s-field :label="isLabel ? label : false" class="group" v-bind="fieldProps">
+  <s-field :label="isLabel ? label : false" class="group">
     <s-row :gap="SETTINGS.defaults.block.gap">
       <s-column
         v-for="(fieldConfig, fieldName) in config.fields"
         v-show="!fieldConfig.hide"
         :size="blockSize(fieldConfig)"
         :class="[blockClasses(fieldName, fieldConfig)]"
-        :key="`group-${fieldName}`"
+        :key="`group--${fieldName}`"
       >
+        <!-- Before Slots -->
+        <slot
+          :name="`field--before--${fieldName}`"
+          v-bind="slotScopes(fieldName)"
+        />
+        <slot
+          v-if="index != null"
+          :name="`field--before--${fieldName}--${index}`"
+          v-bind="slotScopes(fieldName)"
+        />
+
         <!-- Field
         Need to keep the top level group's child interfaces as null to manage lable displays.-->
         <component
@@ -31,6 +42,17 @@
             <slot :name="slot" v-bind="scope" />
           </template>
         </component>
+
+        <!-- After Slots -->
+        <slot
+          :name="`field--after--${fieldName}`"
+          v-bind="slotScopes(fieldName)"
+        />
+        <slot
+          v-if="index != null"
+          :name="`field--after--${fieldName}--${index}`"
+          v-bind="slotScopes(fieldName)"
+        />
       </s-column>
     </s-row>
 
@@ -149,6 +171,17 @@ export default {
       });
 
       this.$emit("input", this.groupValue, changed);
+    },
+
+    slotScopes(name) {
+      return {
+        value: this.value && this.value[name],
+        metaValue: this.metaValue && this.metaValue[name],
+        parentValue: this.value,
+        parentMetaValue: this.metaValue,
+        config: this.config.fields[name],
+        index: this.index
+      };
     },
 
     /**

@@ -1,38 +1,70 @@
 <template>
-  <s-field-validate
-    :name="name"
-    :label="isLabel ? label : false"
-    :class="fieldClasses"
-    v-bind="fieldProps"
-  >
-    <!-- Interface
+  <div class="field" :class="fieldClasses">
+    <!-- Start Slots
+    If the index is not provided the slots will render in all the repeater child fields
+    To add specific index slot, append slot index.
+    The syntex is: field--start--[field-name]--[index]-->
+    <slot :name="`field--start--${name}`" v-bind="slotScopes" />
+    <slot
+      v-if="index != null"
+      :name="`field--start--${name}--${index}`"
+      v-bind="slotScopes"
+    />
+
+    <!-- Label
+    If the index is defined, the label should be displayed at repeater level.-->
+    <label v-if="isLabel" class="field__label">
+      <template v-if="mergedConfig.label">{{ mergedConfig.label }}</template>
+      <template v-else>{{ name }}</template>
+    </label>
+
+    <!-- Field Group -->
+    <div class="field__group">
+      <div v-if="mergedConfig.before" class="field__before">
+        {{ mergedConfig.before }}
+      </div>
+
+      <!-- Interface
       Extract all the configuration from this point to interface.
       This will help directly apply HTML attributes on interfaces if not accepted as props.-->
-    <component
-      :name="name"
-      :is="`s-${mergedConfig.interface}`"
-      v-bind="{ ...interfaceProps }"
-      :value="value"
-      :index="index"
-      @loading="loading = $event"
-      @input="input(arguments, { action: 'input' })"
-    >
-    </component>
+      <component
+        :is="`s-${mergedConfig.interface}`"
+        :name="name"
+        v-bind="{ ...fieldProps }"
+        :value="value"
+        :index="index"
+        @loading="loading = $event"
+        @input="input(arguments, { action: 'input' })"
+      >
+        <!-- Passdown Slots -->
+        <template
+          v-for="slot in Object.keys($scopedSlots)"
+          v-slot:[slot]="scope"
+        >
+          <slot :name="slot" v-bind="scope" />
+        </template>
+      </component>
+      <div v-if="mergedConfig.after" class="field__after">
+        {{ mergedConfig.after }}
+      </div>
+    </div>
 
-    <!-- Passdown Slots -->
-    <template v-for="slot in slotsToRender" v-slot:[slot.destination]="scope">
-      <slot :name="slot.key" v-bind="{ ...scope, ...slotScopes }" />
-    </template>
-  </s-field-validate>
+    <!-- End Slots -->
+    <slot :name="`field--end--${name}`" v-bind="slotScopes" />
+    <slot
+      v-if="index != null"
+      :name="`field--end--${name}--${index}`"
+      v-bind="slotScopes"
+    />
+  </div>
 </template>
 
 <script>
-import { set, cloneDeep, startCase } from "lodash";
-import fields from "../mixins/fields";
+import { set, cloneDeep } from "lodash";
 
 export default {
   name: "field",
-  mixins: [fields],
+  mixins: [require("../mixins/fields").default],
   props: {
     value: {
       default: null
@@ -56,16 +88,25 @@ export default {
   },
 
   computed: {
-    interfaceProps() {
+    fieldProps() {
       if (["repeater", "group"].includes(this.mergedConfig.interface)) {
         return this.mergedConfig;
       } else {
         return this.mergedConfig.props;
       }
     },
+    slotScopes() {
+      return {
+        value: this.value,
+        metaValue: this.metaValue,
+        config: this.mergedConfig,
+        parentValue: this.parentValue,
+        parentMetaValue: this.parentMetaValue,
+        index: this.index
+      };
+    },
 
     isLabel() {
-      //If the index is defined, the label should be displayed at repeater level
       if (this.parentInterface == "repeater") {
         return false;
       } else if (
@@ -76,14 +117,6 @@ export default {
         return false;
       }
       return true;
-    },
-
-    label() {
-      if (this.mergedConfig.label) {
-        return this.mergedConfig.label;
-      } else {
-        return startCase(this.name);
-      }
     }
   },
 
@@ -129,7 +162,7 @@ export default {
      */
     setValue({ field, value, index }) {
       if (field !== this.name) return;
-      if (index == null || index == undefined || index == this.index) {
+      if (index == this.index) {
         this.input([value, { value }], { action: "set-value" });
       }
     },
@@ -147,10 +180,9 @@ export default {
      */
     setConfig({ field, key, value, index }) {
       if (field !== this.name) return;
-      if (index == null || index == undefined || index == this.index) {
+      if (index == null || index == this.index) {
         const config = cloneDeep(this.localConfig);
         set(config, key, value);
-
         this.$set(this, "localConfig", config);
       }
       //Make sure the upcoming repeater fields also inherit the updated configuration.

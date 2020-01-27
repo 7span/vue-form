@@ -1,25 +1,25 @@
 <template lang="pug">
   .demo.p--6
 
-    s-blocks(gap="sm")
-      s-block(:size="6")
+    s-row(gap="sm")
+      s-column(:size="6")
         p Set Values
         s-list(stack group)
-          s-button(color="primary" style_="outline" @click.native='setValue("email","harsh@7span.com")') Value
-          s-button(color="primary" style_="outline" @click.native='setValue("education","BTECH", 1)') Repeater Value w/ Index
-          s-button(color="primary" style_="outline" @click.native='setValue("education",[{value:"B.E. 1"},{value:"B.E. 2"}])') Repeater Value w/o Index
-          s-button(color="primary" style_="outline" @click.native='setValue("company","7Span")') Group Value
-          s-button(color="primary" style_="outline" @click.native='setValue("e_company","7Span Tech",1)') Grouped Repeater Value w/ Index
-          s-button(color="primary" style_="outline" @click.native='setValue("e_company","7Span Tech")') Grouped Repeater Value w/o Index
-      s-block(:size="6")
+          s-button(color="primary" theme="outline" @click.native='setValue("email","harsh@7span.com")') Value
+          s-button(color="primary" theme="outline" @click.native='setValue("education","BTECH", 1)') Repeater Value w/ Index
+          s-button(color="primary" theme="outline" @click.native='setValue("education",[{value:"B.E. 1"},{value:"B.E. 2"}])') Repeater Value w/o Index
+          s-button(color="primary" theme="outline" @click.native='setValue("company","7Span")') Group Value
+          s-button(color="primary" theme="outline" @click.native='setValue("e_company","7Span Tech",1)') Grouped Repeater Value w/ Index
+          s-button(color="primary" theme="outline" @click.native='setValue("e_company","7Span Tech")') Grouped Repeater Value w/o Index
+      s-column(:size="6")
         p Set Config
         s-list(stack group)
-          s-button(color="primary" style_="outline" @click.native='setConfig("email","after","#")') Config
-          s-button(color="primary" style_="outline" @click.native='setConfig("education","after","#", 1)') Repeater Config w/ Index
-          s-button(color="primary" style_="outline" @click.native='setConfig("education","after","#")') Repeater Config w/o Index
-          s-button(color="primary" style_="outline" @click.native='setConfig("company","after","#")') Group Config
-          s-button(color="primary" style_="outline" @click.native='setConfig("e_company","after","#", 1)') Grouped Repeater Config w/ Index
-          s-button(color="primary" style_="outline" @click.native='setConfig("e_company","after","#")') Grouped Repeater Config w/o Index
+          s-button(color="primary" theme="outline" @click.native='setConfig("email","after","#")') Config
+          s-button(color="primary" theme="outline" @click.native='setConfig("education","after","#", 1)') Repeater Config w/ Index
+          s-button(color="primary" theme="outline" @click.native='setConfig("education","after","#")') Repeater Config w/o Index
+          s-button(color="primary" theme="outline" @click.native='setConfig("company","after","#")') Group Config
+          s-button(color="primary" theme="outline" @click.native='setConfig("e_company","after","#", 1)') Grouped Repeater Config w/ Index
+          s-button(color="primary" theme="outline" @click.native='setConfig("e_company","after","#")') Grouped Repeater Config w/o Index
 
 
     v-form(

@@ -1,20 +1,26 @@
 <template>
-  <div class="v-form">
-    <!-- Form Start Slot -->
-    <slot name="form--start" :value="value" />
+  <s-form-validate class="v-form" v-slot="scope" @submit="$emit('submit')">
+    <slot name="header" :value="value" v-bind="scope" />
 
     <!-- Group -->
     <!--  By default the first interface will always be a group of fields. -->
-    <group key="v-form" :name="name" :config="config" :value="value" @input="input(arguments)">
+    <group
+      key="v-form"
+      :name="name"
+      :config="config"
+      :value="value"
+      @input="input(arguments)"
+    >
       <!-- Passdown Slots -->
       <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
         <slot :name="slot" v-bind="scope" />
       </template>
     </group>
 
-    <!-- Form End Slot -->
-    <slot name="form--end" :value="value" />
-  </div>
+    <slot name="footer" :value="value" v-bind="scope">
+      <s-button type="submit" color="primary">Submit</s-button>
+    </slot>
+  </s-form-validate>
 </template>
 
 <script>
@@ -97,11 +103,6 @@ export default {
      * The field has a listner to find the required field and apply changes.
      */
     setConfig(field, key, value, index) {
-      // let keySet = key.split(".");
-      // if (keySet.length > 1) {
-      //   const type = keySet[0];
-      //   key = keySet[1];
-      // }
       this.$root.$emit("v-form::set-config", {
         field,
         key,
@@ -115,8 +116,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-</style>
-
-

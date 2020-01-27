@@ -1,81 +1,93 @@
 <template>
-  <div class="field repeater">
+  <s-field class="repeater" :label="label" v-bind="fieldProps">
     <!-- Repeater Label
     When the repeater mode is on, display the name of the field here to avoid repeatation in child fields.-->
-    <label class="repeater__label">{{ name | titleCase }}</label>
+    <!-- <label class="repeater__label">{{ label }}</label> -->
 
-    <div class="repeater__items">
-      <div
-        class="repeater__item"
-        v-for="(item, i) in repeaterValue"
-        :key="`repeater--${name}--${i}`"
-        v-show="item && !item._delete"
-      >
-        <!-- Repeater Input -->
-        <div class="repeater__input">
-          <!-- Field
-          Passdowm index value to child field to let it know the index.-->
-          <component
-            :is="componentType(mergedConfig)"
-            :name="name"
-            :index="indexWithoutDeleted(i)"
-            :config="mergedConfig"
-            parent-interface="repeater"
-            :value="repeaterValue[i].value"
-            :meta-value="repeaterMetaValue[i] && repeaterMetaValue[i].value"
-            :parent-value="repeaterValue"
-            :parent-meta-value="repeaterMetaValue"
-            @setRepeaterConfig="setConfig($event)"
-            @input="input(arguments, i)"
-          >
-            <!-- Passdown Slots -->
-            <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
-              <slot :name="slot" v-bind="scope" />
-            </template>
-          </component>
-        </div>
+    <div class="repeater__wrap">
+      <div class="repeater__items">
+        <div
+          class="repeater__item"
+          v-for="(item, i) in repeaterValue"
+          :key="`repeater-${name}-${i}`"
+          v-show="item && !item._delete"
+        >
+          <!-- Repeater Input -->
+          <div class="repeater__input">
+            <!-- Field : Passdowm index value to child field to let it know the index.-->
+            <component
+              :is="componentType(mergedConfig)"
+              :name="name"
+              :index="indexWithoutDeleted(i)"
+              :config="mergedConfig"
+              parent-interface="repeater"
+              :value="repeaterValue[i].value"
+              :meta-value="repeaterMetaValue[i] && repeaterMetaValue[i].value"
+              :parent-value="repeaterValue"
+              :parent-meta-value="repeaterMetaValue"
+              @setRepeaterConfig="setConfig($event)"
+              @input="input(arguments, i)"
+            >
+              <!-- Passdown Slots -->
+              <template
+                v-for="slot in Object.keys($scopedSlots)"
+                v-slot:[slot]="scope"
+              >
+                <slot :name="slot" v-bind="scope" />
+              </template>
+            </component>
+          </div>
 
-        <!-- Remove Repeater -->
-        <div v-if="canRemoveRepeat" class="repeater__remove">
-          <s-button
-            class="p--0"
-            color="danger"
-            style_="muted"
-            shape="square"
-            icon="MinusCircleOutline"
-            @click.native="removeRepeat(i)"
+          <!-- Remove Repeater -->
+          <s-field
+            :label="i == 0 ? '' : false"
+            v-if="canRemoveRepeat"
+            class="repeater__remove"
           >
-            <slot name="repeater--remove"></slot>
-          </s-button>
+            <slot name="repeater-remove" :index="i" :remove="removeRepeat">
+              <s-button
+                class="p--0"
+                color="danger"
+                theme="muted"
+                shape="square"
+                icon="MinusCircleOutline"
+                @click.native="removeRepeat(i)"
+              >
+              </s-button>
+            </slot>
+          </s-field>
         </div>
       </div>
+
+      <!-- Add Repeater -->
+      <slot name="repeater-add" :add="repeat">
+        <s-button
+          v-if="config.repeater && canRepeat"
+          class="repeater__add"
+          color="primary"
+          theme="muted"
+          @click.native="repeat"
+          icon="PlusCircleOutline"
+        >
+          Add
+        </s-button>
+      </slot>
     </div>
 
-    <!-- Desc -->
-    <small v-if="config.desc">{{ config.desc }}</small>
-
-    <!-- Add Repeater -->
-    <div class="repeater__add">
-      <s-button
-        v-if="config.repeater && canRepeat"
-        class="mt--3"
-        color="primary"
-        style_="muted"
-        @click.native="repeat"
-        icon="PlusCircleOutline"
-      >
-        <slot name="repeater--add">Add</slot>
-      </s-button>
-    </div>
-  </div>
+    <!-- Passdown Slots -->
+    <template v-for="slot in slotsToRender" v-slot:[slot.destination]="scope">
+      <slot :name="slot.key" v-bind="{ ...scope, ...slotScopes }" />
+    </template>
+  </s-field>
 </template>
 
 <script>
-import { set, cloneDeep } from "lodash";
+import { set, cloneDeep, startCase } from "lodash";
+import fields from "../mixins/fields";
 
 export default {
   name: "repeater",
-  mixins: [require("../mixins/fields").default],
+  mixins: [fields],
 
   inject: ["SETTINGS"],
   props: {
@@ -99,6 +111,9 @@ export default {
   },
 
   computed: {
+    label() {
+      return startCase(this.name);
+    },
     repeaterCount() {
       return this.repeaterValue.filter(item => !item._delete).length;
     },
@@ -302,28 +317,29 @@ export default {
 
 <style lang="scss" scoped>
 .repeater {
-  &__items {
-    flex-direction: column;
-    display: flex;
+  &::v-deep > .field__label {
+    font-weight: bold;
   }
-  &__item {
-    display: flex;
-    align-items: flex-start;
-    + .repeater__item {
-      margin-top: 10px;
-    }
-    &:first-child {
-      .repeater__remove {
-        padding-top: 20px;
-      }
-    }
+}
+.repeater__items {
+  flex-direction: column;
+  display: flex;
+}
+.repeater__item {
+  display: flex;
+  align-items: flex-start;
+  + .repeater__item {
+    margin-top: 10px;
   }
-  &__input {
-    flex: 1 1 auto;
-  }
-  &__remove {
-    flex: 0 0 auto;
-    margin-left: 10px;
-  }
+}
+.repeater__add {
+  margin-top: --space(3);
+}
+.repeater__input {
+  flex: 1 1 auto;
+}
+.repeater__remove {
+  flex: 0 0 auto;
+  margin-left: 10px;
 }
 </style>

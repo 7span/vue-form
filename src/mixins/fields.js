@@ -1,4 +1,4 @@
-import { merge } from "lodash";
+import { merge, cloneDeep } from "lodash";
 export default {
   props: {
     name: {
@@ -28,6 +28,17 @@ export default {
   },
 
   computed: {
+    /**
+     * Get the <s-field> props by removing extra information
+     * 'props' is the props for input field being used as slot inside <s-field>
+     */
+    fieldProps() {
+      const props = cloneDeep(this.mergedConfig);
+      delete props.props;
+      delete props.interface;
+      return this.mergedConfig;
+    },
+
     mergedConfig() {
       const config = merge({}, this.config, this.localConfig);
 
@@ -37,6 +48,45 @@ export default {
       delete config.value;
 
       return config;
+    },
+
+    slotScopes() {
+      return {
+        value: this.value,
+        metaValue: this.metaValue,
+        config: this.mergedConfig,
+        parentValue: this.parentValue,
+        parentMetaValue: this.parentMetaValue,
+        index: this.index
+      };
+    },
+
+    /**
+     * TODO: WHAT ABOUT NESTED SLOTS?
+     * Slots to pass determines if the field should have any slot or not.
+     * The <v-form> accepts the special kind of slots for the fields by name and index.
+     * For example, if a field with name 'date' wants to add 'start' slot, you can use slot name 'start:date'
+     * Inshort, you can extend the field's slots(start, end) by adding respective names
+     */
+    slotsToRender() {
+      const slots = [];
+      for (var key in this.$scopedSlots) {
+        const [destination, field, index] = key.split(":");
+        if (field == this.name) {
+          const slot = {
+            destination,
+            key
+          };
+          if (this.index != undefined) {
+            if (parseInt(this.index) == parseInt(index)) {
+              slots.push(slot);
+            }
+          } else {
+            slots.push(slot);
+          }
+        }
+      }
+      return slots;
     }
   },
 

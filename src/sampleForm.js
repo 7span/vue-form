@@ -45,6 +45,7 @@ export default {
     email: {
       interface: "textbox",
       value: "hello",
+      rules: "required|email",
       props: {
         placeholder: "e.g. mail@theharsh.in",
         type: "email"
@@ -96,16 +97,16 @@ export default {
       fields: {
         company: {
           interface: "textbox",
-          size: "auto"
+          size: "xs"
         },
         years: {
           interface: "textbox",
           type: "number",
-          size: "auto"
+          size: "xs"
         },
         salary: {
           interface: "textbox",
-          size: "auto"
+          size: "xs"
         }
       }
     },
