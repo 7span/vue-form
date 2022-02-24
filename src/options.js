@@ -1,5 +1,4 @@
-// import { reject, resolve } from "core-js/fn/promise";
-
 export default {
   componentPrefix: "V",
+  // createModeId: "+", // Identifier that a form is in create mode
 };

@@ -1,7 +1,7 @@
 import defaultOptions from "./options";
 
 //Components
-import Root from "./components/Root";
+import FormRoot from "./components/FormRoot";
 
 const install = (Vue, userOptions = {}) => {
   const options = Object.assign({}, defaultOptions, userOptions);
@@ -9,10 +9,15 @@ const install = (Vue, userOptions = {}) => {
 
   //Root Component
   Vue.component(`${prefix}Form`, {
+    data() {
+      return {
+        OPTIONS: options,
+      };
+    },
     provide: {
       OPTIONS: options,
     },
-    extends: Root,
+    extends: FormRoot,
   });
 
   // Vue.component(`${prefix}Form`, Root);
