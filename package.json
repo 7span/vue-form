@@ -1,24 +1,20 @@
 {
   "name": "@7span/vue-form",
-  "version": "0.1.0-beta.12",
+  "version": "1.0.0-beta.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name vue-form src/plugin.js",
     "lint": "vue-cli-service lint",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "serve:plugin": "vue-cli-service build --target lib --name vue-form src/plugin.js --watch"
   },
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "axios": "^0.19.0",
     "core-js": "^2.6.5",
     "lodash": "^4.17.15",
-    "material-colors": "^1.2.6",
-    "qs": "^6.9.1",
-    "vee-validate": "^3.2.2",
-    "vue": "^2.6.10",
-    "vue-material-design-icons": "^4.1.0"
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.2",
@@ -30,8 +26,6 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.9.0",
-    "pug": "^2.0.3",
-    "pug-plain-loader": "^1.0.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.10"
   },
@@ -39,7 +33,6 @@
   "jsdelivr": "dist/vue-form.umd.min.js",
   "unpkg": "dist/vue-form.umd.min.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ]
 }

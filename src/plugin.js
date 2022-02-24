@@ -1,22 +1,25 @@
-const install = (Vue, options) => {
-  let appWithOptions = Vue.extend({
-    extends: require("./components/Form").default,
-    data() {
-      return {
-        ...options
-      };
-    }
+import defaultOptions from "./options";
+
+//Components
+import Root from "./components/Root";
+
+const install = (Vue, userOptions = {}) => {
+  const options = Object.assign({}, defaultOptions, userOptions);
+  const prefix = options.componentPrefix;
+
+  //Root Component
+  Vue.component(`${prefix}Form`, {
+    provide: {
+      OPTIONS: options,
+    },
+    extends: Root,
   });
 
-  Vue.component("VForm", appWithOptions);
-  Vue.component("Repeater", require("./components/Repeater.vue").default);
-  Vue.component("Field", require("./components/Field.vue").default);
-  Vue.component("Group", require("./components/Group.vue").default);
+  // Vue.component(`${prefix}Form`, Root);
 };
 
 const plugin = {
   install,
-  version: "__VERSION__"
 };
 
 export default plugin;
