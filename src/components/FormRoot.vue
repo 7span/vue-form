@@ -32,17 +32,30 @@ export default {
     save: {
       type: Function,
     },
+
+    // State represents the values binded with DOM
+    formState: {
+      type: Object,
+    },
+
+    // Values represents the actual value after parsing data from DOM
+    formValues: {
+      type: Object,
+    },
   },
 
   data() {
     return {
       state: null,
+      isGetting: false,
+      isSaving: false,
+      error: null,
     };
   },
 
   mounted() {
     this.setState();
-    if (this.id) {
+    if (this.isEditing) {
       this.getItem();
     }
   },
@@ -72,11 +85,35 @@ export default {
         .filter((item) => item); // Removes invalid field configs
     },
 
+    values() {
+      const res = {};
+      this.serializedFields.forEach((field) => {
+        if (field.parse) {
+          res[field.name] = field.parse(this.state[field.name]);
+        } else {
+          switch (field.type) {
+            case Number:
+              res[field.name] = Number(this.state[field.name]);
+              break;
+
+            case String:
+              res[field.name] = String(this.state[field.name]);
+              break;
+
+            default:
+              res[field.name] = this.state[field.name];
+              break;
+          }
+        }
+      });
+      return res;
+    },
+
     mode() {
-      if (this.id) {
-        return "edit";
+      if (this.id == null) {
+        return "create";
       }
-      return "create";
+      return "edit";
     },
 
     isCreating() {
@@ -87,14 +124,24 @@ export default {
       return this.mode === "edit";
     },
 
+    isLoading() {
+      return this.isGetting || this.isSaving;
+    },
+
     scopes() {
       return {
         mode: this.mode,
         isCreating: this.isCreating,
         isEditing: this.isEditing,
         state: this.state,
+        values: this.values,
         saveItem: this.saveItem,
         getItem: this.getItem,
+        setValue: this.setValue,
+        isSaving: this.isSaving,
+        isGetting: this.isGetting,
+        isLoading: this.isLoading,
+        error: this.error,
       };
     },
   },
@@ -112,14 +159,47 @@ export default {
       });
 
       this.$set(this, "state", state);
+
+      // Sync the state with parent component
+      this.$emit("update:formState", this.state);
+      this.$emit("update:formValues", this.values);
     },
 
-    getItem() {
-      this.get(this.id);
+    async getItem() {
+      this.isGetting = true;
+      this.error = null;
+      this.get(this.id)
+        .then((res) => {
+          this.setState(res);
+        })
+        .catch((err) => {
+          this.error = err;
+          console.error(err);
+        })
+        .finally(() => {
+          this.isGetting = false;
+        });
     },
 
-    saveItem() {
-      this.save(this.id, cloneDeep(this.state));
+    async saveItem() {
+      this.isSaving = true;
+      this.error = null;
+
+      this.save(this.id, cloneDeep(this.values))
+        .then((res) => {
+          this.setState(res);
+        })
+        .catch((err) => {
+          this.error = err;
+          console.error(err);
+        })
+        .finally(() => {
+          this.isSaving = false;
+        });
+    },
+
+    setValue(key, value) {
+      this.$set(this.state, key, value);
     },
   },
 };
