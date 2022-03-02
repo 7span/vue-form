@@ -7,8 +7,19 @@
       :save="save"
       :form-state.sync="formState"
     >
-      <template #default="{ state, mode, saveItem, setValue, isLoading }">
+      <template
+        #default="{
+          state,
+          mode,
+          saveItem,
+          setValue,
+          isLoading,
+          errors,
+          hasError,
+        }"
+      >
         <h1>Loading: {{ isLoading }}</h1>
+        <h2>Error: {{ hasError }}</h2>
         <div>
           <label for="">Name</label>
           <input type="text" v-model="state.name" />
@@ -16,6 +27,7 @@
         <div>
           <label for="">Email</label>
           <input type="email" v-model="state.email" />
+          <p>{{ errors.email }}</p>
         </div>
         <div>
           <label for="">Age</label>
@@ -71,8 +83,7 @@ export default {
         },
         {
           name: "age",
-          type: Number,
-          parse: (value) => value + 5,
+          out: Number,
         },
       ],
     };
@@ -84,26 +95,28 @@ export default {
         if (data[id]) {
           setTimeout(() => {
             resolve(data[id]);
-          }, 3000);
+          }, 1000);
         } else {
           setTimeout(() => {
             reject();
-          }, 3000);
+          }, 1000);
         }
       });
     },
 
     save(id, payload) {
       return new Promise((resolve, reject) => {
-        if (data[id]) {
+        if (!data[id]) {
           setTimeout(() => {
             console.log(payload);
             resolve(payload);
-          }, 3000);
+          }, 1000);
         } else {
           setTimeout(() => {
-            reject();
-          }, 3000);
+            reject({
+              email: "Email already used",
+            });
+          }, 1000);
         }
       });
     },

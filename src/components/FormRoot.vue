@@ -6,6 +6,15 @@
 
 <script>
 import { cloneDeep } from "lodash-es";
+import { warn } from "@/utils";
+
+const defaultFieldConfig = {
+  name: null,
+  value: null,
+  type: null,
+  in: (value) => value, // Before setting the value in the state
+  out: (value) => value, // Before getting the value out of the state
+};
 
 export default {
   props: {
@@ -33,6 +42,14 @@ export default {
       type: Function,
     },
 
+    delete: {
+      type: Function,
+    },
+
+    archive: {
+      type: Function,
+    },
+
     // State represents the values binded with DOM
     formState: {
       type: Object,
@@ -49,15 +66,14 @@ export default {
       state: null,
       isGetting: false,
       isSaving: false,
+      isDeleting: false,
+      errors: {},
       error: null,
     };
   },
 
   mounted() {
-    this.setState();
-    if (this.isEditing) {
-      this.getItem();
-    }
+    this.init();
   },
 
   computed: {
@@ -72,39 +88,45 @@ export default {
 
           if (fieldType === "string") {
             return {
+              ...defaultFieldConfig,
               name: field,
               value: null,
             };
           } else if (fieldType === "object" && !Array.isArray(field)) {
-            return field;
+            return {
+              ...defaultFieldConfig,
+              ...field,
+            };
           } else {
-            console.warn("Invalid field config provided at index: ", index);
+            warn("Invalid field config provided at index", index);
             return null;
           }
         })
         .filter((item) => item); // Removes invalid field configs
     },
 
+    fieldErrors() {
+      return Object.keys(this.errors)
+        .filter((name) => this.hasField(name))
+        .reduce((result, name) => {
+          result[name] = this.errors[name];
+          return result;
+        }, {});
+    },
+
+    nonFieldErrors() {
+      return Object.keys(this.errors)
+        .filter((name) => !this.hasField(name))
+        .reduce((result, name) => {
+          result[name] = this.errors[name];
+          return result;
+        }, {});
+    },
+
     values() {
       const res = {};
       this.serializedFields.forEach((field) => {
-        if (field.parse) {
-          res[field.name] = field.parse(this.state[field.name]);
-        } else {
-          switch (field.type) {
-            case Number:
-              res[field.name] = Number(this.state[field.name]);
-              break;
-
-            case String:
-              res[field.name] = String(this.state[field.name]);
-              break;
-
-            default:
-              res[field.name] = this.state[field.name];
-              break;
-          }
-        }
+        res[field.name] = field.out(this.state[field.name]);
       });
       return res;
     },
@@ -125,7 +147,7 @@ export default {
     },
 
     isLoading() {
-      return this.isGetting || this.isSaving;
+      return this.isGetting || this.isSaving || this.isDeleting;
     },
 
     scopes() {
@@ -141,21 +163,47 @@ export default {
         isSaving: this.isSaving,
         isGetting: this.isGetting,
         isLoading: this.isLoading,
+        errors: this.errors || {},
         error: this.error,
+        hasError: this.hasError,
+        fieldErrors: this.fieldErrors,
+        nonFieldErrors: this.nonFieldErrors,
       };
+    },
+
+    hasError() {
+      return this.error || Object.keys(this.errors).length > 0;
     },
   },
 
   methods: {
+    init() {
+      this.setState();
+
+      if (this.isEditing) {
+        this.getItem();
+      }
+    },
+
+    reset() {
+      this.setState();
+    },
+
+    hasField(name) {
+      return this.serializedFields.find((field) => field.name === name);
+    },
+
     setState(values = {}) {
       const state = {};
 
       this.serializedFields.forEach((field) => {
+        let value;
         if (Object.prototype.hasOwnProperty.call(values, field.name)) {
-          state[field.name] = values[field.name];
+          value = values[field.name];
         } else {
-          state[field.name] = field.value;
+          value = field.value;
         }
+        state[field.name] = field.in(value);
       });
 
       this.$set(this, "state", state);
@@ -167,14 +215,15 @@ export default {
 
     async getItem() {
       this.isGetting = true;
-      this.error = null;
+      this.setErrors();
       this.get(this.id)
         .then((res) => {
-          this.setState(res);
+          if (this.validateIn(res)) {
+            this.setState(res);
+          }
         })
         .catch((err) => {
-          this.error = err;
-          console.error(err);
+          this.setErrors(err);
         })
         .finally(() => {
           this.isGetting = false;
@@ -183,23 +232,60 @@ export default {
 
     async saveItem() {
       this.isSaving = true;
-      this.error = null;
+      this.setErrors();
 
       this.save(this.id, cloneDeep(this.values))
         .then((res) => {
-          this.setState(res);
+          if (this.validateIn(res)) {
+            this.setState(res);
+          }
         })
         .catch((err) => {
-          this.error = err;
-          console.error(err);
+          this.setErrors(err);
         })
         .finally(() => {
           this.isSaving = false;
         });
     },
 
+    async deleteItem() {
+      this.isDeleting = true;
+      this.setErrors();
+
+      this.delete(this.id, cloneDeep(this.values))
+        .catch((err) => {
+          this.setErrors(err);
+        })
+        .finally(() => {
+          this.isDeleting = false;
+        });
+    },
+
     setValue(key, value) {
       this.$set(this.state, key, value);
+    },
+
+    setErrors(errors) {
+      if (errors) {
+        const { fields, message } = this.OPTIONS.errorAdapter(errors);
+        this.errors = fields;
+        this.error = message;
+        if (Object.keys(fields).length > 0) {
+          // eslint-disable-next-line
+          console.error(message, fields);
+        }
+      } else {
+        this.errors = {};
+        this.error = null;
+      }
+    },
+
+    validateIn(res) {
+      if (typeof res !== "object" || Array.isArray(res)) {
+        warn("Invalid input/errors received", res);
+        return false;
+      }
+      return true;
     },
   },
 };
