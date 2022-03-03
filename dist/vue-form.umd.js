@@ -5571,7 +5571,7 @@ var es_object_assign = __webpack_require__(9601);
   } // createModeId: "+", // Identifier that a form is in create mode
 
 });
-;// CONCATENATED MODULE: ../../../../node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2e66eb4d-vue-loader-template"}!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/cache-loader/dist/cjs.js??ruleSet[0].rules[0].use[0]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/components/FormRoot.vue?vue&type=template&id=ce260188&
+;// CONCATENATED MODULE: ../../../../node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"2e66eb4d-vue-loader-template"}!./node_modules/@vue/vue-loader-v15/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/cache-loader/dist/cjs.js??ruleSet[0].rules[0].use[0]!./node_modules/@vue/vue-loader-v15/lib/index.js??vue-loader-options!./src/components/FormRoot.vue?vue&type=template&id=5c971136&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":_vm.nativeId}},[(_vm.state)?_vm._t("default",null,null,_vm.scopes):_vm._e()],2)}
 var staticRenderFns = []
 
@@ -8633,6 +8633,12 @@ var defaultFieldConfig = {
     save: {
       type: Function
     },
+    delete: {
+      type: Function
+    },
+    archive: {
+      type: Function
+    },
     // State represents the values binded with DOM
     formState: {
       type: Object
@@ -8647,6 +8653,7 @@ var defaultFieldConfig = {
       state: null,
       isGetting: false,
       isSaving: false,
+      isDeleting: false,
       errors: {},
       error: null
     };
@@ -8721,7 +8728,7 @@ var defaultFieldConfig = {
       return this.mode === "edit";
     },
     isLoading: function isLoading() {
-      return this.isGetting || this.isSaving;
+      return this.isGetting || this.isSaving || this.isDeleting;
     },
     scopes: function scopes() {
       return {
@@ -8730,11 +8737,13 @@ var defaultFieldConfig = {
         isEditing: this.isEditing,
         state: this.state,
         values: this.values,
-        saveItem: this.saveItem,
         getItem: this.getItem,
+        saveItem: this.saveItem,
+        deleteItem: this.deleteItem,
         setValue: this.setValue,
         isSaving: this.isSaving,
         isGetting: this.isGetting,
+        isDeleting: this.isDeleting,
         isLoading: this.isLoading,
         errors: this.errors || {},
         error: this.error,
@@ -8840,6 +8849,32 @@ var defaultFieldConfig = {
             }
           }
         }, _callee2);
+      }))();
+    },
+    deleteItem: function deleteItem() {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this6.isDeleting = true;
+
+                _this6.setErrors();
+
+                _this6.delete(_this6.id, lodash_es_cloneDeep(_this6.values)).catch(function (err) {
+                  _this6.setErrors(err);
+                }).finally(function () {
+                  _this6.isDeleting = false;
+                });
+
+              case 3:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
       }))();
     },
     setValue: function setValue(key, value) {
