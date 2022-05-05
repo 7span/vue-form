@@ -67,6 +67,8 @@ export default {
       isGetting: false,
       isSaving: false,
       isDeleting: false,
+      isArchiving: false,
+      isArchived: false,
       errors: {},
       error: null,
     };
@@ -160,11 +162,14 @@ export default {
         getItem: this.getItem,
         saveItem: this.saveItem,
         deleteItem: this.deleteItem,
+        archiveItem: this.archiveItem,
         setValue: this.setValue,
         isSaving: this.isSaving,
         isGetting: this.isGetting,
         isDeleting: this.isDeleting,
+        isArchiving: this.isArchiving,
         isLoading: this.isLoading,
+        isArchived: this.isArchived,
         errors: this.errors || {},
         error: this.error,
         hasError: this.hasError,
@@ -221,6 +226,8 @@ export default {
       this.get(this.id)
         .then((res) => {
           if (this.validateIn(res)) {
+            if (res.archivedAt) this.isArchived = true;
+            else this.isArchived = false;
             this.setState(res);
           }
         })
@@ -260,6 +267,19 @@ export default {
         })
         .finally(() => {
           this.isDeleting = false;
+        });
+    },
+
+    async archiveItem() {
+      this.isArchiving = true;
+      this.setErrors();
+
+      this.archive(this.id, cloneDeep(this.values))
+        .catch((err) => {
+          this.setErrors(err);
+        })
+        .finally(() => {
+          this.isArchiving = false;
         });
     },
 
