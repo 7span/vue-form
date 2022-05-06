@@ -164,6 +164,7 @@ export default {
         deleteItem: this.deleteItem,
         archiveItem: this.archiveItem,
         setValue: this.setValue,
+        reset: this.reset,
         isSaving: this.isSaving,
         isGetting: this.isGetting,
         isDeleting: this.isDeleting,
