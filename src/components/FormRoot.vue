@@ -224,7 +224,7 @@ export default {
     async getItem() {
       this.isGetting = true;
       this.setErrors();
-      this.get(this.id)
+      return this.get(this.id)
         .then((res) => {
           if (this.validateIn(res)) {
             if (res.archivedAt) this.isArchived = true;
@@ -244,7 +244,7 @@ export default {
       this.isSaving = true;
       this.setErrors();
 
-      this.save(this.id, cloneDeep(this.values))
+      return this.save(this.id, cloneDeep(this.values))
         .then((res) => {
           if (this.validateIn(res)) {
             this.setState(res);
@@ -262,7 +262,7 @@ export default {
       this.isDeleting = true;
       this.setErrors();
 
-      this.delete(this.id, cloneDeep(this.values))
+      return this.delete(this.id, cloneDeep(this.values))
         .catch((err) => {
           this.setErrors(err);
         })
@@ -275,7 +275,7 @@ export default {
       this.isArchiving = true;
       this.setErrors();
 
-      this.archive(this.id, cloneDeep(this.values))
+      return this.archive(this.id, cloneDeep(this.values))
         .catch((err) => {
           this.setErrors(err);
         })
