@@ -231,6 +231,7 @@ export default {
             else this.isArchived = false;
             this.setState(res);
           }
+          return res;
         })
         .catch((err) => {
           this.setErrors(err);
@@ -249,6 +250,7 @@ export default {
           if (this.validateIn(res)) {
             this.setState(res);
           }
+          return res;
         })
         .catch((err) => {
           this.setErrors(err);
