@@ -195,6 +195,7 @@ export default {
 
     reset() {
       this.setState();
+      this.setErrors();
     },
 
     hasField(name) {
