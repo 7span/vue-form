@@ -215,6 +215,7 @@ export default {
         state[field.name] = field.in(value);
 
         // For processing out method, for example converting String to Number after getting data from API
+        // below code Closes Issue #34
         state[field.name] = field.out(value);
       });
 
