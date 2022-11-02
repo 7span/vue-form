@@ -1,23 +1,7 @@
 <template>
   <div>
-    <VForm
-      :fields="fields"
-      :id="0"
-      :get="get"
-      :save="save"
-      :form-state.sync="formState"
-    >
-      <template
-        #default="{
-          state,
-          mode,
-          saveItem,
-          setValue,
-          isLoading,
-          errors,
-          hasError,
-        }"
-      >
+    <VForm :fields="fields" :id="0" :get="get" :save="save" :form-state.sync="formState">
+      <template #default="{ state, mode, saveItem, setValue, isLoading, errors, hasError }">
         <h1>Loading: {{ isLoading }}</h1>
         <h2>Error: {{ hasError }}</h2>
         <div>
@@ -61,12 +45,12 @@ const data = [
   {
     name: "Harsh",
     email: "harsh@7span.com",
-    age: 31,
+    age: "31",
   },
   {
     name: "Hem",
     email: "hem@7span.com",
-    age: 35,
+    age: "35",
   },
 ];
 
