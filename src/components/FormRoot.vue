@@ -213,6 +213,10 @@ export default {
           value = field.value;
         }
         state[field.name] = field.in(value);
+
+        // For processing out method, for example converting String to Number after getting data from API
+        // below code Closes Issue #34
+        state[field.name] = field.out(value);
       });
 
       this.$set(this, "state", state);
@@ -230,6 +234,7 @@ export default {
           if (this.validateIn(res)) {
             if (res.archivedAt) this.isArchived = true;
             else this.isArchived = false;
+
             this.setState(res);
           }
           return res;
