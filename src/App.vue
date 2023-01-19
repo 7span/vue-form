@@ -1,7 +1,23 @@
 <template>
   <div>
-    <VForm :fields="fields" :id="0" :get="get" :save="save" :form-state.sync="formState">
-      <template #default="{ state, mode, saveItem, setValue, isLoading, errors, hasError }">
+    <VForm
+      :fields="fields"
+      :id="3"
+      :get="get"
+      :save="save"
+      v-model:formState="formState"
+    >
+      <template
+        #default="{
+          state,
+          mode,
+          saveItem,
+          setValue,
+          isLoading,
+          errors,
+          hasError,
+        }"
+      >
         <h1>Loading: {{ isLoading }}</h1>
         <h2>Error: {{ hasError }}</h2>
         <div>
@@ -53,12 +69,10 @@ const data = [
     age: "35",
   },
 ];
-
 export default {
   data() {
     return {
       formState: null,
-
       fields: [
         "name",
         {
@@ -72,7 +86,6 @@ export default {
       ],
     };
   },
-
   methods: {
     get(id) {
       return new Promise((resolve, reject) => {
@@ -87,7 +100,6 @@ export default {
         }
       });
     },
-
     save(id, payload) {
       return new Promise((resolve, reject) => {
         if (!data[id]) {
