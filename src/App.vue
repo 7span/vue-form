@@ -2,7 +2,7 @@
   <div>
     <VForm
       :fields="fields"
-      :id="3"
+      :id="0"
       :get="get"
       :save="save"
       v-model:formState="formState"
