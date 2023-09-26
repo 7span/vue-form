@@ -1,30 +1,30 @@
 {
-  "name": "@7span/vue-form",
-  "private": false,
-  "version": "2.0.0",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "main": "dist/vue-form.js",
-  "unpkg": "dist/vue-form.umd.cjs",
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "core-js": "^3.27.2",
-    "lodash": "^4.17.21",
-    "lodash-es": "^4.17.21",
-    "path": "^0.12.7",
-    "vue": "^3.2.45"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
-    "vite": "^4.0.0"
-  },
-  "jsdelivr": "dist/vue-form.umd.cjs",
-  "publishConfig": {
-    "access": "public"
-  }
+    "name": "@7span/vue-form",
+    "private": false,
+    "version": "3.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "main": "dist/vue-form.mjs",
+    "unpkg": "dist/vue-form.umd.cjs",
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "core-js": "^3.27.2",
+        "lodash": "^4.17.21",
+        "lodash-es": "^4.17.21",
+        "path": "^0.12.7",
+        "vue": "^3.2.45"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-vue": "^4.0.0",
+        "vite": "^4.0.0"
+    },
+    "jsdelivr": "dist/vue-form.umd.cjs",
+    "publishConfig": {
+        "access": "public"
+    }
 }
