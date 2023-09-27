@@ -1,14 +1,15 @@
 {
     "name": "@7span/vue-form",
     "private": false,
-    "version": "3.0.0",
+    "version": "2.0.0",
+    "type": "module",
     "scripts": {
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview"
     },
-    "main": "dist/vue-form.mjs",
-    "unpkg": "dist/vue-form.umd.cjs",
+    "main": "dist/vue-form.js",
+    "unpkg": "dist/vue-form.js",
     "files": [
         "dist"
     ],
@@ -23,7 +24,7 @@
         "@vitejs/plugin-vue": "^4.0.0",
         "vite": "^4.0.0"
     },
-    "jsdelivr": "dist/vue-form.umd.cjs",
+    "jsdelivr": "dist/vue-form.js",
     "publishConfig": {
         "access": "public"
     }
