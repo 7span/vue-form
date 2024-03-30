@@ -193,6 +193,10 @@ export default {
       }
     },
 
+    refresh(payload){
+      this.getItem(payload)
+    },
+
     reset() {
       this.setState();
       this.setErrors();
@@ -226,10 +230,10 @@ export default {
       this.$emit("update:formValues", this.values);
     },
 
-    async getItem() {
+    async getItem(payload) {
       this.isGetting = true;
       this.setErrors();
-      return this.get(this.id)
+      return this.get(this.id, payload)
         .then((res) => {
           if (this.validateIn(res)) {
             if (res.archivedAt) this.isArchived = true;
