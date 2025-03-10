@@ -6,7 +6,7 @@
 
 <script>
 import { cloneDeep } from "lodash-es";
-import { warn } from "@/utils";
+import { warn } from "../utils";
 
 const defaultFieldConfig = {
   name: null,
@@ -193,8 +193,8 @@ export default {
       }
     },
 
-    refresh(payload){
-      this.getItem(payload)
+    refresh(payload) {
+      this.getItem(payload);
     },
 
     reset() {

@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import vue from "@vitejs/plugin-vue2";
 import { resolve } from "path";
 
 export default defineConfig({
@@ -7,14 +7,14 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, "src/main.js"),
-      name: "VueForm",
+      name: "vue-form",
       fileName: "vue-form",
     },
     rollupOptions: {
       external: ["vue"],
       output: {
         globals: {
-          vue: "vue",
+          vue: "Vue",
         },
       },
     },

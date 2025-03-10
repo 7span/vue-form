@@ -1,7 +1,24 @@
 <template>
   <div>
-    <VForm :fields="fields" :id="0" :get="get" :save="save" :form-state.sync="formState">
-      <template #default="{ state, mode, saveItem, setValue, isLoading, errors, hasError }">
+    VUE 2
+    <VForm
+      :fields="fields"
+      :id="0"
+      :get="get"
+      :save="save"
+      :form-state.sync="formState"
+    >
+      <template
+        #default="{
+          state,
+          mode,
+          saveItem,
+          setValue,
+          isLoading,
+          errors,
+          hasError,
+        }"
+      >
         <h1>Loading: {{ isLoading }}</h1>
         <h2>Error: {{ hasError }}</h2>
         <div>
