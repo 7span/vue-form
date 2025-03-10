@@ -6,7 +6,7 @@
 
 <script>
 import { cloneDeep } from "lodash-es";
-import { warn } from "@/utils";
+import { warn } from "../utils";
 const defaultFieldConfig = {
   name: null,
   value: null,
