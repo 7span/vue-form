@@ -6,8 +6,7 @@
 
 <script>
 import { cloneDeep } from "lodash-es";
-import { warn } from "@/utils";
-
+import { warn } from "../utils";
 const defaultFieldConfig = {
   name: null,
   value: null,
@@ -15,7 +14,6 @@ const defaultFieldConfig = {
   in: (value) => value, // Before setting the value in the state
   out: (value) => value, // Before getting the value out of the state
 };
-
 export default {
   props: {
     /**
@@ -27,40 +25,31 @@ export default {
       type: Array,
       required: true,
     },
-
     id: {
       type: [String, Number],
     },
-
     nativeId: String,
-
     get: {
       type: Function,
     },
-
     save: {
       type: Function,
     },
-
     delete: {
       type: Function,
     },
-
     archive: {
       type: Function,
     },
-
     // State represents the values binded with DOM
     formState: {
       type: Object,
     },
-
     // Values represents the actual value after parsing data from DOM
     formValues: {
       type: Object,
     },
   },
-
   data() {
     return {
       state: null,
@@ -73,11 +62,9 @@ export default {
       error: null,
     };
   },
-
   mounted() {
     this.init();
   },
-
   computed: {
     /**
      * Serializing the fields creats the same format for
@@ -87,7 +74,6 @@ export default {
       return this.fields
         .map((field, index) => {
           const fieldType = typeof field;
-
           if (fieldType === "string") {
             return {
               ...defaultFieldConfig,
@@ -106,7 +92,6 @@ export default {
         })
         .filter((item) => item); // Removes invalid field configs
     },
-
     fieldErrors() {
       return Object.keys(this.errors)
         .filter((name) => this.hasField(name))
@@ -115,7 +100,6 @@ export default {
           return result;
         }, {});
     },
-
     nonFieldErrors() {
       return Object.keys(this.errors)
         .filter((name) => !this.hasField(name))
@@ -124,7 +108,6 @@ export default {
           return result;
         }, {});
     },
-
     values() {
       const res = {};
       this.serializedFields.forEach((field) => {
@@ -132,26 +115,21 @@ export default {
       });
       return res;
     },
-
     mode() {
       if (this.id == null) {
         return "create";
       }
       return "edit";
     },
-
     isCreating() {
       return this.mode === "create";
     },
-
     isEditing() {
       return this.mode === "edit";
     },
-
     isLoading() {
       return this.isGetting || this.isSaving || this.isDeleting;
     },
-
     scopes() {
       return {
         mode: this.mode,
@@ -178,37 +156,26 @@ export default {
         nonFieldErrors: this.nonFieldErrors,
       };
     },
-
     hasError() {
       return this.error || Object.keys(this.errors).length > 0;
     },
   },
-
   methods: {
     init() {
       this.setState();
-
       if (this.isEditing) {
         this.getItem();
       }
     },
-
-    refresh(payload){
-      this.getItem(payload)
-    },
-
     reset() {
       this.setState();
       this.setErrors();
     },
-
     hasField(name) {
       return this.serializedFields.find((field) => field.name === name);
     },
-
     setState(values = {}) {
       const state = {};
-
       this.serializedFields.forEach((field) => {
         let value;
         if (Object.prototype.hasOwnProperty.call(values, field.name)) {
@@ -217,28 +184,23 @@ export default {
           value = field.value;
         }
         state[field.name] = field.in(value);
-
         // For processing out method, for example converting String to Number after getting data from API
         // below code Closes Issue #34
         state[field.name] = field.out(value);
       });
-
-      this.$set(this, "state", state);
-
+      this.state = state;
       // Sync the state with parent component
       this.$emit("update:formState", this.state);
       this.$emit("update:formValues", this.values);
     },
-
-    async getItem(payload) {
+    async getItem() {
       this.isGetting = true;
       this.setErrors();
-      return this.get(this.id, payload)
+      return this.get(this.id)
         .then((res) => {
           if (this.validateIn(res)) {
             if (res.archivedAt) this.isArchived = true;
             else this.isArchived = false;
-
             this.setState(res);
           }
           return res;
@@ -250,11 +212,9 @@ export default {
           this.isGetting = false;
         });
     },
-
     async saveItem() {
       this.isSaving = true;
       this.setErrors();
-
       return this.save(this.id, cloneDeep(this.values))
         .then((res) => {
           if (this.validateIn(res)) {
@@ -269,11 +229,9 @@ export default {
           this.isSaving = false;
         });
     },
-
     async deleteItem() {
       this.isDeleting = true;
       this.setErrors();
-
       return this.delete(this.id, cloneDeep(this.values))
         .catch((err) => {
           this.setErrors(err);
@@ -282,11 +240,9 @@ export default {
           this.isDeleting = false;
         });
     },
-
     async archiveItem() {
       this.isArchiving = true;
       this.setErrors();
-
       return this.archive(this.id, cloneDeep(this.values))
         .catch((err) => {
           this.setErrors(err);
@@ -295,26 +251,25 @@ export default {
           this.isArchiving = false;
         });
     },
-
     setValue(key, value) {
-      this.$set(this.state, key, value);
+      this.state[key] = value;
     },
-
     setErrors(errors) {
       if (errors) {
         const { fields, message } = this.OPTIONS.errorAdapter(errors);
-        this.errors = fields;
-        this.error = message;
-        if (Object.keys(fields).length > 0) {
-          // eslint-disable-next-line
-          console.error(message, fields);
+        if (fields || message) {
+          this.errors = fields;
+          this.error = message;
+          if (Object.keys(fields).length > 0) {
+            // eslint-disable-next-line
+            console.error(message, fields);
+          }
         }
       } else {
         this.errors = {};
         this.error = null;
       }
     },
-
     validateIn(res) {
       if (typeof res !== "object" || Array.isArray(res)) {
         warn("Invalid input/errors received", res);

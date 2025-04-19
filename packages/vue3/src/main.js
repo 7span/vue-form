@@ -1,26 +1,18 @@
 import defaultOptions from "./options";
+import FormRoot from "./components/FormRoot.vue";
 
-//Components
-import FormRoot from "./components/FormRoot";
-
-const install = (Vue, userOptions = {}) => {
+const install = (app, userOptions = {}) => {
   const options = Object.assign({}, defaultOptions, userOptions);
   const prefix = options.componentPrefix;
 
-  //Root Component
-  Vue.component(`${prefix}Form`, {
-    data() {
-      return {
-        OPTIONS: options,
-      };
-    },
-    provide: {
-      OPTIONS: options,
+  app.provide("OPTIONS", options);
+
+  app.component(`${prefix}Form`, {
+    setup() {
+      return { OPTIONS: options };
     },
     extends: FormRoot,
   });
-
-  // Vue.component(`${prefix}Form`, Root);
 };
 
 const plugin = {
