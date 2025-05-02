@@ -11,7 +11,7 @@ export default {
     return {
       name: error.name || 'Unknown Error',
       message: error.message || 'There was an unknown error. Please try again.',
-      fieldErrors: {},
+      fieldErrors: error.errors || {},
     }
   },
 }

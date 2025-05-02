@@ -5,11 +5,22 @@
 </template>
 
 <script setup>
+import { inject, ref, computed, provide, watch, toRaw } from 'vue'
+import { useChangeCase } from '@vueuse/integrations/useChangeCase'
+
 const props = defineProps({
   /**
-   * Possible config
-   * ['name','email'] Creates fields with null values
-   * [{name:'email',value:'hello@hello.com'}] Creates field with default value
+   * Field configuration options:
+   *
+   * Array of strings: ['name', 'email']
+   * - Creates fields with null default values
+   *
+   * Array of objects: [{name: 'email', value: 'hello@hello.com'}]
+   * - Creates fields with specified default values
+   *
+   * Each field can be defined as:
+   * - String: Field name only
+   * - Object: {name, value, label} properties
    */
   fields: {
     type: Array,
@@ -33,6 +44,9 @@ const props = defineProps({
   archive: {
     type: Function,
   },
+  unarchive: {
+    type: Function,
+  },
 })
 
 const defaultFieldConfig = {
@@ -42,17 +56,19 @@ const defaultFieldConfig = {
 
 const globalOptions = inject('vueForm')
 
-const values = defineModel('values', {
-  default: () => {},
-})
+const values = ref({})
 
 const isReading = ref(false)
 const isCreating = ref(false)
 const isUpdating = ref(false)
 const isDeleting = ref(false)
 const isArchiving = ref(false)
+const isUnarchiving = ref(false)
 const isArchived = ref(false)
 const error = ref()
+const initialValues = ref({})
+const touched = ref([])
+const dirty = ref([])
 
 const isLoading = computed(() => {
   return (
@@ -69,10 +85,12 @@ const normalizedFields = computed(() => {
           ...defaultFieldConfig,
           name: field,
           value: null,
+          label: useChangeCase(field, 'capitalCase'),
         }
       } else if (fieldType === 'object' && !Array.isArray(field)) {
         return {
           ...defaultFieldConfig,
+          label: useChangeCase(field.name, 'capitalCase'),
           ...field,
         }
       } else {
@@ -83,11 +101,24 @@ const normalizedFields = computed(() => {
     .filter((item) => item) // Removes invalid field configs
 })
 
+const isNewItem = computed(() => {
+  return globalOptions.isNewItemCheck({ itemId: props.itemId })
+})
+
+const dirtyValues = computed(() => {
+  return dirty.value.reduce((acc, key) => {
+    acc[key] = values.value[key]
+    return acc
+  }, {})
+})
+
 const context = computed(() => {
   return {
+    isNewItem: isNewItem.value,
     fields: props.fields,
     normalizedFields: normalizedFields.value,
     values: values.value,
+    dirtyValues: values.value,
     error: error.value,
     itemId: props.itemId,
     isReading: isReading.value,
@@ -97,23 +128,30 @@ const context = computed(() => {
     isArchiving: isArchiving.value,
     isLoading: isLoading.value,
     isArchived: isArchived.value,
+    touched: touched.value,
+    dirty: dirty.value,
   }
 })
 
-function setInitialValues(values = {}) {
-  const allValues = {}
+function getDefaultValues() {
+  return normalizedFields.value.reduce((acc, field) => {
+    acc[field.name] = field.value
+    return acc
+  }, {})
+}
 
-  normalizedFields.value.forEach((field) => {
-    let value
-    // If value is provided in the values object, use it, otherwise use the default value
-    if (Object.prototype.hasOwnProperty.call(values, field.name)) {
-      value = values[field.name]
-    } else {
-      value = field.value
-    }
-    allValues[field.name] = value
-  })
-  values.value = allValues
+function setValues(newValues) {
+  dirty.value = []
+  touched.value = []
+
+  if (newValues) {
+    Object.keys(newValues).forEach((key) => {
+      values.value[key] = newValues[key]
+    })
+    initialValues.value = structuredClone(toRaw(values.value))
+  } else {
+    values.value = {}
+  }
 }
 
 function setError(err) {
@@ -125,19 +163,24 @@ function setError(err) {
 }
 
 function onItemResponse(data) {
-  isArchived.value = globalOptions.isArchivedCheck(data)
+  isArchived.value = !isNewItem.value && globalOptions.isArchivedItemCheck(data)
   const { values } = data
-  setInitialValues(values)
+  setValues(values)
 }
 
 function onItemError(err) {
+  //Log JS Errors
+  if (err.name == 'TypeError') {
+    console.error(err)
+  }
+  setValues()
   setError(err)
 }
 
 function readItem() {
   isReading.value = true
   setError()
-  props
+  return props
     .read(props.itemId, context.value)
     .then(onItemResponse)
     .catch(onItemError)
@@ -149,7 +192,7 @@ function readItem() {
 function createItem() {
   isCreating.value = true
   setError()
-  props
+  return props
     .create(context.value)
     .then(onItemResponse)
     .catch(onItemError)
@@ -161,8 +204,8 @@ function createItem() {
 function updateItem() {
   isUpdating.value = true
   setError()
-  props
-    .create(props.itemId, context.value)
+  return props
+    .update(props.itemId, context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
@@ -173,8 +216,8 @@ function updateItem() {
 function deleteItem() {
   isDeleting.value = true
   setError()
-  props
-    .create(props.itemId, context.value)
+  return props
+    .delete(props.itemId, context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
@@ -186,12 +229,39 @@ function archiveItem() {
   isArchiving.value = true
   setError()
   props
-    .create(props.itemId, context.value)
+    .archive(props.itemId, context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
       isArchiving.value = false
     })
+}
+
+function unarchiveItem() {
+  isUnarchiving.value = true
+  setError()
+  props
+    .unarchive(props.itemId, context.value)
+    .then(onItemResponse)
+    .catch(onItemError)
+    .finally(() => {
+      isUnarchiving.value = false
+    })
+}
+
+function addTouched(fieldName) {
+  if (!touched.value.includes(fieldName)) {
+    touched.value.push(fieldName)
+  }
+}
+
+function toggleDirty(fieldName, isDirty) {
+  if (isDirty && !dirty.value.includes(fieldName)) {
+    dirty.value.push(fieldName)
+  }
+  if (!isDirty) {
+    dirty.value = dirty.value.filter((item) => item !== fieldName)
+  }
 }
 
 const slotProps = computed(() => {
@@ -202,12 +272,40 @@ const slotProps = computed(() => {
     updateItem,
     deleteItem,
     archiveItem,
+    unarchiveItem,
   }
 })
 
-setInitialValues()
-const isNewItem = globalOptions.isNewItemCheck(context.value)
-if (!isNewItem) {
-  readItem()
+provide('values', values)
+provide('dirtyValues', dirtyValues)
+provide('error', error)
+provide('updateItem', updateItem)
+provide('createItem', createItem)
+provide('archiveItem', archiveItem)
+provide('unarchiveItem', unarchiveItem)
+provide('deleteItem', deleteItem)
+provide('isUpdating', isUpdating)
+provide('isCreating', isCreating)
+provide('isReading', isReading)
+provide('isArchiving', isArchiving)
+provide('isUnarchiving', isUnarchiving)
+provide('isDeleting', isDeleting)
+provide('isLoading', isLoading)
+provide('isNewItem', isNewItem)
+provide('normalizedFields', normalizedFields)
+provide('initialValues', initialValues)
+provide('addTouched', addTouched)
+provide('toggleDirty', toggleDirty)
+provide('isArchived', isArchived)
+
+function init() {
+  if (!isNewItem.value) {
+    readItem()
+  } else {
+    setValues(getDefaultValues())
+  }
 }
+
+watch(() => props.itemId, init)
+init()
 </script>

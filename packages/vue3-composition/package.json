@@ -18,6 +18,9 @@
     "access": "public"
   },
   "dependencies": {
+    "@vueuse/integrations": "^13.1.0",
+    "change-case": "^5",
+    "lodash-es": "^4.17.21",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

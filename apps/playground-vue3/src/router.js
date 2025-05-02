@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Index from "./Index.vue";
+import Index from "./item/index.vue";
 
 const routes = [
   {
-    path: "/",
+    path: "/item/:itemId",
+    name: "item",
     component: Index,
   },
 ];
