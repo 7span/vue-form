@@ -13,6 +13,10 @@ const isDeleting = inject('isDeleting')
 const isReading = inject('isReading')
 const isLoading = inject('isLoading')
 
+defineOptions({
+  name: 'VueFormDelete',
+})
+
 const label = computed(() => {
   if (isDeleting.value) return 'Deleting...'
   if (isReading.value) return 'Loading...'

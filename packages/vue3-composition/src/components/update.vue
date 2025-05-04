@@ -14,6 +14,10 @@ const isReading = inject('isReading')
 const isNewItem = inject('isNewItem')
 const isLoading = inject('isLoading')
 
+defineOptions({
+  name: 'VueFormUpdate',
+})
+
 const label = computed(() => {
   if (isUpdating.value) return 'Updating...'
   if (isReading.value) return 'Loading...'

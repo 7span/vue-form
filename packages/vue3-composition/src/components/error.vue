@@ -10,6 +10,10 @@
 import { inject, computed } from 'vue'
 const error = inject('error')
 
+defineOptions({
+  name: 'VueFormError',
+})
+
 const slotProps = computed(() => {
   return {
     error: error.value,

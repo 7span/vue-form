@@ -10,6 +10,10 @@ const values = inject('values')
 const dirtyValues = inject('dirtyValues')
 const error = inject('error')
 
+defineOptions({
+  name: 'VueFormFields',
+})
+
 function hasError(fieldName) {
   return error.value?.fieldErrors[fieldName] != null
 }

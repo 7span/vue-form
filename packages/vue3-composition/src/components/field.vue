@@ -15,6 +15,10 @@ const toggleDirty = inject('toggleDirty')
 const normalizedFields = inject('normalizedFields')
 const initialValues = inject('initialValues')
 
+defineOptions({
+  name: 'VueFormField',
+})
+
 const props = defineProps({
   name: {
     type: String,
@@ -24,9 +28,24 @@ const props = defineProps({
 
 const field = normalizedFields.value.find((field) => field.name === props.name)
 
-function onInput(event) {
+/**
+ * Input events can come in two forms:
+ * 1. Direct values from UI component libraries (e.g. value="some text")
+ * 2. Native DOM Event objects from HTML elements (e.g. event.target.value)
+ * This distinction requires handling both cases when processing input.
+ */
+function isEvent(value) {
+  return (
+    value &&
+    typeof value === 'object' &&
+    value.target !== undefined &&
+    value.preventDefault !== undefined
+  )
+}
+
+function onInput(data) {
   addTouched(props.name)
-  values.value[props.name] = event.target.value
+  values.value[props.name] = isEvent(data) ? data.target.value : data
   const isDirty = !isEqual(initialValues.value[props.name], values.value[props.name])
   toggleDirty(props.name, isDirty)
 }

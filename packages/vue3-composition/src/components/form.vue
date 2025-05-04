@@ -8,6 +8,10 @@
 import { inject, ref, computed, provide, watch, toRaw } from 'vue'
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 
+defineOptions({
+  name: 'VueForm',
+})
+
 const props = defineProps({
   /**
    * Field configuration options:
@@ -85,12 +89,12 @@ const normalizedFields = computed(() => {
           ...defaultFieldConfig,
           name: field,
           value: null,
-          label: useChangeCase(field, 'capitalCase'),
+          label: useChangeCase(field, 'capitalCase').value,
         }
       } else if (fieldType === 'object' && !Array.isArray(field)) {
         return {
           ...defaultFieldConfig,
-          label: useChangeCase(field.name, 'capitalCase'),
+          label: useChangeCase(field.name, 'capitalCase').value,
           ...field,
         }
       } else {

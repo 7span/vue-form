@@ -1,6 +1,6 @@
 {
   "name": "@7span/vue-form",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
     "format": "prettier --write src/",
     "prepublishOnly": "npm run build"
   },
-  "main": "dist/vue-list.js",
+  "main": "dist/vue-form.js",
   "files": [
     "dist"
   ],

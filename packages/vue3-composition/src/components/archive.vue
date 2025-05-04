@@ -14,6 +14,10 @@ const isArchived = inject('isArchived')
 const isReading = inject('isReading')
 const isLoading = inject('isLoading')
 
+defineOptions({
+  name: 'VueFormArchive',
+})
+
 const label = computed(() => {
   if (isArchiving.value) return 'Archiving...'
   if (isReading.value) return 'Loading...'
