@@ -25,31 +25,37 @@
             <pre>values: {{ values }}</pre>
             <pre>dirty: {{ dirtyValues }}</pre>
 
-            <VueFormField name="id" v-slot="{ field, error, label }">
-              <label>{{ label }}</label>
+            <VueFormField name="id" v-slot="{ nativeField, error, label }">
+              <label for="">{{ label }}</label>
               <input
                 type="text"
-                v-bind="field"
+                v-bind="nativeField"
                 :disabled="!context.isNewItem"
               />
               <p v-if="error">Error: {{ error }}</p>
             </VueFormField>
 
-            <VueFormField name="name" v-slot="{ field, label, error }">
-              <label>{{ label }}</label>
-              <input type="text" v-bind="field" />
+            <VueFormField name="customInput" v-slot="{ field, error, label }">
+              <label for="">{{ label }}</label>
+              <CustomInput v-bind="field" />
               <p v-if="error">Error: {{ error }}</p>
             </VueFormField>
 
-            <VueFormField name="gender" v-slot="{ field, label }">
+            <VueFormField name="name" v-slot="{ nativeField, label, error }">
+              <label>{{ label }}</label>
+              <input type="text" v-bind="nativeField" />
+              <p v-if="error">Error: {{ error }}</p>
+            </VueFormField>
+
+            <VueFormField name="gender" v-slot="{ nativeField, value, label }">
               <label>{{ label }}</label>
               <label for="male">
                 <input
                   id="male"
                   type="radio"
-                  v-bind="field"
+                  v-bind="nativeField"
                   value="male"
-                  :checked="field.value == 'male'"
+                  :checked="value == 'male'"
                 />
                 <span>Male</span>
               </label>
@@ -57,23 +63,23 @@
                 <input
                   id="female"
                   type="radio"
-                  v-bind="field"
+                  v-bind="nativeField"
                   value="female"
-                  :checked="field.value == 'female'"
+                  :checked="value == 'female'"
                 />
                 <span>Female</span>
               </label>
             </VueFormField>
 
-            <VueFormField name="email" v-slot="{ field, label, error }">
+            <VueFormField name="email" v-slot="{ nativeField, label, error }">
               <label>{{ label }}</label>
-              <input type="email" v-bind="field" />
+              <input type="email" v-bind="nativeField" />
               <p v-if="error">Error: {{ error }}</p>
             </VueFormField>
 
-            <VueFormField name="age" v-slot="{ field, label, error }">
+            <VueFormField name="age" v-slot="{ nativeField, label, error }">
               <label>{{ label }}</label>
-              <input type="text" v-bind="field" />
+              <input type="text" v-bind="nativeField" />
               <p v-if="error">Error: {{ error }}</p>
             </VueFormField>
           </template>
@@ -92,12 +98,15 @@
 <script setup>
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import CustomInput from "../input.vue";
+
 const route = useRoute();
 const values = ref(null);
 
 const fields = ref([
   { name: "id", label: "IDDDD" },
   "name",
+  "customInput",
   { name: "gender", value: "male" },
   { name: "email", value: "hello@gmail.com" },
   { name: "age" },

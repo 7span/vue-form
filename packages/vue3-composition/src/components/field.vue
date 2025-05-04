@@ -44,8 +44,13 @@ function isEvent(value) {
 }
 
 function onInput(data) {
+  const value = isEvent(data) ? data.target.value : data
+  updateValue(value)
+}
+
+function updateValue(value) {
   addTouched(props.name)
-  values.value[props.name] = isEvent(data) ? data.target.value : data
+  values.value[props.name] = value
   const isDirty = !isEqual(initialValues.value[props.name], values.value[props.name])
   toggleDirty(props.name, isDirty)
 }
@@ -58,8 +63,14 @@ const slotProps = computed(() => {
   return {
     error: fieldError.value,
     label: field.label,
+    name: props.name,
+    value: values.value?.[props.name],
+    updateValue: updateValue,
     field: {
-      name: props.name,
+      modelValue: values.value?.[props.name],
+      'onUpdate:modelValue': onInput,
+    },
+    nativeField: {
       value: values.value?.[props.name],
       onInput,
     },
