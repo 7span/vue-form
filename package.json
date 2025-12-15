@@ -1,7 +1,14 @@
 {
   "name": "vue-form",
-  "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "dev:docs": "pnpm --filter @vue-form/docs dev",
+    "build:docs": "pnpm --filter @vue-form/docs build",
+    "start:docs": "pnpm --filter @vue-form/docs preview",
+    "dev": "pnpm --filter {apps/*} dev",
+    "build": "pnpm --filter {apps/*} build",
+    "start": "pnpm --filter {apps/*} preview"
+  },
   "engines": {
     "node": ">=18.0.0"
   }
