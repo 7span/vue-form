@@ -1,15 +1,17 @@
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
+  lang: "en-US",
+  srcDir: "src",
   title: "Vue Form",
   description: "Dynamic forms for Vue 2 & 3",
   base: "/open-source/vue-form/",
   themeConfig: {
-    nav: [{ text: "Introduction", link: "/" }],
+    nav: [{ text: "Home", link: "/index" }],
     sidebar: [
       {
         text: "Introduction",
-        items: [{ text: "What is Vue Form?", link: "/" }],
+        items: [{ text: "What is Vue Form?", link: "/introduction" }],
       },
       {
         text: "Configurations",
