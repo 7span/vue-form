@@ -9,6 +9,10 @@ importers:
   .: {}
 
   apps/docs:
+    dependencies:
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.25
     devDependencies:
       vitepress:
         specifier: 2.0.0-alpha.15
