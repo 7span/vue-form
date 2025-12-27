@@ -3,25 +3,31 @@ layout: home
 
 hero:
   name: VueForm
-  text: Dynamic forms for Vue 2 & 3
-  tagline: Dynamic forms for Vue 2 & 3
+  text: Build consistent CRUD forms, faster.
+  tagline: Write your form schema & API calls, let VueForm handle the rest - state, lifecycle, and updates.
   image:
     src: /hero.svg
-    alt: VueForm
+    alt: VitePress
   actions:
     - theme: brand
       text: Get Started
-      link: /introduction
+      link: /introduction/why-vue-form
     - theme: alt
       text: View on GitHub
       link: https://github.com/7span/vue-form
 features:
   - icon: 🧠
-    title: Vue 2 & 3
-    details: Vue 2 & 3 support.
+    title: Headless
+    details: Completely UI-agnostic. It gives you full control over the markup via scoped slots.
   - icon: 🔁
-    title: Vue 3 (composition API bundle)
-    details: Vue 3 (composition API bundle) support.
+    title: Consistency
+    details: Write forms the same way everywhere. Scale without friction.
+  - icon: ⚡
+    title: Speed
+    details: Copy existing forms and customize. Ship features faster.
+  - icon: 💾
+    title: Opinionated
+    details: Built-in structure enforces best practices across your team.
 ---
 
 <script setup>
@@ -46,9 +52,12 @@ const members = [
       { icon: 'x', link: 'https://x.com/theharshin' }
     ]
   },
- 
+   
+
 ]
 </script>
+
+---
 
 ### 🙌 Credits
 

@@ -1,17 +1,14 @@
 {
-  "name": "@vue-form/docs",
+  "name": "vue-form-docs",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
+  "description": "Docs for @7span/vue-form",
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {
-    "vitepress": "2.0.0-alpha.15"
-  },
-  "dependencies": {
-    "vue": "^3.5.0"
+    "vitepress": "1.6.3"
   }
 }
