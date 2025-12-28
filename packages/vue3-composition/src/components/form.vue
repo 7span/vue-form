@@ -26,6 +26,19 @@ const props = defineProps({
    * - String: Field name only
    * - Object: {name, value, label} properties
    */
+
+  /**
+   * @typedef {Object} Field
+   * @property {string} name - Field name
+   * @property {any} value - Default value for the field
+   * @property {string} label - Label for the field
+   */
+  /**
+   * @typedef {string} Name
+   */
+  /**
+   * @type {Array.<Field|Name>}
+   */
   fields: {
     type: Array,
     required: true,

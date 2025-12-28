@@ -33,10 +33,10 @@ To configure the mode detection, use the `isNewItemCheck` option. [Read more](/c
 When `<VueForm>` mounts, the following sequence occurs:
 
 1. **Mode Detection:** VueForm calls `isNewItemCheck` with the `item-id` prop to determine the operation mode.
-2. **Create Mode:** when `isNewItemCheck` returns `false`
+2. **Create Mode:** when `isNewItemCheck` returns `true`
    - No API call is made
    - Default field values are applied from the field configuration
-3. **Update Mode:** when `isNewItemCheck` returns `true`
+3. **Update Mode:** when `isNewItemCheck` returns `false`
    - The `read` function is called with `itemId` as the argument
    - You fetch the existing data from the API and return it
    - Populates form fields with the retrieved data

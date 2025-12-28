@@ -53,92 +53,131 @@ The identifier passed to `isNewItemCheck` for mode detection. Use special string
 <VueForm :item-id="$route.params.id" />
 ```
 
-```js
-{
-  isNewItemCheck: (itemId) => {
-    // Return true for create mode, false for update mode
-    return itemId == "+" || itemId == "create";
-  };
-}
-```
+See how to use `itemId` in `isNewItemCheck` [here](/configuration/new-item-check.md)
 
 ### `create`
 
 - Type: `Function`
-- Signature: `(context) => Promise<responseObject>`
+- Signature: `(context) => Promise<VueFormApiResponse>`
 
-Async function called when the create button is clicked. Receives the full`context` object and must return a promise resolving to a `responseObject`.
-
-```js
-const create = (context) => {
-    return fetch('/api/users/').then(res=>{
-      return {
-        values:{...}
-      }
-    })
-  }
-```
-
-::: tip Important
-Do not catch errors in your create, read, update, delete, archive, or unarchive methods. VueForm's errorAdaptor automatically catches and processes unhandled errors from these functions. If you must catch: Re-throw the error.
-:::
+Async function called when the create button is clicked. Receives the full`context` object and must return a promise resolving to a `VueFormApiResponse`.
 
 ```js
-const create = (context) => {
+function create(context){
   return fetch('/api/users/').then(res=>{
     return {
-      values:{...}
+      values:{...} // {key:value} pairs for each field
     }
-  }).catch((err)=>{
-    //Your logic
-    throw err
   })
 }
 ```
 
-#### How It Works
-
-1. Your CRUD method throws an error or returns a rejected promise
-2. VueForm catches the error automatically
-3. errorAdaptor formats the error for display
-4. Errors are exposed in the form's error state
-
-This pattern keeps your CRUD methods clean while ensuring consistent error handling across all operations.
+::: tip Important
+Do not catch errors in your create, read, update, delete, archive, or unarchive methods. [Read more](/configuration/error-adapter.md)
+:::
 
 ### `read`
 
+- Type: `Function`
+- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+
+Async function called when the component is mounted and update mode is detected. Must return a promise resolving to a `VueFormApiResponse`.
+
+```js
+function read(itemId, context){
+  return fetch(`/api/users/${itemId}`).then(res=>{
+    return {
+      values:{...} // {key:value} pairs for each field
+    }
+  })
+}
+```
+
 ### `update`
+
+- Type: `Function`
+- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+
+Async function called when the update button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
+
+```js
+function update(itemId, context){
+  return fetch(`/api/users/${itemId}`).then(res=>{
+    return {
+      values:{...} // {key:value} pairs for each field
+    }
+  })
+}
+```
 
 ### `delete`
 
+- Type: `Function`
+- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+
+Async function called when the delete button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
+
+```js
+function update(itemId, context){
+  return fetch(`/api/users/${itemId}`).then(res=>{
+    return {
+      values:{...} // {key:value} pairs for each field
+    }
+  })
+}
+```
+
 ### `archive`
+
+- Type: `Function`
+- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+
+Async function called when the delete button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
+
+```js
+function update(itemId, context){
+  return fetch(`/api/users/${itemId}`).then(res=>{
+    return {
+      values:{...} // {key:value} pairs for each field
+    }
+  })
+}
+```
 
 ### `unarchive`
 
+- Type: `Function`
+- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+
+Async function called when the delete button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
+
+```js
+function update(itemId, context){
+  return fetch(`/api/users/${itemId}`).then(res=>{
+    return {
+      values:{...} // {key:value} pairs for each field
+    }
+  })
+}
+```
+
 ## Events
 
-| Name            | Arguments | Description |
-| --------------- | --------- | ----------- |
-| onItemSelect    |           | WIP         |
-| onResponse      |           | WIP         |
-| afterPageChange |           | WIP         |
-| afterLoadMore   |           | WIP         |
+There are no events added at the moment.
 
 ## Slots
 
 ### `default`
 
-The only slot available in `<VueList>` is `default`. It exposes a set of scoped variables that let you access and render the list state however you like.
+The only slot available in `<VueForm>` is `default`. It exposes a set of scoped variables that you can access.
 
 #### Slot Props
 
-| Key       | Description                                                                                     |
-| --------- | ----------------------------------------------------------------------------------------------- |
-| items     | `Array` <br/> Array of items returned from the API                                              |
-| response  | `Object` <br/> Full response object from the requestHandler                                     |
-| isLoading | `Boolean` <br/> Indicating whether the list is currently loading                                |
-| selection | `Array` <br/> Object containing selected item(s) if selection is enabled                        |
-| error     | Error object if the request failed                                                              |
-| isEmpty   | `Boolean` <br/> Indicating if the items array is empty                                          |
-| context   | `Object`<br/> The full context object same as passed to the `requestHandler` and `stateManager` |
-| refresh   | `Function`<br/> Function to manually trigger a refetch                                          |
+| Key           | Description                                                                                        |
+| ------------- | -------------------------------------------------------------------------------------------------- |
+| context       | `Object` <br/> The context object                                                                  |
+| readItem      | `Function` <br/> Wrapper of `read` function. You can use this method to manually do the read call  |
+| updateItem    | `Function` <br/> Wrapper of `update` function. You can use this instead of `<VueFormUpdate>`       |
+| deleteItem    | `Function` <br/> Wrapper of `delete` function. You can use this instead of `<VueFormDelete>`       |
+| archiveItem   | `Function` <br/> Wrapper of `archive` function. You can use this instead of `<VueFormArchive>`     |
+| unarchiveItem | `Function` <br/> Wrapper of `unarchive` function. You can use this instead of `<VueFormUnarchive>` |

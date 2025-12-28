@@ -12,6 +12,13 @@ Adds a prefix to the globally registered components. Useful to avoid naming conf
 ### `isNewItemCheck`
 
 - Type: `Function`
-- Arguments: `(context) => boolean`
+- Arguments: `(context) => Boolean`
 
 [Read more](/configuration/new-item-check.md)
+
+### `errorAdapter`
+
+- Type: `Function`
+- Arguments: `(context) => boolean`
+
+[Read more](/configuration/error-adapter.md)

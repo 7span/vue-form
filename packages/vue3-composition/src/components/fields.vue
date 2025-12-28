@@ -18,6 +18,7 @@ function hasError(fieldName) {
   return error.value?.fieldErrors[fieldName] != null
 }
 
+// TODO: Context object from <VueForm> already provides these values. Refactor to use that.
 const slotProps = computed(() => {
   return {
     values: values.value,

@@ -41,8 +41,8 @@ export default defineConfig({
         items: [
           { text: "Options", link: "/configuration/options" },
           { text: "isNewItemCheck", link: "/configuration/new-item-check" },
+          { text: "errorAdapter", link: "/configuration/error-adapter" },
           { text: "Context Object", link: "/configuration/context-object" },
-          { text: "Response Object", link: "/configuration/response-object" },
         ],
       },
       {
@@ -53,6 +53,8 @@ export default defineConfig({
             link: "/components/intro",
           },
           { text: "VueForm", link: "/components/form" },
+          { text: "VueFormFields", link: "/components/fields" },
+          { text: "VueFormField", link: "/components/field" },
         ],
       },
     ],
