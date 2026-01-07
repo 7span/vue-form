@@ -11,10 +11,10 @@
       :update="update"
       :archive="archive"
       :unarchive="unarchive"
+      :schema="schema"
       :validate-schema="validateSchema"
       :delete="del"
       v-model="values"
-      :schema="schema"
       :item-id="route.params.itemId"
     >
       <template #default="{ context }">

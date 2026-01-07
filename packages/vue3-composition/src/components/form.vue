@@ -46,11 +46,11 @@ const props = defineProps({
   schema: {
     type: Object,
   },
-  itemId: {
-    type: [String, Number],
-  },
   validateSchema: {
     type: Function,
+  },
+  itemId: {
+    type: [String, Number],
   },
   create: {
     type: Function,
