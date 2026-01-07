@@ -43,8 +43,14 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  schema: {
+    type: Object,
+  },
   itemId: {
     type: [String, Number],
+  },
+  validateSchema: {
+    type: Function,
   },
   create: {
     type: Function,
@@ -95,7 +101,7 @@ const isLoading = computed(() => {
 
 const normalizedFields = computed(() => {
   return props.fields
-    .map((field, index) => {
+    .map((field) => {
       const fieldType = typeof field
       if (fieldType === 'string') {
         return {
@@ -171,11 +177,29 @@ function setValues(newValues) {
   }
 }
 
+
+async function isValid() {
+  // Clear previous errors before validation
+  setError(null)
+  
+  let validationResult = props.validateSchema
+    ? await props.validateSchema(props.schema, toRaw(values.value))
+    : { success: true }
+
+  if (!validationResult.success) {
+    setError(validationResult)
+    return false
+  }
+  
+  return true
+}
+
 function setError(err) {
   if (!err) {
     error.value = null
     return
   }
+
   error.value = globalOptions.errorAdapter(err)
 }
 
@@ -206,9 +230,16 @@ function readItem() {
     })
 }
 
-function createItem() {
+async function createItem() {
   isCreating.value = true
-  setError()
+  setError(null)
+
+  const valid = await isValid()
+  if (!valid) {
+    isCreating.value = false
+    return
+  }
+
   return props
     .create(context.value)
     .then(onItemResponse)
@@ -218,9 +249,16 @@ function createItem() {
     })
 }
 
-function updateItem() {
+async function updateItem() {
   isUpdating.value = true
-  setError()
+  setError(null)
+
+  const valid = await isValid()
+  if (!valid) {
+    isUpdating.value = false
+    return
+  }
+
   return props
     .update(props.itemId, context.value)
     .then(onItemResponse)
@@ -290,6 +328,7 @@ const slotProps = computed(() => {
     deleteItem,
     archiveItem,
     unarchiveItem,
+
   }
 })
 

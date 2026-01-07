@@ -11,8 +11,10 @@
       :update="update"
       :archive="archive"
       :unarchive="unarchive"
+      :validate-schema="validateSchema"
       :delete="del"
       v-model="values"
+      :schema="schema"
       :item-id="route.params.itemId"
     >
       <template #default="{ context }">
@@ -32,22 +34,27 @@
                 v-bind="nativeField"
                 :disabled="!context.isNewItem"
               />
-              <p v-if="error">Error: {{ error }}</p>
+              
+              <VueFormFieldError />
             </VueFormField>
+
+
 
             <VueFormField name="customInput" v-slot="{ field, error, label }">
               <label for="">{{ label }}</label>
               <CustomInput v-bind="field" />
-              <p v-if="error">Error: {{ error }}</p>
+
+              <VueFormFieldError />
             </VueFormField>
 
             <VueFormField name="name" v-slot="{ nativeField, label, error }">
               <label>{{ label }}</label>
               <input type="text" v-bind="nativeField" />
-              <p v-if="error">Error: {{ error }}</p>
+
+              <VueFormFieldError />
             </VueFormField>
 
-            <VueFormField name="gender" v-slot="{ nativeField, value, label }">
+            <VueFormField name="gender" v-slot="{ nativeField, value, label, error }">
               <label>{{ label }}</label>
               <label for="male">
                 <input
@@ -69,18 +76,23 @@
                 />
                 <span>Female</span>
               </label>
+
+              <VueFormFieldError />
             </VueFormField>
 
             <VueFormField name="email" v-slot="{ nativeField, label, error }">
               <label>{{ label }}</label>
               <input type="email" v-bind="nativeField" />
-              <p v-if="error">Error: {{ error }}</p>
+
+              <VueFormFieldError />
             </VueFormField>
 
             <VueFormField name="age" v-slot="{ nativeField, label, error }">
               <label>{{ label }}</label>
               <input type="text" v-bind="nativeField" />
-              <p v-if="error">Error: {{ error }}</p>
+
+
+              <VueFormFieldError />
             </VueFormField>
           </template>
         </VueFormFields>
@@ -99,6 +111,7 @@
 import { ref } from "vue";
 import { useRoute } from "vue-router";
 import CustomInput from "../input.vue";
+import z from "zod";
 
 const route = useRoute();
 const values = ref(null);
@@ -112,6 +125,17 @@ const fields = ref([
   { name: "age" },
 ]);
 
+const schema = z.object({
+  id: z.string().min(1, "ID is required"),
+  name: z.string().min(1, "Name is required"),
+  customInput: z.string().min(5, "Custom Input must be at least 5 characters"),
+  gender: z.enum(["male", "female"]),
+  email: z.email("Invalid email address"),
+  age: z
+    .string()
+    .refine((val) => !isNaN(Number(val)), { message: "Age must be a number" })
+});
+
 const data = ref([
   { name: "Harsh Kansagara", email: "harsh@7span.com", age: "35", id: "1" },
   {
@@ -122,6 +146,31 @@ const data = ref([
     isArchived: true,
   },
 ]);
+
+
+const validateSchema = async (schema, values) => {
+  const result = schema.safeParse(values);
+
+  if (result.success) {
+    return { success: true, errors: {} };
+  }
+
+  const fieldErrors = result.error.issues.reduce((acc, fieldError) => {
+
+    const field = fieldError.path[0];
+    if (!field) return acc;
+
+    acc[field] = {
+      message: fieldError.message,
+    };
+    return acc;
+  }, {});
+
+  return {
+    success: false,
+    errors: fieldErrors,
+  };
+};
 
 const getItem = (id) => {
   return data.value.find((item) => item.id == id);

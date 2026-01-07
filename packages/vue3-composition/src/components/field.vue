@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { inject, computed } from 'vue'
+import { inject, provide, computed } from 'vue'
 import { isEqual } from 'lodash-es'
 
 const error = inject('error')
@@ -76,4 +76,8 @@ const slotProps = computed(() => {
     },
   }
 })
+
+
+// Provide errorMessage for FieldError component
+provide('errorMessage', fieldError)
 </script>
