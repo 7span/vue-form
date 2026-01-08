@@ -5,13 +5,13 @@
     <hr />
 
     <VueForm
-      :fields="fields"
       :read="read"
       :create="create"
       :update="update"
       :archive="archive"
       :unarchive="unarchive"
       :schema="schema"
+      :schema-to-fields="schemaToFields"
       :validate-schema="validateSchema"
       :delete="del"
       v-model="values"
@@ -126,14 +126,14 @@ const fields = ref([
 ]);
 
 const schema = z.object({
-  id: z.string().min(1, "ID is required"),
-  name: z.string().min(1, "Name is required"),
-  customInput: z.string().min(5, "Custom Input must be at least 5 characters"),
-  gender: z.enum(["male", "female"]),
-  email: z.email("Invalid email address"),
+  id: z.string().min(1, "ID is required").default("").describe("ID"),
+  name: z.string().min(1, "Name is required").default("").describe("Full Name"),
+  customInput: z.string().min(5, "Custom Input must be at least 5 characters").default("").describe("Custom Input"),
+  gender: z.enum(["male", "female"]).default("male").describe("Gender"),
+  email: z.email("Invalid email address").default("").describe("Email Address"),
   age: z
     .string()
-    .refine((val) => !isNaN(Number(val)), { message: "Age must be a number" })
+    .refine((val) => !isNaN(Number(val)), { message: "Age must be a number" }).default("0").describe("Age"),
 });
 
 const data = ref([
@@ -149,6 +149,7 @@ const data = ref([
 
 
 const validateSchema = async (schema, values) => {
+  console.log("Validating values:", values);
   const result = schema.safeParse(values);
 
   if (result.success) {
@@ -170,6 +171,22 @@ const validateSchema = async (schema, values) => {
     success: false,
     errors: fieldErrors,
   };
+};
+
+const schemaToFields = (schema) => {
+  if (schema.def && schema.def.shape && typeof schema.def.shape === "object") {
+    return Object.keys(schema.def.shape).map((key) => {
+      const defaultValue = schema.def.shape[key].def.defaultValue;
+      const label = schema.def.shape[key].def.description;
+
+      return {
+        name: key,
+        label: label || key.charAt(0).toUpperCase() + key.slice(1),
+        value: defaultValue,
+      };
+    });
+  }
+  return [];
 };
 
 const getItem = (id) => {

@@ -39,7 +39,7 @@ const props = defineProps({
   /**
    * @type {Array.<Field|Name>}
    */
-  fields: {
+  schemaToFields: {
     type: Array,
     required: true,
   },
@@ -99,8 +99,15 @@ const isLoading = computed(() => {
   )
 })
 
+const fields = computed(() => {
+  if (!props.schema) {
+    return []
+  }
+  return props.schemaToFields(props.schema)
+})
+
 const normalizedFields = computed(() => {
-  return props.fields
+  return fields.value
     .map((field) => {
       const fieldType = typeof field
       if (fieldType === 'string') {
@@ -171,6 +178,12 @@ function setValues(newValues) {
     Object.keys(newValues).forEach((key) => {
       values.value[key] = newValues[key]
     })
+    
+    values.value = {
+      ...getDefaultValues(),
+      ...toRaw(values.value),
+    }
+
     initialValues.value = structuredClone(toRaw(values.value))
   } else {
     values.value = {}
@@ -186,6 +199,7 @@ async function isValid() {
     ? await props.validateSchema(props.schema, toRaw(values.value))
     : { success: true }
 
+    console.log('Validation Result:', validationResult)
   if (!validationResult.success) {
     setError(validationResult)
     return false
