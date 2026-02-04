@@ -26,7 +26,7 @@ When you're editing an existing item and have a unique ID from the database.
 - The `<VueFormUpdate>` button is visible
 - Clicking the button calls your `update` method to save changes
 
-To configure the mode detection, use the `resolveMode` option. [Read more](/configuration/resolveMode.md)
+To configure the mode detection, use the `resolveMode` option. [Read more](/configuration/resolve-mode.md)
 
 ## On Mount & Read
 
