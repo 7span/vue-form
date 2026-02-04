@@ -5,8 +5,10 @@ It contains everything VueForm knows about the current state bundled into a neat
 
 ```js
 {
-    isNewItem: Boolean,
-    fields: Array,
+    isCreateMode: Boolean,
+    isUpdateMode: Boolean,
+    mode: String, // CREATE or UPDATE
+    schema: Object,
     normalizedFields: Array,
     values: Object,
     dirtyValues: Object,
@@ -24,13 +26,21 @@ It contains everything VueForm knows about the current state bundled into a neat
 }
 ```
 
-### isNewItem
+### isCreateMode
 
-`true` when the form is in create mode, `false` when editing an existing item.
+If `resolveMode` returns `UPDATE`, this will be true.
 
-### fields
+### isCreateMode
 
-The original field configuration array passed to the `<VueForm>`.
+If `resolveMode` returns `CREATE`, this will be true.
+
+### mode
+
+The mode returned by `resolveMode`. It should be either `CREATE` or `UPDATE`
+
+### schema
+
+The original schema passed to the `<VueForm>`.
 
 ### normalizedFields
 

@@ -40,8 +40,10 @@ export default defineConfig({
         text: "⚙️ Configuration",
         items: [
           { text: "Options", link: "/configuration/options" },
-          { text: "isNewItemCheck", link: "/configuration/new-item-check" },
+          { text: "resolveMode", link: "/configuration/resolve-mode" },
           { text: "errorAdapter", link: "/configuration/error-adapter" },
+          { text: "schemaToFields", link: "/configuration/schema-to-fields" },
+          { text: "validateSchema", link: "/configuration/validate-schema" },
           { text: "Context Object", link: "/configuration/context-object" },
         ],
       },

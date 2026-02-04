@@ -5,9 +5,9 @@
  * @param {Context} context
  * @returns {Boolean}
  */
-function isNewItemCheck(context) {
+function resolveMode(context) {
   const { itemId } = context
-  return itemId === '+'
+  return itemId === '+' ? 'CREATE' : 'UPDATE'
 }
 
 /**
@@ -43,9 +43,19 @@ function errorAdapter(error) {
   }
 }
 
+function schemaToFields() {
+  return []
+}
+
+function validateSchema() {
+  return new Promise((resolve) => resolve(true))
+}
+
 export default {
   componentPrefix: '',
-  isNewItemCheck,
+  resolveMode,
   isArchivedItemCheck,
   errorAdapter,
+  schemaToFields,
+  validateSchema,
 }

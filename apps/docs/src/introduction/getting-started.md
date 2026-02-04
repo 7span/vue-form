@@ -33,9 +33,9 @@ const app = createApp(App);
 
 app.use(VueForm, {
   componentPrefix: "",
-  isNewItemCheck: (context) => {
+  resolveMode: (context) => {
     const { itemId } = context;
-    return itemId === "+";
+    return itemId === "+" ? "CREATE" : "UPDATE";
   },
   isArchivedItemCheck: (response) => {
     return response.isArchived == true;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!isNewItem" class="vue-form__update">
+  <div v-if="isUpdateMode" class="vue-form__update">
     <slot v-bind="slotProps">
       <button @click="updateItem">{{ label }}</button>
     </slot>
@@ -11,7 +11,7 @@ import { inject, computed } from 'vue'
 const updateItem = inject('updateItem')
 const isUpdating = inject('isUpdating')
 const isReading = inject('isReading')
-const isNewItem = inject('isNewItem')
+const isUpdateMode = inject('isUpdateMode')
 const isLoading = inject('isLoading')
 
 defineOptions({

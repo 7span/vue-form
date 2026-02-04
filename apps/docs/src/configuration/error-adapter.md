@@ -1,6 +1,6 @@
 # errorAdapter
 
-The errorAdapter is a function that transforms API error responses into a standardized format that VueForm can display. It acts as a translator between your backend's error structure and VueForm's internal error state.
+The errorAdapter is a function that transforms API error responses or validation errors into a standardized format that VueForm can display. It acts as a translator between your backend's error structure and VueForm's internal error state.
 
 Different APIs return errors in different formats. The errorAdapter normalizes these different structures into a single format VueForm understands.
 

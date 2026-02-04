@@ -26,17 +26,17 @@ When you're editing an existing item and have a unique ID from the database.
 - The `<VueFormUpdate>` button is visible
 - Clicking the button calls your `update` method to save changes
 
-To configure the mode detection, use the `isNewItemCheck` option. [Read more](/configuration/new-item-check.md)
+To configure the mode detection, use the `resolveMode` option. [Read more](/configuration/resolveMode.md)
 
 ## On Mount & Read
 
 When `<VueForm>` mounts, the following sequence occurs:
 
-1. **Mode Detection:** VueForm calls `isNewItemCheck` with the `item-id` prop to determine the operation mode.
-2. **Create Mode:** when `isNewItemCheck` returns `true`
+1. **Mode Detection:** VueForm calls `resolveMode` with the `item-id` prop to determine the operation mode.
+2. **Create Mode:** when `resolveMode` returns `CREATE`
    - No API call is made
    - Default field values are applied from the field configuration
-3. **Update Mode:** when `isNewItemCheck` returns `false`
+3. **Update Mode:** when `resolveMode` returns `UPDATE`
    - The `read` function is called with `itemId` as the argument
    - You fetch the existing data from the API and return it
    - Populates form fields with the retrieved data
