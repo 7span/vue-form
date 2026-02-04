@@ -17,7 +17,7 @@
     "@babel/plugin-proposal-optional-chaining": "^7.21.0",
     "@vitejs/plugin-vue": "^4.2.1",
     "@vue/compiler-sfc": "^3.2.47",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.23",
     "qs": "^6.11.1",
     "vue": "^3.2.47"
   },
