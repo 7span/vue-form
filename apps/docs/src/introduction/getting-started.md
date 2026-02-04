@@ -77,9 +77,9 @@ Once the plugin is configured, you can use the `<VueForm>` component anywhere in
       <VueFormError />
       <VueFormFields>
         <template #default="{ values, dirtyValues }">
-          <VueFormField name="name" v-slot="{ nativeField, label, error }">
+          <VueFormField name="name" v-slot="{ nativeModel, label, error }">
             <label>{{ label }}</label>
-            <input type="text" v-bind="nativeField" />
+            <input type="text" v-bind="nativeModel" />
             <p v-if="error">Error: {{ error }}</p>
           </VueFormField>
         </template>

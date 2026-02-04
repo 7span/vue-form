@@ -15,12 +15,12 @@ Renders an individual form field and exposes field-specific state and methods th
             name,
             value,
             updateValue,
-            field,
-            nativeField,
+            model,
+            nativeModel,
           }"
         >
           <label>{{ label }}</label>
-          <input type="email" v-bind="nativeField" />
+          <input type="email" v-bind="nativeModel" />
           <span v-if="error">{{ error }}</span>
         </VueFormField>
       </VueFormFields>
@@ -58,5 +58,5 @@ The only slot available in `<VueFormField>` is `default`. It exposes a set of sc
 | name        | `String`                                                                                                                                                                            |
 | value       | `String` <br/> The current value of the field                                                                                                                                       |
 | updateValue | `Function` <br/> You can manually set value with this function                                                                                                                      |
-| field       | `Object` <br/> Use this to bind the v-model on custom input components                                                                                                              |
-| nativeField | `Object` <br/> Use this to bind the v-model on native input elements                                                                                                                |
+| model       | `Object` <br/> Use this to bind the v-model on custom input components                                                                                                              |
+| nativeModel | `Object` <br/> Use this to bind the v-model on native input elements                                                                                                                |

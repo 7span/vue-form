@@ -73,11 +73,12 @@ const slotProps = computed(() => {
     name: props.name,
     value: values.value?.[props.name],
     updateValue: updateValue,
-    field: {
+    field: field,
+    model: {
       modelValue: values.value?.[props.name],
       'onUpdate:modelValue': onInput,
     },
-    nativeField: {
+    nativeModel: {
       value: values.value?.[props.name],
       onInput,
     },
