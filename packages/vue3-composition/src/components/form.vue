@@ -54,11 +54,6 @@ const props = defineProps({
   },
 })
 
-const defaultFieldConfig = {
-  name: null,
-  value: null,
-}
-
 const globalOptions = inject('vueForm')
 
 const values = ref({})
@@ -77,6 +72,7 @@ const dirty = ref([])
 const validateSchema = props.validateSchema || globalOptions.validateSchema
 const errorAdapter = props.errorAdapter || globalOptions.errorAdapter
 const resolveMode = props.resolveMode || globalOptions.resolveMode
+const schemaToFields = props.schemaToFields || globalOptions.schemaToFields
 
 const isLoading = computed(() => {
   return (
@@ -89,7 +85,7 @@ const fields = computed(() => {
     console.warn('Please provide Schema Prop!')
     return []
   }
-  return props.schemaToFields(props.schema)
+  return schemaToFields(props.schema)
 })
 
 const mode = computed(() => {
