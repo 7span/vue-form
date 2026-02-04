@@ -9,12 +9,12 @@ When using VueForm, you can pass an options object to customize its behavior. Th
 
 Adds a prefix to the globally registered components. Useful to avoid naming conflicts or to follow a naming convention in your app.
 
-### `isNewItemCheck`
+### `resolveMode`
 
 - Type: `Function`
-- Arguments: `(context) => Boolean`
+- Arguments: `(context) => String`
 
-[Read more](/configuration/new-item-check.md)
+[Read more](/configuration/resolve-mode.md)
 
 ### `errorAdapter`
 
@@ -22,3 +22,17 @@ Adds a prefix to the globally registered components. Useful to avoid naming conf
 - Arguments: `(context) => boolean`
 
 [Read more](/configuration/error-adapter.md)
+
+### `schemaToFields`
+
+- Type: `Function`
+- Arguments: `(context) => Array`
+
+[Read more](/configuration/schema-to-fields.md)
+
+### `validateSchema`
+
+- Type: `Function`
+- Arguments: `(context) => Promise<boolean>`
+
+[Read more](/configuration/validate-schema.md)

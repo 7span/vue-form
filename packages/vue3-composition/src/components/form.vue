@@ -6,41 +6,14 @@
 
 <script setup>
 import { inject, ref, computed, provide, watch, toRaw } from 'vue'
-import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 
 defineOptions({
   name: 'VueForm',
 })
 
 const props = defineProps({
-  /**
-   * Field configuration options:
-   *
-   * Array of strings: ['name', 'email']
-   * - Creates fields with null default values
-   *
-   * Array of objects: [{name: 'email', value: 'hello@hello.com'}]
-   * - Creates fields with specified default values
-   *
-   * Each field can be defined as:
-   * - String: Field name only
-   * - Object: {name, value, label} properties
-   */
-
-  /**
-   * @typedef {Object} Field
-   * @property {string} name - Field name
-   * @property {any} value - Default value for the field
-   * @property {string} label - Label for the field
-   */
-  /**
-   * @typedef {string} Name
-   */
-  /**
-   * @type {Array.<Field|Name>}
-   */
-  fields: {
-    type: Array,
+  schema: {
+    type: Object,
     required: true,
   },
   itemId: {
@@ -62,6 +35,21 @@ const props = defineProps({
     type: Function,
   },
   unarchive: {
+    type: Function,
+  },
+  meta: {
+    type: Object,
+  },
+  validateSchema: {
+    type: Function,
+  },
+  schemaToFields: {
+    type: Function,
+  },
+  errorAdapter: {
+    type: Function,
+  },
+  resolveMode: {
     type: Function,
   },
 })
@@ -86,6 +74,9 @@ const error = ref()
 const initialValues = ref({})
 const touched = ref([])
 const dirty = ref([])
+const validateSchema = props.validateSchema || globalOptions.validateSchema
+const errorAdapter = props.errorAdapter || globalOptions.errorAdapter
+const resolveMode = props.resolveMode || globalOptions.resolveMode
 
 const isLoading = computed(() => {
   return (
@@ -93,33 +84,24 @@ const isLoading = computed(() => {
   )
 })
 
-const normalizedFields = computed(() => {
-  return props.fields
-    .map((field, index) => {
-      const fieldType = typeof field
-      if (fieldType === 'string') {
-        return {
-          ...defaultFieldConfig,
-          name: field,
-          value: null,
-          label: useChangeCase(field, 'capitalCase').value,
-        }
-      } else if (fieldType === 'object' && !Array.isArray(field)) {
-        return {
-          ...defaultFieldConfig,
-          label: useChangeCase(field.name, 'capitalCase').value,
-          ...field,
-        }
-      } else {
-        console.warn('Invalid field config provided for:', field)
-        return null
-      }
-    })
-    .filter((item) => item) // Removes invalid field configs
+const fields = computed(() => {
+  if (!props.schema) {
+    console.warn('Please provide Schema Prop!')
+    return []
+  }
+  return props.schemaToFields(props.schema)
 })
 
-const isNewItem = computed(() => {
-  return globalOptions.isNewItemCheck({ itemId: props.itemId })
+const mode = computed(() => {
+  return resolveMode({ itemId: props.itemId })
+})
+
+const isCreateMode = computed(() => {
+  return mode.value === 'CREATE'
+})
+
+const isUpdateMode = computed(() => {
+  return mode.value === 'UPDATE'
 })
 
 const dirtyValues = computed(() => {
@@ -131,9 +113,9 @@ const dirtyValues = computed(() => {
 
 const context = computed(() => {
   return {
-    isNewItem: isNewItem.value,
-    fields: props.fields,
-    normalizedFields: normalizedFields.value,
+    mode: mode.value,
+    schema: props.schema,
+    fields: fields.value,
     values: values.value,
     dirtyValues: values.value,
     error: error.value,
@@ -147,11 +129,14 @@ const context = computed(() => {
     isArchived: isArchived.value,
     touched: touched.value,
     dirty: dirty.value,
+    meta: props.meta,
+    isCreateMode: isCreateMode.value,
+    isUpdateMode: isUpdateMode.value,
   }
 })
 
 function getDefaultValues() {
-  return normalizedFields.value.reduce((acc, field) => {
+  return fields.value.reduce((acc, field) => {
     acc[field.name] = field.value
     return acc
   }, {})
@@ -165,9 +150,14 @@ function setValues(newValues) {
     Object.keys(newValues).forEach((key) => {
       values.value[key] = newValues[key]
     })
+
+    values.value = {
+      ...getDefaultValues(),
+      ...toRaw(values.value),
+    }
+
+    //TODO: Why?
     initialValues.value = structuredClone(toRaw(values.value))
-  } else {
-    values.value = {}
   }
 }
 
@@ -176,11 +166,11 @@ function setError(err) {
     error.value = null
     return
   }
-  error.value = globalOptions.errorAdapter(err)
+  error.value = errorAdapter(err, context.value)
 }
 
 function onItemResponse(data) {
-  isArchived.value = !isNewItem.value && globalOptions.isArchivedItemCheck(data)
+  isArchived.value = isUpdateMode.value && globalOptions.isArchivedItemCheck(data)
   const { values } = data
   setValues(values)
 }
@@ -190,7 +180,6 @@ function onItemError(err) {
   if (err.name == 'TypeError') {
     console.error(err)
   }
-  setValues()
   setError(err)
 }
 
@@ -198,7 +187,7 @@ function readItem() {
   isReading.value = true
   setError()
   return props
-    .read(props.itemId, context.value)
+    .read(context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
@@ -208,22 +197,18 @@ function readItem() {
 
 function createItem() {
   isCreating.value = true
-  setError()
-  return props
-    .create(context.value)
-    .then(onItemResponse)
+  return validateSchema(context.value)
+    .then(() => props.create(context.value).then(onItemResponse))
     .catch(onItemError)
     .finally(() => {
       isCreating.value = false
     })
 }
 
-function updateItem() {
+async function updateItem() {
   isUpdating.value = true
-  setError()
-  return props
-    .update(props.itemId, context.value)
-    .then(onItemResponse)
+  return validateSchema(context.value)
+    .then(() => props.update(context.value).then(onItemResponse))
     .catch(onItemError)
     .finally(() => {
       isUpdating.value = false
@@ -234,7 +219,7 @@ function deleteItem() {
   isDeleting.value = true
   setError()
   return props
-    .delete(props.itemId, context.value)
+    .delete(context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
@@ -246,7 +231,7 @@ function archiveItem() {
   isArchiving.value = true
   setError()
   props
-    .archive(props.itemId, context.value)
+    .archive(context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
@@ -258,7 +243,7 @@ function unarchiveItem() {
   isUnarchiving.value = true
   setError()
   props
-    .unarchive(props.itemId, context.value)
+    .unarchive(context.value)
     .then(onItemResponse)
     .catch(onItemError)
     .finally(() => {
@@ -293,6 +278,7 @@ const slotProps = computed(() => {
   }
 })
 
+provide('fields', fields)
 provide('values', values)
 provide('dirtyValues', dirtyValues)
 provide('error', error)
@@ -308,15 +294,15 @@ provide('isArchiving', isArchiving)
 provide('isUnarchiving', isUnarchiving)
 provide('isDeleting', isDeleting)
 provide('isLoading', isLoading)
-provide('isNewItem', isNewItem)
-provide('normalizedFields', normalizedFields)
 provide('initialValues', initialValues)
 provide('addTouched', addTouched)
 provide('toggleDirty', toggleDirty)
 provide('isArchived', isArchived)
+provide('isCreateMode', isCreateMode)
+provide('isUpdateMode', isUpdateMode)
 
 function init() {
-  if (!isNewItem.value) {
+  if (isUpdateMode.value) {
     readItem()
   } else {
     setValues(getDefaultValues())

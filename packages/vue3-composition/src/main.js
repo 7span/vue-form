@@ -4,6 +4,7 @@ import defaultOptions from './options'
 import VueForm from './components/form.vue'
 import VueFormFields from './components/fields.vue'
 import VueFormField from './components/field.vue'
+import VueFormFieldError from './components/field-error.vue'
 import VueFormUpdate from './components/update.vue'
 import VueFormCreate from './components/create.vue'
 import VueFormArchive from './components/archive.vue'
@@ -19,6 +20,7 @@ const install = (app, userOptions = {}) => {
   app.component(`${prefix}VueForm`, VueForm)
   app.component(`${prefix}VueFormFields`, VueFormFields)
   app.component(`${prefix}VueFormField`, VueFormField)
+  app.component(`${prefix}VueFormFieldError`, VueFormFieldError)
   app.component(`${prefix}VueFormUpdate`, VueFormUpdate)
   app.component(`${prefix}VueFormCreate`, VueFormCreate)
   app.component(`${prefix}VueFormArchive`, VueFormArchive)

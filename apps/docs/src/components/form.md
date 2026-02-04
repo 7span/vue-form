@@ -16,29 +16,35 @@ It's the only component you must include. Every other component depends on the c
 
 ## Props
 
-### `fields`
+### `schema`
 
-- Type: `Array`
-- Default: `[]`
+- Type: `Object`
+- Default: `null`
 
-Array defining the form structure. Can contain field configuration objects, field name strings, or a mix of both.
+Schema defining the form structure. When using validation libraries like Zod or Yup, you define your form structure in a schema.
+You need to write a global option or provide a local prop to convert schema to fields array. [Read more](/configuration/schema-to-fields.md)
 
-```js
-// Objects only
-const fields = [{ name: "email", value: "john@doe.com" }, { name: "age" }];
+```vue
+<template>
+  <VueForm :schema="userSchema" />
+</template>
 
-// Strings only
-const fields = ["name", "email", "phone"];
+<script setup>
+import { z } from "zod";
 
-// Mixed
-const fields = [{ name: "email", value: "john@doe.com" }, "name", "phone"];
+const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  age: z.number().min(18),
+});
+</script>
 ```
 
 ### `itemId`
 
 - Type: `Number|String`
 
-The identifier passed to `isNewItemCheck` for mode detection. Use special strings like '+' or 'create' to indicate create mode, or pass the database ID for update mode.
+The identifier passed to global or local `resolveMode` for mode detection. Use special strings like '+' or 'create' to indicate create mode, or pass the database ID for update mode.
 
 ```vue
 <!-- Create mode -->
@@ -53,7 +59,7 @@ The identifier passed to `isNewItemCheck` for mode detection. Use special string
 <VueForm :item-id="$route.params.id" />
 ```
 
-See how to use `itemId` in `isNewItemCheck` [here](/configuration/new-item-check.md)
+See how to use `itemId` in `resolveMode` [here](/configuration/resolve-mode.md)
 
 ### `create`
 
@@ -79,13 +85,13 @@ Do not catch errors in your create, read, update, delete, archive, or unarchive 
 ### `read`
 
 - Type: `Function`
-- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+- Signature: `(context) => Promise<VueFormApiResponse>`
 
 Async function called when the component is mounted and update mode is detected. Must return a promise resolving to a `VueFormApiResponse`.
 
 ```js
-function read(itemId, context){
-  return fetch(`/api/users/${itemId}`).then(res=>{
+function read(context){
+  return fetch(`/api/users/${context.itemId}`).then(res=>{
     return {
       values:{...} // {key:value} pairs for each field
     }
@@ -96,13 +102,13 @@ function read(itemId, context){
 ### `update`
 
 - Type: `Function`
-- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+- Signature: `(context) => Promise<VueFormApiResponse>`
 
 Async function called when the update button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
 
 ```js
-function update(itemId, context){
-  return fetch(`/api/users/${itemId}`).then(res=>{
+function update(context){
+  return fetch(`/api/users/${context.itemId}`).then(res=>{
     return {
       values:{...} // {key:value} pairs for each field
     }
@@ -113,13 +119,13 @@ function update(itemId, context){
 ### `delete`
 
 - Type: `Function`
-- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+- Signature: `(context) => Promise<VueFormApiResponse>`
 
 Async function called when the delete button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
 
 ```js
-function update(itemId, context){
-  return fetch(`/api/users/${itemId}`).then(res=>{
+function update(context){
+  return fetch(`/api/users/${context.itemId}`).then(res=>{
     return {
       values:{...} // {key:value} pairs for each field
     }
@@ -130,13 +136,13 @@ function update(itemId, context){
 ### `archive`
 
 - Type: `Function`
-- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+- Signature: `(context) => Promise<VueFormApiResponse>`
 
 Async function called when the delete button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
 
 ```js
-function update(itemId, context){
-  return fetch(`/api/users/${itemId}`).then(res=>{
+function update(context){
+  return fetch(`/api/users/${context.itemId}`).then(res=>{
     return {
       values:{...} // {key:value} pairs for each field
     }
@@ -147,19 +153,33 @@ function update(itemId, context){
 ### `unarchive`
 
 - Type: `Function`
-- Signature: `(itemId, context) => Promise<VueFormApiResponse>`
+- Signature: `(context) => Promise<VueFormApiResponse>`
 
 Async function called when the delete button is clicked. Must return a promise resolving to a `VueFormApiResponse`.
 
 ```js
-function update(itemId, context){
-  return fetch(`/api/users/${itemId}`).then(res=>{
+function update(context){
+  return fetch(`/api/users/${context.itemId}`).then(res=>{
     return {
       values:{...} // {key:value} pairs for each field
     }
   })
 }
 ```
+
+### `meta`
+
+- Type: `Object`
+
+Additional data to pass. This data is available in `context.meta`.
+
+### `schemaToFields`
+
+To override global schemaToFields function. [Read more](/configuration/schema-to-fields.md)
+
+### `errorAdapter`
+
+To override global errorAdapter function. [Read more](/configuration/error-adapter.md)
 
 ## Events
 

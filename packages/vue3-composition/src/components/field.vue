@@ -5,14 +5,14 @@
 </template>
 
 <script setup>
-import { inject, computed } from 'vue'
+import { inject, provide, computed } from 'vue'
 import { isEqual } from 'lodash-es'
 
 const error = inject('error')
 const values = inject('values')
 const addTouched = inject('addTouched')
 const toggleDirty = inject('toggleDirty')
-const normalizedFields = inject('normalizedFields')
+const fields = inject('fields')
 const initialValues = inject('initialValues')
 
 defineOptions({
@@ -26,7 +26,7 @@ const props = defineProps({
   },
 })
 
-const field = normalizedFields.value.find((field) => field.name === props.name)
+const field = fields.value.find((field) => field.name === props.name)
 
 /**
  * Input events can come in two forms:
@@ -56,10 +56,17 @@ function updateValue(value) {
 }
 
 const fieldError = computed(() => {
-  return error.value?.fieldErrors[props.name]
+  return error.value?.fieldErrors?.[props.name]
 })
 
+provide('fieldError', fieldError)
+
 const slotProps = computed(() => {
+  if (!field) {
+    console.warn(`Field ${props.name} not found`)
+    return {}
+  }
+
   return {
     error: fieldError.value,
     label: field.label,
