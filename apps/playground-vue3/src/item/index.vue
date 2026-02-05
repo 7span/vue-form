@@ -7,6 +7,7 @@
       :archive="archive"
       :unarchive="unarchive"
       :schema="schema"
+      :update-schema="updateSchema"
       :schema-to-fields="schemaToFields"
       :validate-schema="validateSchema"
       :error-adapter="errorAdapter"
@@ -16,15 +17,17 @@
     >
       <template #default="{ context }">
         <pre>{{ context.values }}</pre>
+        <pre>{{ context.dirtyValues }}</pre>
+        <pre>{{ context.dirty }}</pre>
         <VueFormError></VueFormError>
 
         <VueFormFields class="p-8 flex flex-col gap-4">
           <template #default>
-            <VueFormField name="id" v-slot="{ nativeField, error, label }">
+            <VueFormField name="id" v-slot="{ nativeModel, error, label }">
               <label for="">{{ label }}</label>
               <input
                 type="text"
-                v-bind="nativeField"
+                v-bind="nativeModel"
                 :disabled="context.isUpdateMode"
               />
 
@@ -38,23 +41,23 @@
               <VueFormFieldError />
             </VueFormField>
 
-            <VueFormField name="name" v-slot="{ nativeField, label, error }">
+            <VueFormField name="name" v-slot="{ nativeModel, label, error }">
               <label>{{ label }}</label>
-              <input type="text" v-bind="nativeField" />
+              <input type="text" v-bind="nativeModel" />
 
               <VueFormFieldError />
             </VueFormField>
 
             <VueFormField
               name="gender"
-              v-slot="{ nativeField, value, label, error }"
+              v-slot="{ nativeModel, value, label, error }"
             >
               <label>{{ label }}</label>
               <label for="male">
                 <input
                   id="male"
                   type="radio"
-                  v-bind="nativeField"
+                  v-bind="nativeModel"
                   value="male"
                   :checked="value == 'male'"
                 />
@@ -64,7 +67,7 @@
                 <input
                   id="female"
                   type="radio"
-                  v-bind="nativeField"
+                  v-bind="nativeModel"
                   value="female"
                   :checked="value == 'female'"
                 />
@@ -74,16 +77,16 @@
               <VueFormFieldError />
             </VueFormField>
 
-            <VueFormField name="email" v-slot="{ nativeField, label, error }">
+            <VueFormField name="email" v-slot="{ nativeModel, label, error }">
               <label>{{ label }}</label>
-              <input type="email" v-bind="nativeField" />
+              <input type="email" v-bind="nativeModel" />
 
               <VueFormFieldError />
             </VueFormField>
 
-            <VueFormField name="age" v-slot="{ nativeField, label, error }">
+            <VueFormField name="age" v-slot="{ nativeModel, label, error }">
               <label>{{ label }}</label>
-              <input type="text" v-bind="nativeField" />
+              <input type="text" v-bind="nativeModel" />
 
               <VueFormFieldError />
             </VueFormField>
@@ -138,6 +141,17 @@ const schema = z.object({
   //   .describe("Age"),
 });
 
+const updateSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, "Name is required")
+      .default("")
+      .describe("Full Name"),
+    email: z.string().email("Invalid email").default("").describe("Email"),
+  })
+  .partial();
+
 const data = ref([
   { name: "Harsh Kansagara", email: "harsh@7span.com", age: "35", id: "1" },
   {
@@ -150,9 +164,25 @@ const data = ref([
 ]);
 
 const validateSchema = (context) => {
-  const { schema, values } = context;
+  const { schema, dirtyValues, values, mode, createSchema, updateSchema } =
+    context;
+
+  let targetSchema;
+  if (mode === "CREATE" && createSchema) {
+    targetSchema = createSchema;
+  } else if (mode === "UPDATE" && updateSchema) {
+    targetSchema = updateSchema;
+  } else {
+    targetSchema = schema;
+  }
+
+  let valuesToValidate = values;
+  if (mode === "UPDATE") {
+    valuesToValidate = dirtyValues;
+  }
+
   return new Promise((resolve, reject) => {
-    const res = schema.safeParse(values);
+    const res = targetSchema.safeParse(valuesToValidate);
     if (!res.success) {
       reject(res.error);
     }
@@ -222,21 +252,22 @@ const read = ({ itemId }) => {
 };
 
 const update = (context) => {
+  console.log({ context });
   return fetch(
-    `https://products.7span.in/items/xplugins_test/${context.itemId}`,
+    `https://products.7span.in/items/plugins_test/${context.itemId}`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(context.values),
+      body: JSON.stringify(context.dirtyValues),
     },
   )
     .then((res) => {
-      console.log({ res });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status} ${res.statusText}`);
       }
+      return res;
     })
     .then((res) => res.json())
     .then((res) => {
