@@ -14,7 +14,12 @@ defineOptions({
 const props = defineProps({
   schema: {
     type: Object,
-    required: true,
+  },
+  createSchema: {
+    type: Object,
+  },
+  updateSchema: {
+    type: Object,
   },
   itemId: {
     type: [String, Number],
@@ -80,14 +85,6 @@ const isLoading = computed(() => {
   )
 })
 
-const fields = computed(() => {
-  if (!props.schema) {
-    console.warn('Please provide Schema Prop!')
-    return []
-  }
-  return schemaToFields(props.schema)
-})
-
 const mode = computed(() => {
   return resolveMode({ itemId: props.itemId })
 })
@@ -98,6 +95,18 @@ const isCreateMode = computed(() => {
 
 const isUpdateMode = computed(() => {
   return mode.value === 'UPDATE'
+})
+
+const fields = computed(() => {
+  let targetSchema
+  if (props.createSchema && isCreateMode.value) {
+    targetSchema = props.createSchema
+  } else if (props.updateSchema && isUpdateMode.value) {
+    targetSchema = props.updateSchema
+  } else {
+    targetSchema = props.schema
+  }
+  return schemaToFields(targetSchema)
 })
 
 const dirtyValues = computed(() => {
@@ -112,8 +121,10 @@ const context = computed(() => {
     mode: mode.value,
     schema: props.schema,
     fields: fields.value,
+    createSchema: props.createSchema,
+    updateSchema: props.updateSchema,
     values: values.value,
-    dirtyValues: values.value,
+    dirtyValues: dirtyValues.value,
     error: error.value,
     itemId: props.itemId,
     isReading: isReading.value,
