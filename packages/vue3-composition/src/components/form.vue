@@ -62,6 +62,7 @@ const props = defineProps({
 const globalOptions = inject('vueForm')
 
 const values = ref({})
+const response = ref(null)
 
 const isReading = ref(false)
 const isCreating = ref(false)
@@ -139,6 +140,7 @@ const context = computed(() => {
     meta: props.meta,
     isCreateMode: isCreateMode.value,
     isUpdateMode: isUpdateMode.value,
+    response: response.value,
   }
 })
 
@@ -177,9 +179,9 @@ function setError(err) {
 }
 
 function onItemResponse(data) {
+  response.value = data
+  setValues(data.values)
   isArchived.value = isUpdateMode.value && globalOptions.isArchivedItemCheck(data)
-  const { values } = data
-  setValues(values)
 }
 
 function onItemError(err) {
@@ -316,6 +318,14 @@ function init() {
   }
 }
 
+function refresh() {
+  init()
+}
+
 watch(() => props.itemId, init)
 init()
+
+defineExpose({
+  refresh,
+})
 </script>

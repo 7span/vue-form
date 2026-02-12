@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@7span/vue-form":  "workspace:0.*",
+    "axios": "1.14.0",
+    "socket.io-client": "4.8.3",
     "vite-plugin-vue2": "^2.0.3",
     "vue": "^2.7.16"
   },
